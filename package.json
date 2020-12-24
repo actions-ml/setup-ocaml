@@ -1,0 +1,8 @@
+{
+  "name": "setup-ocaml",
+  "version": "0.0.0",
+  "author": "Sora Morimoto <sora@morimoto.io>",
+  "description": "GitHub Action for the OCaml programming language",
+  "license": "ISC",
+  "private": true
+}
