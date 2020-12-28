@@ -1,0 +1,15 @@
+name: Set up OCaml
+description: Set up an OCaml and opam environment and add to PATH
+author: Sora Morimoto <sora@morimoto.io>
+branding:
+  icon: package
+  color: orange
+inputs:
+  ocaml-version:
+    description: Version of the OCaml compiler to initialise
+    default: 4.11.1
+  github-token:
+    default: ${{ github.token }}
+runs:
+  using: node12
+  main: dist/index.js

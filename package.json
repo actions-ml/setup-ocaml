@@ -4,5 +4,40 @@
   "author": "Sora Morimoto <sora@morimoto.io>",
   "description": "GitHub Action for the OCaml programming language",
   "license": "ISC",
-  "private": true
+  "private": true,
+  "scripts": {
+    "fmt": "prettier --write .",
+    "fmt:check": "prettier --check .",
+    "typecheck": "tsc",
+    "lint": "eslint \"**/*.ts\" --cache",
+    "build": "ncc build src/index.ts --license=LICENSE.txt --v8-cache"
+  },
+  "dependencies": {
+    "@actions/core": "1.2.6",
+    "@actions/exec": "1.0.4",
+    "@actions/github": "4.0.0",
+    "@actions/http-client": "1.0.9",
+    "@actions/io": "1.0.2",
+    "@actions/tool-cache": "1.6.1",
+    "@vercel/ncc": "0.26.1",
+    "got": "11.8.1",
+    "jsdom": "16.4.0",
+    "semver": "7.3.4"
+  },
+  "devDependencies": {
+    "@types/getos": "3.0.0",
+    "@types/jsdom": "16.2.5",
+    "@types/node": "14.14.16",
+    "@types/semver": "7.3.4",
+    "@typescript-eslint/eslint-plugin": "4.11.1",
+    "@typescript-eslint/parser": "4.11.1",
+    "esbuild": "0.8.26",
+    "eslint": "7.16.0",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-prettier": "3.3.0",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "prettier": "2.2.1",
+    "typescript": "4.1.3"
+  }
 }
