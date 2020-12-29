@@ -11,6 +11,7 @@ inputs:
   opam-repository:
     description: URL of the repository to fetch packages from
   github-token:
+    description: Input for internal use; is not intended to be set by users
     default: ${{ github.token }}
 runs:
   using: node12
