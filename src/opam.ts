@@ -8,7 +8,7 @@ import { JSDOM } from "jsdom";
 import * as os from "os";
 import * as semver from "semver";
 
-import { GITHUB_TOKEN, OCAML_VERSION } from "./constants";
+import { GITHUB_TOKEN, OCAML_VERSION, OPAM_REPOSITORY } from "./constants";
 import { makeHttpClient, retrieveCache } from "./internal/cacheHttpClient";
 import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
@@ -53,16 +53,17 @@ async function setupOpamUnix() {
 
 async function initializeOpamUnix() {
   if (getPlatform() === "linux") {
-    await exec("sudo", ["apt-get", "--yes", "install", "bubblewrap"]);
+    await exec("sudo", ["apt-get", "install", "--yes", "bubblewrap"]);
   }
-
+  const repository =
+    OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
   try {
     if (process.env.ImageOS !== undefined && getPlatform() !== "windows") {
       await retrieveCache();
       await exec("opam", [
         "init",
         "default",
-        "https://github.com/ocaml/opam-repository.git",
+        repository,
         "--compiler",
         `ocaml-system.${OCAML_VERSION}`,
         "--auto-setup",
@@ -75,7 +76,7 @@ async function initializeOpamUnix() {
     await exec("opam", [
       "init",
       "default",
-      "https://github.com/ocaml/opam-repository.git",
+      repository,
       "--compiler",
       `ocaml-base-compiler.${OCAML_VERSION}`,
       "--auto-setup",
@@ -182,10 +183,13 @@ async function setupOpamWindows() {
 }
 
 async function initializeOpamWindows() {
+  const repository =
+    OPAM_REPOSITORY ||
+    "https://github.com/fdopen/opam-repository-mingw.git#opam2";
   await exec("opam", [
     "init",
     "default",
-    "https://github.com/fdopen/opam-repository-mingw.git#opam2",
+    repository,
     "--compiler",
     `ocaml-variants.${OCAML_VERSION}+mingw64c`,
     "--auto-setup",
