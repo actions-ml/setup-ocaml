@@ -14,9 +14,7 @@ export function makeHttpClient(): HttpClient {
 
 async function isFileExist(url: string) {
   const httpClient = makeHttpClient();
-
   const response = await httpClient.get(url);
-
   if (response.message.statusCode === 200) {
     return true;
   } else {
@@ -24,11 +22,10 @@ async function isFileExist(url: string) {
   }
 }
 
-export async function setupCache(): Promise<void> {
+export async function retrieveCache(): Promise<void> {
   const BASE_URL = "https://cache.actions-ml.org";
   const IMAGE_NAME = await makeImageName();
   const url = `${BASE_URL}/${OCAML_VERSION}/${IMAGE_NAME}/${OCAML_VERSION}.tar.gz`;
-  console.log(url);
   if (await isFileExist(url)) {
     const cachedPath = await tc.find("ocaml", OCAML_VERSION, IMAGE_NAME);
     if (cachedPath === "") {

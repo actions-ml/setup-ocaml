@@ -1,5 +1,3 @@
-import { exec } from "@actions/exec";
-import * as io from "@actions/io";
 import * as os from "os";
 
 export const IS_WINDOWS = process.platform === "win32";
@@ -23,17 +21,5 @@ export function getPlatform(): "linux" | "windows" | "macos" {
       return "macos";
     default:
       throw new Error("The platform is not supported.");
-  }
-}
-
-export async function opamExec(args: string[]): Promise<void> {
-  const opam = await io.which("opam", true);
-  const PATH = process.env.PATH || "";
-  const options = { env: { ...process.env, PATH } };
-  if (IS_WINDOWS) {
-    const opamEnv = await io.which("ocaml-env", true);
-    await exec(opamEnv, ["exec", "--", opam, ...args], options);
-  } else {
-    await exec(opam, ["exec", "--", opam, ...args], options);
   }
 }

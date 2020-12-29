@@ -1,10 +1,11 @@
-import { opamExec } from "./internal/system";
+import { exec } from "@actions/exec";
+
 import { acquireOpam, installDepext } from "./opam";
 
 export async function installer(): Promise<void> {
   await acquireOpam();
   await installDepext();
-  await opamExec(["--version"]);
-  await opamExec(["exec", "--", "ocaml", "--version"]);
-  await opamExec(["depext", "--version"]);
+  await exec("opam", ["--version"]);
+  await exec("opam", ["depext", "--version"]);
+  await exec("opam", ["exec", "--", "ocaml", "--version"]);
 }

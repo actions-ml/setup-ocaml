@@ -9,13 +9,8 @@ import * as os from "os";
 import * as semver from "semver";
 
 import { GITHUB_TOKEN, OCAML_VERSION } from "./constants";
-import { makeHttpClient, setupCache } from "./internal/cacheHttpClient";
-import {
-  getArchitecture,
-  getPlatform,
-  IS_WINDOWS,
-  opamExec,
-} from "./internal/system";
+import { makeHttpClient, retrieveCache } from "./internal/cacheHttpClient";
+import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
 
@@ -63,7 +58,7 @@ async function initializeOpamUnix() {
 
   try {
     if (process.env.ImageOS !== undefined && getPlatform() !== "windows") {
-      await setupCache();
+      await retrieveCache();
       await exec("opam", [
         "init",
         "default",
@@ -150,8 +145,7 @@ async function setupCygwin() {
     "rsync",
     "unzip",
   ].join(",");
-  const setupExePath = await io.which("setup-x86_64.exe", true);
-  await exec(setupExePath, [
+  await exec("setup-x86_64.exe", [
     "--quiet-mode",
     "--root",
     root,
@@ -160,6 +154,7 @@ async function setupCygwin() {
     "--packages",
     packages,
   ]);
+  const setupExePath = await io.which("setup-x86_64.exe");
   await io.cp(setupExePath, root);
   core.addPath(`${root}\\bin`);
 }
@@ -168,9 +163,8 @@ async function setupOpamWindows() {
   async function install(path: string) {
     const installSh = `${path}\\opam64\\install.sh`;
     await fs.chmod(installSh, 755);
-    await exec(bashPath, [installSh, "--prefix", "/usr"]);
+    await exec("bash", [installSh, "--prefix", "/usr"]);
   }
-  const bashPath = await io.which("bash", true);
   const version = "0.0.0.2";
   const cachedPath = tc.find("opam", version);
   if (cachedPath === "") {
@@ -200,6 +194,14 @@ async function initializeOpamWindows() {
     "--enable-shell-hook",
     "--verbose",
   ]);
+  const wrapperbin = `c:\\cygwin\\wrapperbin`;
+  await io.mkdirP(wrapperbin);
+  const opamBat = `${wrapperbin}\\opam.bat`;
+
+  await fs.writeFile(opamBat, "@echo off\r\nocaml-env exec -- opam.exe %*", {
+    mode: 0o755,
+  });
+  core.addPath(wrapperbin);
 }
 
 async function acquireOpamWindows() {
@@ -229,6 +231,6 @@ export async function acquireOpam(): Promise<void> {
 
 export async function installDepext(): Promise<void> {
   core.startGroup("Install depext");
-  await opamExec(["install", "depext"]);
+  await exec("opam", ["install", "depext"]);
   core.endGroup();
 }
