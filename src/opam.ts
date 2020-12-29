@@ -98,6 +98,22 @@ async function acquireOpamUnix() {
   core.endGroup();
 }
 
+async function getCygwinVersion() {
+  const httpClient = makeHttpClient();
+  const response = await httpClient.get("https://www.cygwin.com");
+  const body = await response.readBody();
+  const dom = new JSDOM(body);
+  const links = dom.window.document.querySelectorAll("a");
+  let version = "";
+  links.forEach(({ textContent }) => {
+    const text = textContent?.trim();
+    if (semver.valid(text) === text) {
+      version = text;
+    }
+  });
+  return version;
+}
+
 async function setupCygwin() {
   core.exportVariable("CYGWIN", "winsymlinks:native");
   core.exportVariable("HOME", process.env.USERPROFILE);
@@ -169,22 +185,6 @@ async function setupOpamWindows() {
   } else {
     await install(cachedPath);
   }
-}
-
-async function getCygwinVersion() {
-  const httpClient = makeHttpClient();
-  const response = await httpClient.get("https://www.cygwin.com");
-  const body = await response.readBody();
-  const dom = new JSDOM(body);
-  const links = dom.window.document.querySelectorAll("a");
-  let version = "";
-  links.forEach(({ textContent }) => {
-    const text = textContent?.trim();
-    if (semver.valid(text) === text) {
-      version = text;
-    }
-  });
-  return version;
 }
 
 async function initializeOpamWindows() {
