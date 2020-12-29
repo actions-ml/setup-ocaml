@@ -54,6 +54,8 @@ async function setupOpamUnix() {
 async function initializeOpamUnix() {
   if (getPlatform() === "linux") {
     await exec("sudo", ["apt-get", "install", "--yes", "bubblewrap"]);
+  } else if (getPlatform() === "macos") {
+    await exec("brew", ["install", "darcs", "mercurial"]);
   }
   const repository =
     OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
