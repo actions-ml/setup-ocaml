@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import { HttpClient } from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
 
-import { BASE_URL, OCAML_VERSION } from "../constants";
+import { OCAML_VERSION } from "../constants";
 import { makeImageName } from "./imageName";
 
 export function makeHttpClient(): HttpClient {
@@ -25,6 +25,7 @@ async function isFileExist(url: string) {
 }
 
 export async function setupCache(): Promise<void> {
+  const BASE_URL = "https://cache.actions-ml.org";
   const IMAGE_NAME = await makeImageName();
   const url = `${BASE_URL}/${OCAML_VERSION}/${IMAGE_NAME}/${OCAML_VERSION}.tar.gz`;
   console.log(url);

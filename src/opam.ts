@@ -8,9 +8,14 @@ import { JSDOM } from "jsdom";
 import * as os from "os";
 import * as semver from "semver";
 
-import { GITHUB_TOKEN, IS_WINDOWS, OCAML_VERSION } from "./constants";
+import { GITHUB_TOKEN, OCAML_VERSION } from "./constants";
 import { makeHttpClient, setupCache } from "./internal/cacheHttpClient";
-import { getArchitecture, getPlatform, opamExec } from "./internal/system";
+import {
+  getArchitecture,
+  getPlatform,
+  IS_WINDOWS,
+  opamExec,
+} from "./internal/system";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
 

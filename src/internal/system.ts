@@ -2,7 +2,7 @@ import { exec } from "@actions/exec";
 import * as io from "@actions/io";
 import * as os from "os";
 
-import { IS_WINDOWS } from "../constants";
+export const IS_WINDOWS = process.platform === "win32";
 
 export function getArchitecture(): "x86_64" {
   switch (os.arch()) {
