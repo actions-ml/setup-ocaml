@@ -19,7 +19,6 @@
     "@actions/http-client": "1.0.9",
     "@actions/io": "1.0.2",
     "@actions/tool-cache": "1.6.1",
-    "@vercel/ncc": "0.26.1",
     "jsdom": "16.4.0",
     "semver": "7.3.4"
   },
@@ -30,6 +29,7 @@
     "@types/semver": "7.3.4",
     "@typescript-eslint/eslint-plugin": "4.11.1",
     "@typescript-eslint/parser": "4.11.1",
+    "@vercel/ncc": "0.26.1",
     "eslint": "7.16.0",
     "eslint-config-prettier": "7.1.0",
     "eslint-plugin-import": "2.22.1",
