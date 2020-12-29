@@ -5,8 +5,8 @@ import * as tc from "@actions/tool-cache";
 import { BASE_URL, OCAML_VERSION } from "../constants";
 import { makeImageName } from "./imageName";
 
-function makeHttpClient() {
-  return new HttpClient("ocaml/setup-ocaml", undefined, {
+export function makeHttpClient(): HttpClient {
+  return new HttpClient("ocaml/setup-ocaml", [], {
     allowRetries: true,
     maxRetries: 5,
   });

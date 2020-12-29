@@ -4,13 +4,12 @@ import * as github from "@actions/github";
 import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import { promises as fs } from "fs";
-import got from "got";
 import { JSDOM } from "jsdom";
 import * as os from "os";
 import * as semver from "semver";
 
 import { GITHUB_TOKEN, IS_WINDOWS, OCAML_VERSION } from "./constants";
-import { setupCache } from "./internal/cacheHttpClient";
+import { makeHttpClient, setupCache } from "./internal/cacheHttpClient";
 import { getArchitecture, getPlatform, opamExec } from "./internal/system";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -168,8 +167,10 @@ async function setupOpamWindows() {
 }
 
 async function getCygwinVersion() {
-  const { body: website } = await got("https://www.cygwin.com");
-  const dom = new JSDOM(website);
+  const httpClient = makeHttpClient();
+  const response = await httpClient.get("https://www.cygwin.com");
+  const body = await response.readBody();
+  const dom = new JSDOM(body);
   const links = dom.window.document.querySelectorAll("a");
   let version = "";
   links.forEach(({ textContent }) => {

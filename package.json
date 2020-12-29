@@ -20,7 +20,6 @@
     "@actions/io": "1.0.2",
     "@actions/tool-cache": "1.6.1",
     "@vercel/ncc": "0.26.1",
-    "got": "11.8.1",
     "jsdom": "16.4.0",
     "semver": "7.3.4"
   },
