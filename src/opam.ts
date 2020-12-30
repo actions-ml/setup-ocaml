@@ -9,7 +9,12 @@ import * as os from "os";
 import * as semver from "semver";
 
 import { GITHUB_TOKEN, OCAML_VERSION, OPAM_REPOSITORY } from "./constants";
-import { makeHttpClient, retrieveCache } from "./internal/cacheHttpClient";
+import {
+  checkIfCacheFileExists,
+  makeHttpClient,
+  retrieveCache,
+} from "./internal/cacheHttpClient";
+import { makeImageName } from "./internal/imageName";
 import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -59,32 +64,31 @@ async function initializeOpamUnix() {
   }
   const repository =
     OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
-  try {
-    if (process.env.ImageOS !== undefined && getPlatform() !== "windows") {
-      await retrieveCache();
-      await exec("opam", [
-        "init",
-        "default",
-        repository,
-        "--compiler",
-        `ocaml-system.${OCAML_VERSION}`,
-        "--auto-setup",
-        "--verbose",
-      ]);
-    } else {
-      throw new Error("The environment does not support cache-based set up.");
+  const baseUrl = "https://cache.actions-ml.org";
+  const imageName = await makeImageName();
+  const url = `${baseUrl}/${OCAML_VERSION}/${imageName}/${OCAML_VERSION}.tar.gz`;
+  const isSelfHostedRunner = process.env.ImageOS === undefined;
+  const isCacheFileExist = await checkIfCacheFileExists(url);
+  let isCacheEnabled = !isSelfHostedRunner && !IS_WINDOWS && isCacheFileExist;
+  if (isCacheEnabled) {
+    try {
+      await retrieveCache(url);
+    } catch (error) {
+      isCacheEnabled = false;
+      core.error(error.message);
     }
-  } catch (error) {
-    await exec("opam", [
-      "init",
-      "default",
-      repository,
-      "--compiler",
-      `ocaml-base-compiler.${OCAML_VERSION}`,
-      "--auto-setup",
-      "--verbose",
-    ]);
   }
+  await exec("opam", [
+    "init",
+    "default",
+    repository,
+    "--compiler",
+    isCacheEnabled
+      ? `ocaml-system.${OCAML_VERSION}`
+      : `ocaml-base-compiler.${OCAML_VERSION}`,
+    "--auto-setup",
+    "--verbose",
+  ]);
 }
 
 async function acquireOpamUnix() {

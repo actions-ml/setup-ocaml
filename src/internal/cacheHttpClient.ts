@@ -12,7 +12,7 @@ export function makeHttpClient(): HttpClient {
   });
 }
 
-async function isFileExist(url: string) {
+export async function checkIfCacheFileExists(url: string): Promise<boolean> {
   const httpClient = makeHttpClient();
   const response = await httpClient.get(url);
   if (response.message.statusCode === 200) {
@@ -22,30 +22,24 @@ async function isFileExist(url: string) {
   }
 }
 
-export async function retrieveCache(): Promise<void> {
-  const BASE_URL = "https://cache.actions-ml.org";
-  const IMAGE_NAME = await makeImageName();
-  const url = `${BASE_URL}/${OCAML_VERSION}/${IMAGE_NAME}/${OCAML_VERSION}.tar.gz`;
-  if (await isFileExist(url)) {
-    const cachedPath = await tc.find("ocaml", OCAML_VERSION, IMAGE_NAME);
-    if (cachedPath === "") {
-      const downloadedPath = await tc.downloadTool(url);
-      const extractedPath = await tc.extractTar(downloadedPath, undefined, [
-        "xz",
-        "--strip-components",
-        "1",
-      ]);
-      const cachedPath = await tc.cacheDir(
-        extractedPath,
-        "ocaml",
-        OCAML_VERSION,
-        IMAGE_NAME
-      );
-      core.addPath(`${cachedPath}/bin`);
-    } else {
-      core.addPath(`${cachedPath}/bin`);
-    }
+export async function retrieveCache(url: string): Promise<void> {
+  const imageName = await makeImageName();
+  const cachedPath = await tc.find("ocaml", OCAML_VERSION, imageName);
+  if (cachedPath === "") {
+    const downloadedPath = await tc.downloadTool(url);
+    const extractedPath = await tc.extractTar(downloadedPath, undefined, [
+      "xz",
+      "--strip-components",
+      "1",
+    ]);
+    const cachedPath = await tc.cacheDir(
+      extractedPath,
+      "ocaml",
+      OCAML_VERSION,
+      imageName
+    );
+    core.addPath(`${cachedPath}/bin`);
   } else {
-    throw new Error("The cache is not found.");
+    core.addPath(`${cachedPath}/bin`);
   }
 }
