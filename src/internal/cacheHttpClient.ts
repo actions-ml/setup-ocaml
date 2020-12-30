@@ -4,6 +4,7 @@ import * as tc from "@actions/tool-cache";
 
 import { OCAML_VERSION } from "../constants";
 import { makeImageName } from "./imageName";
+import { resolveVersion } from "./resolveVersion";
 
 export function makeHttpClient(): HttpClient {
   return new HttpClient("ocaml/setup-ocaml", [], {
@@ -23,8 +24,9 @@ export async function checkIfCacheFileExists(url: string): Promise<boolean> {
 }
 
 export async function retrieveCache(url: string): Promise<void> {
+  const version = await resolveVersion(OCAML_VERSION);
   const imageName = await makeImageName();
-  const cachedPath = await tc.find("ocaml", OCAML_VERSION, imageName);
+  const cachedPath = await tc.find("ocaml", version, imageName);
   if (cachedPath === "") {
     const downloadedPath = await tc.downloadTool(url);
     const extractedPath = await tc.extractTar(downloadedPath, undefined, [
@@ -35,7 +37,7 @@ export async function retrieveCache(url: string): Promise<void> {
     const cachedPath = await tc.cacheDir(
       extractedPath,
       "ocaml",
-      OCAML_VERSION,
+      version,
       imageName
     );
     core.addPath(`${cachedPath}/bin`);

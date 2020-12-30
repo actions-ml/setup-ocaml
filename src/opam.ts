@@ -15,6 +15,7 @@ import {
   retrieveCache,
 } from "./internal/cacheHttpClient";
 import { makeImageName } from "./internal/imageName";
+import { resolveVersion } from "./internal/resolveVersion";
 import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -62,11 +63,12 @@ async function initializeOpamUnix() {
   } else if (getPlatform() === "macos") {
     await exec("brew", ["install", "darcs", "mercurial"]);
   }
+  const version = await resolveVersion(OCAML_VERSION);
   const repository =
     OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
   const baseUrl = "https://cache.actions-ml.org";
   const imageName = await makeImageName();
-  const url = `${baseUrl}/${OCAML_VERSION}/${imageName}/${OCAML_VERSION}.tar.gz`;
+  const url = `${baseUrl}/${version}/${imageName}/${version}.tar.gz`;
   const isSelfHostedRunner = process.env.ImageOS === undefined;
   const isCacheFileExist = await checkIfCacheFileExists(url);
   let isCacheEnabled = !isSelfHostedRunner && !IS_WINDOWS && isCacheFileExist;
@@ -84,8 +86,8 @@ async function initializeOpamUnix() {
     repository,
     "--compiler",
     isCacheEnabled
-      ? `ocaml-system.${OCAML_VERSION}`
-      : `ocaml-base-compiler.${OCAML_VERSION}`,
+      ? `ocaml-system.${version}`
+      : `ocaml-base-compiler.${version}`,
     "--auto-setup",
     "--verbose",
   ]);
@@ -189,6 +191,7 @@ async function setupOpamWindows() {
 }
 
 async function initializeOpamWindows() {
+  const version = await resolveVersion(OCAML_VERSION);
   const repository =
     OPAM_REPOSITORY ||
     "https://github.com/fdopen/opam-repository-mingw.git#opam2";
@@ -197,7 +200,7 @@ async function initializeOpamWindows() {
     "default",
     repository,
     "--compiler",
-    `ocaml-variants.${OCAML_VERSION}+mingw64c`,
+    `ocaml-variants.${version}+mingw64c`,
     "--auto-setup",
     "--disable-sandboxing",
     "--enable-completion",
