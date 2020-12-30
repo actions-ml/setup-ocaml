@@ -59,7 +59,7 @@ async function setupOpamUnix() {
 
 async function initializeOpamUnix() {
   if (getPlatform() === "linux") {
-    await exec("sudo", ["apt-get", "install", "--yes", "bubblewrap"]);
+    await exec("sudo", ["apt-get", "install", "--yes", "bubblewrap", "darcs"]);
   } else if (getPlatform() === "macos") {
     await exec("brew", ["install", "darcs", "mercurial"]);
   }
