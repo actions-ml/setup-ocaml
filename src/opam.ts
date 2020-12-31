@@ -3,8 +3,8 @@ import { exec } from "@actions/exec";
 import * as github from "@actions/github";
 import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
+import * as cheerio from "cheerio";
 import { promises as fs } from "fs";
-import { JSDOM } from "jsdom";
 import * as os from "os";
 import * as semver from "semver";
 
@@ -106,11 +106,10 @@ async function getCygwinVersion() {
   const httpClient = makeHttpClient();
   const response = await httpClient.get("https://www.cygwin.com");
   const body = await response.readBody();
-  const dom = new JSDOM(body);
-  const links = dom.window.document.querySelectorAll("a");
+  const $ = cheerio.load(body);
   let version = "";
-  links.forEach(({ textContent }) => {
-    const text = textContent?.trim();
+  $("a").each((_index, element) => {
+    const text = $(element).text();
     if (semver.valid(text) === text) {
       version = text;
     }
