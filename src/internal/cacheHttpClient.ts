@@ -2,9 +2,7 @@ import * as core from "@actions/core";
 import { HttpClient } from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
 
-import { OCAML_VERSION } from "../constants";
 import { makeImageName } from "./imageName";
-import { resolveVersion } from "./resolveVersion";
 
 export function makeHttpClient(): HttpClient {
   return new HttpClient("ocaml/setup-ocaml", [], {
@@ -23,8 +21,10 @@ export async function checkIfCacheFileExists(url: string): Promise<boolean> {
   }
 }
 
-export async function retrieveCache(url: string): Promise<void> {
-  const version = await resolveVersion(OCAML_VERSION);
+export async function retrieveCache(
+  url: string,
+  version: string
+): Promise<void> {
   const imageName = await makeImageName();
   const cachedPath = await tc.find("ocaml", version, imageName);
   if (cachedPath === "") {

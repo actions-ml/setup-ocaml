@@ -30188,25 +30188,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.installer = void 0;
 var exec_1 = __webpack_require__(1514);
+var constants_1 = __webpack_require__(9042);
+var resolveVersion_1 = __webpack_require__(2026);
 var opam_1 = __webpack_require__(1078);
 function installer() {
     return __awaiter(this, void 0, void 0, function () {
+        var version;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, opam_1.acquireOpam()];
+                case 0: return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, opam_1.installDepext()];
+                    version = _a.sent();
+                    return [4 /*yield*/, opam_1.acquireOpam(version)];
                 case 2:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
+                    return [4 /*yield*/, opam_1.installDepext()];
                 case 3:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
                 case 4:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "--version"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
                 case 5:
+                    _a.sent();
+                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "--version"])];
+                case 6:
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -30264,9 +30270,7 @@ exports.retrieveCache = exports.checkIfCacheFileExists = exports.makeHttpClient 
 var core = __webpack_require__(2186);
 var http_client_1 = __webpack_require__(9925);
 var tc = __webpack_require__(7784);
-var constants_1 = __webpack_require__(9042);
 var imageName_1 = __webpack_require__(8059);
-var resolveVersion_1 = __webpack_require__(2026);
 function makeHttpClient() {
     return new http_client_1.HttpClient("ocaml/setup-ocaml", [], {
         allowRetries: true,
@@ -30296,40 +30300,37 @@ function checkIfCacheFileExists(url) {
     });
 }
 exports.checkIfCacheFileExists = checkIfCacheFileExists;
-function retrieveCache(url) {
+function retrieveCache(url, version) {
     return __awaiter(this, void 0, void 0, function () {
-        var version, imageName, cachedPath, downloadedPath, extractedPath, cachedPath_1;
+        var imageName, cachedPath, downloadedPath, extractedPath, cachedPath_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
+                case 0: return [4 /*yield*/, imageName_1.makeImageName()];
                 case 1:
-                    version = _a.sent();
-                    return [4 /*yield*/, imageName_1.makeImageName()];
-                case 2:
                     imageName = _a.sent();
                     return [4 /*yield*/, tc.find("ocaml", version, imageName)];
-                case 3:
+                case 2:
                     cachedPath = _a.sent();
-                    if (!(cachedPath === "")) return [3 /*break*/, 7];
+                    if (!(cachedPath === "")) return [3 /*break*/, 6];
                     return [4 /*yield*/, tc.downloadTool(url)];
-                case 4:
+                case 3:
                     downloadedPath = _a.sent();
                     return [4 /*yield*/, tc.extractTar(downloadedPath, undefined, [
                             "xz",
                             "--strip-components",
                             "1",
                         ])];
-                case 5:
+                case 4:
                     extractedPath = _a.sent();
                     return [4 /*yield*/, tc.cacheDir(extractedPath, "ocaml", version, imageName)];
-                case 6:
+                case 5:
                     cachedPath_1 = _a.sent();
                     core.addPath(cachedPath_1 + "/bin");
-                    return [3 /*break*/, 8];
-                case 7:
+                    return [3 /*break*/, 7];
+                case 6:
                     core.addPath(cachedPath + "/bin");
-                    _a.label = 8;
-                case 8: return [2 /*return*/];
+                    _a.label = 7;
+                case 7: return [2 /*return*/];
             }
         });
     });
@@ -30387,7 +30388,7 @@ var fs_1 = __webpack_require__(5747);
 var system_1 = __webpack_require__(2704);
 function makeImageName() {
     return __awaiter(this, void 0, void 0, function () {
-        var osRelease, lines, distro, version, _i, lines_1, line, props, output_1, options, lines, version, _a, lines_2, line, props, _version;
+        var osRelease, lines, distro, version, _i, lines_1, line, kv, output_1, options, lines, version, _a, lines_2, line, kv, _version;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -30400,12 +30401,12 @@ function makeImageName() {
                     version = "";
                     for (_i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
                         line = lines_1[_i];
-                        props = line.split("=");
-                        if (props[0] === "ID") {
-                            distro = props[1].trim().toLowerCase();
+                        kv = line.split("=");
+                        if (kv[0] === "ID") {
+                            distro = kv[1].trim().toLowerCase();
                         }
-                        else if (props[0] === "VERSION_ID") {
-                            version = props[1].trim().toLowerCase().replace(/["]/g, "");
+                        else if (kv[0] === "VERSION_ID") {
+                            version = kv[1].trim().toLowerCase().replace(/["]/g, "");
                         }
                     }
                     return [2 /*return*/, distro + "-" + version];
@@ -30425,9 +30426,9 @@ function makeImageName() {
                     version = "";
                     for (_a = 0, lines_2 = lines; _a < lines_2.length; _a++) {
                         line = lines_2[_a];
-                        props = line.split(":");
-                        if (props[0] === "ProductVersion") {
-                            _version = props[1].trim().split(".");
+                        kv = line.split(":");
+                        if (kv[0] === "ProductVersion") {
+                            _version = kv[1].trim().split(".");
                             version = _version[0] + "." + _version[1];
                         }
                     }
@@ -30683,7 +30684,6 @@ var semver = __webpack_require__(1383);
 var constants_1 = __webpack_require__(9042);
 var cacheHttpClient_1 = __webpack_require__(1650);
 var imageName_1 = __webpack_require__(8059);
-var resolveVersion_1 = __webpack_require__(2026);
 var system_1 = __webpack_require__(2704);
 var octokit = github.getOctokit(constants_1.GITHUB_TOKEN);
 function getLatestOpamRelease() {
@@ -30738,9 +30738,9 @@ function setupOpamUnix() {
         });
     });
 }
-function initializeOpamUnix() {
+function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var version, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isCacheEnabled, error_1;
+        var repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isCacheEnabled, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -30755,34 +30755,32 @@ function initializeOpamUnix() {
                 case 3:
                     _a.sent();
                     _a.label = 4;
-                case 4: return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
-                case 5:
-                    version = _a.sent();
+                case 4:
                     repository = constants_1.OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
                     baseUrl = "https://cache.actions-ml.org";
                     return [4 /*yield*/, imageName_1.makeImageName()];
-                case 6:
+                case 5:
                     imageName = _a.sent();
                     url = baseUrl + "/" + version + "/" + imageName + "/" + version + ".tar.gz";
                     isSelfHostedRunner = process.env.ImageOS === undefined;
                     return [4 /*yield*/, cacheHttpClient_1.checkIfCacheFileExists(url)];
-                case 7:
+                case 6:
                     isCacheFileExist = _a.sent();
                     isCacheEnabled = !isSelfHostedRunner && !system_1.IS_WINDOWS && isCacheFileExist;
-                    if (!isCacheEnabled) return [3 /*break*/, 11];
-                    _a.label = 8;
+                    if (!isCacheEnabled) return [3 /*break*/, 10];
+                    _a.label = 7;
+                case 7:
+                    _a.trys.push([7, 9, , 10]);
+                    return [4 /*yield*/, cacheHttpClient_1.retrieveCache(url, version)];
                 case 8:
-                    _a.trys.push([8, 10, , 11]);
-                    return [4 /*yield*/, cacheHttpClient_1.retrieveCache(url)];
-                case 9:
                     _a.sent();
-                    return [3 /*break*/, 11];
-                case 10:
+                    return [3 /*break*/, 10];
+                case 9:
                     error_1 = _a.sent();
                     isCacheEnabled = false;
                     core.error(error_1.message);
-                    return [3 /*break*/, 11];
-                case 11: return [4 /*yield*/, exec_1.exec("opam", [
+                    return [3 /*break*/, 10];
+                case 10: return [4 /*yield*/, exec_1.exec("opam", [
                         "init",
                         "default",
                         repository,
@@ -30793,14 +30791,14 @@ function initializeOpamUnix() {
                         "--auto-setup",
                         "--verbose",
                     ])];
-                case 12:
+                case 11:
                     _a.sent();
                     return [2 /*return*/];
             }
         });
     });
 }
-function acquireOpamUnix() {
+function acquireOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -30811,7 +30809,7 @@ function acquireOpamUnix() {
                     _a.sent();
                     core.endGroup();
                     core.startGroup("Initialise the opam state");
-                    return [4 /*yield*/, initializeOpamUnix()];
+                    return [4 /*yield*/, initializeOpamUnix(version)];
                 case 2:
                     _a.sent();
                     core.endGroup();
@@ -30961,14 +30959,12 @@ function setupOpamWindows() {
         });
     });
 }
-function initializeOpamWindows() {
+function initializeOpamWindows(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var version, repository, wrapperbin, opamBat;
+        var repository, wrapperbin, opamBat;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
-                case 1:
-                    version = _a.sent();
+                case 0:
                     repository = constants_1.OPAM_REPOSITORY ||
                         "https://github.com/fdopen/opam-repository-mingw.git#opam2";
                     return [4 /*yield*/, exec_1.exec("opam", [
@@ -30983,17 +30979,17 @@ function initializeOpamWindows() {
                             "--enable-shell-hook",
                             "--verbose",
                         ])];
-                case 2:
+                case 1:
                     _a.sent();
                     wrapperbin = "c:\\cygwin\\wrapperbin";
                     return [4 /*yield*/, io.mkdirP(wrapperbin)];
-                case 3:
+                case 2:
                     _a.sent();
                     opamBat = wrapperbin + "\\opam.bat";
                     return [4 /*yield*/, fs_1.promises.writeFile(opamBat, "@echo off\r\nocaml-env exec -- opam.exe %*", {
                             mode: 493,
                         })];
-                case 4:
+                case 3:
                     _a.sent();
                     core.addPath(wrapperbin);
                     return [2 /*return*/];
@@ -31001,7 +30997,7 @@ function initializeOpamWindows() {
         });
     });
 }
-function acquireOpamWindows() {
+function acquireOpamWindows(version) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -31017,7 +31013,7 @@ function acquireOpamWindows() {
                     _a.sent();
                     core.endGroup();
                     core.startGroup("Initialise the opam state");
-                    return [4 /*yield*/, initializeOpamWindows()];
+                    return [4 /*yield*/, initializeOpamWindows(version)];
                 case 3:
                     _a.sent();
                     core.endGroup();
@@ -31026,7 +31022,7 @@ function acquireOpamWindows() {
         });
     });
 }
-function acquireOpam() {
+function acquireOpam(version) {
     return __awaiter(this, void 0, void 0, function () {
         var numberOfProcessors, jobs;
         return __generator(this, function (_a) {
@@ -31038,11 +31034,11 @@ function acquireOpam() {
                     core.exportVariable("OPAMYES", 1);
                     if (!system_1.IS_WINDOWS) return [3 /*break*/, 2];
                     core.exportVariable("OPAM_LINT", false);
-                    return [4 /*yield*/, acquireOpamWindows()];
+                    return [4 /*yield*/, acquireOpamWindows(version)];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, acquireOpamUnix()];
+                case 2: return [4 /*yield*/, acquireOpamUnix(version)];
                 case 3:
                     _a.sent();
                     _a.label = 4;

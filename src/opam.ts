@@ -8,14 +8,13 @@ import { promises as fs } from "fs";
 import * as os from "os";
 import * as semver from "semver";
 
-import { GITHUB_TOKEN, OCAML_VERSION, OPAM_REPOSITORY } from "./constants";
+import { GITHUB_TOKEN, OPAM_REPOSITORY } from "./constants";
 import {
   checkIfCacheFileExists,
   makeHttpClient,
   retrieveCache,
 } from "./internal/cacheHttpClient";
 import { makeImageName } from "./internal/imageName";
-import { resolveVersion } from "./internal/resolveVersion";
 import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -57,13 +56,12 @@ async function setupOpamUnix() {
   }
 }
 
-async function initializeOpamUnix() {
+async function initializeOpamUnix(version: string) {
   if (getPlatform() === "linux") {
     await exec("sudo", ["apt-get", "install", "--yes", "bubblewrap", "darcs"]);
   } else if (getPlatform() === "macos") {
     await exec("brew", ["install", "darcs", "mercurial"]);
   }
-  const version = await resolveVersion(OCAML_VERSION);
   const repository =
     OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
   const baseUrl = "https://cache.actions-ml.org";
@@ -74,7 +72,7 @@ async function initializeOpamUnix() {
   let isCacheEnabled = !isSelfHostedRunner && !IS_WINDOWS && isCacheFileExist;
   if (isCacheEnabled) {
     try {
-      await retrieveCache(url);
+      await retrieveCache(url, version);
     } catch (error) {
       isCacheEnabled = false;
       core.error(error.message);
@@ -93,12 +91,12 @@ async function initializeOpamUnix() {
   ]);
 }
 
-async function acquireOpamUnix() {
+async function acquireOpamUnix(version: string) {
   core.startGroup("Install opam");
   await setupOpamUnix();
   core.endGroup();
   core.startGroup("Initialise the opam state");
-  await initializeOpamUnix();
+  await initializeOpamUnix(version);
   core.endGroup();
 }
 
@@ -189,8 +187,7 @@ async function setupOpamWindows() {
   }
 }
 
-async function initializeOpamWindows() {
-  const version = await resolveVersion(OCAML_VERSION);
+async function initializeOpamWindows(version: string) {
   const repository =
     OPAM_REPOSITORY ||
     "https://github.com/fdopen/opam-repository-mingw.git#opam2";
@@ -216,7 +213,7 @@ async function initializeOpamWindows() {
   core.addPath(wrapperbin);
 }
 
-async function acquireOpamWindows() {
+async function acquireOpamWindows(version: string) {
   core.startGroup("Prepare Cygwin environment");
   await setupCygwin();
   core.endGroup();
@@ -224,20 +221,20 @@ async function acquireOpamWindows() {
   await setupOpamWindows();
   core.endGroup();
   core.startGroup("Initialise the opam state");
-  await initializeOpamWindows();
+  await initializeOpamWindows(version);
   core.endGroup();
 }
 
-export async function acquireOpam(): Promise<void> {
+export async function acquireOpam(version: string): Promise<void> {
   const numberOfProcessors = os.cpus().length;
   const jobs = numberOfProcessors + 2;
   core.exportVariable("OPAMJOBS", jobs);
   core.exportVariable("OPAMYES", 1);
   if (IS_WINDOWS) {
     core.exportVariable("OPAM_LINT", false);
-    await acquireOpamWindows();
+    await acquireOpamWindows(version);
   } else {
-    await acquireOpamUnix();
+    await acquireOpamUnix(version);
   }
 }
 

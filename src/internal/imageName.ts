@@ -11,11 +11,11 @@ export async function makeImageName(): Promise<string> {
     let distro = "";
     let version = "";
     for (const line of lines) {
-      const props = line.split("=");
-      if (props[0] === "ID") {
-        distro = props[1].trim().toLowerCase();
-      } else if (props[0] === "VERSION_ID") {
-        version = props[1].trim().toLowerCase().replace(/["]/g, "");
+      const kv = line.split("=");
+      if (kv[0] === "ID") {
+        distro = kv[1].trim().toLowerCase();
+      } else if (kv[0] === "VERSION_ID") {
+        version = kv[1].trim().toLowerCase().replace(/["]/g, "");
       }
     }
     return `${distro}-${version}`;
@@ -31,9 +31,9 @@ export async function makeImageName(): Promise<string> {
     const lines = output.split("\n");
     let version = "";
     for (const line of lines) {
-      const props = line.split(":");
-      if (props[0] === "ProductVersion") {
-        const _version = props[1].trim().split(".");
+      const kv = line.split(":");
+      if (kv[0] === "ProductVersion") {
+        const _version = kv[1].trim().split(".");
         version = `${_version[0]}.${_version[1]}`;
       }
     }
