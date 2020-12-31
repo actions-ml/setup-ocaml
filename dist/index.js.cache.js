@@ -30211,7 +30211,7 @@ function installer() {
                     return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
                 case 5:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "--version"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "-version"])];
                 case 6:
                     _a.sent();
                     return [2 /*return*/];

@@ -10,5 +10,5 @@ export async function installer(): Promise<void> {
   await installDepext();
   await exec("opam", ["--version"]);
   await exec("opam", ["depext", "--version"]);
-  await exec("opam", ["exec", "--", "ocaml", "--version"]);
+  await exec("opam", ["exec", "--", "ocaml", "-version"]);
 }
