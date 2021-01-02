@@ -14,9 +14,28 @@ jobs:
           - ubuntu-latest
           - windows-latest
         ocaml-version:
-          - 4.11.1
-          - 4.08.1
-          - 4.06.1
+          - 4.00.x
+          - 4.01.x
+          - 4.02.x
+          - 4.03.x
+          - 4.04.x
+          - 4.05.x
+          - 4.06.x
+          - 4.07.x
+          - 4.08.x
+          - 4.09.x
+          - 4.10.x
+          - 4.11.x
+        exclude:
+          - os: windows-latest
+            ocaml-version: 4.00.x
+        include:
+          - os: macos-latest
+            ocaml-version: 4.11.1+flambda
+          - os: ubuntu-latest
+            ocaml-version: 4.11.1+musl+static+flambda
+          - os: windows-latest
+            ocaml-version: 4.11.1+mingw64c
 
     runs-on: ${{ matrix.os }}
 
@@ -28,18 +47,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 12.x
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Retrieve yarn cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: v1-${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            v1-${{ runner.os }}-yarn-
 
       - name: Install npm packages
         run: yarn --frozen-lockfile
