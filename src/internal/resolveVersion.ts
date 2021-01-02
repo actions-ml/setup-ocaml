@@ -48,7 +48,11 @@ async function getAllVersions() {
 
 export async function resolveVersion(input: string): Promise<string> {
   const inputl = input.toLowerCase();
-  if (inputl.includes("x") === true) {
+  if (inputl.includes("x") && inputl.includes("+")) {
+    throw new Error(
+      "The wildcard character is not supported for compiler version variants."
+    );
+  } else if (inputl.includes("x")) {
     const _versions = await getAllVersions();
     const ia = inputl.split(".");
     const versions = _versions.filter((version) => {

@@ -30744,9 +30744,12 @@ function resolveVersion(input) {
             switch (_a.label) {
                 case 0:
                     inputl = input.toLowerCase();
-                    if (!(inputl.includes("x") === true)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, getAllVersions()];
+                    if (!(inputl.includes("x") && inputl.includes("+"))) return [3 /*break*/, 1];
+                    throw new Error("The wildcard character is not supported for compiler version variants.");
                 case 1:
+                    if (!inputl.includes("x")) return [3 /*break*/, 3];
+                    return [4 /*yield*/, getAllVersions()];
+                case 2:
                     _versions = _a.sent();
                     ia_1 = inputl.split(".");
                     versions = _versions.filter(function (version) {
@@ -30766,14 +30769,14 @@ function resolveVersion(input) {
                     });
                     versions.sort(versionCompare);
                     return [2 /*return*/, versions[0]];
-                case 2:
-                    if (!(inputl === "latest")) return [3 /*break*/, 4];
-                    return [4 /*yield*/, getAllVersions()];
                 case 3:
+                    if (!(inputl === "latest")) return [3 /*break*/, 5];
+                    return [4 /*yield*/, getAllVersions()];
+                case 4:
                     versions = _a.sent();
                     versions.sort(versionCompare);
                     return [2 /*return*/, versions[0]];
-                case 4: return [2 /*return*/, input];
+                case 5: return [2 /*return*/, input];
             }
         });
     });
@@ -30933,58 +30936,75 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isCacheEnabled, error_1;
+        var repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, isCacheEnabled, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(system_1.getPlatform() === "linux")) return [3 /*break*/, 2];
-                    return [4 /*yield*/, exec_1.exec("sudo", ["apt-get", "install", "--yes", "bubblewrap", "darcs"])];
+                    if (!(system_1.getPlatform() === "linux")) return [3 /*break*/, 3];
+                    // Fix musl-tools bug in ubuntu 18.04;
+                    // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
+                    return [4 /*yield*/, exec_1.exec("sudo", ["add-apt-repository", "--yes", "ppa:avsm/musl"])];
                 case 1:
+                    // Fix musl-tools bug in ubuntu 18.04;
+                    // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
                     _a.sent();
-                    return [3 /*break*/, 4];
+                    return [4 /*yield*/, exec_1.exec("sudo", [
+                            "apt-get",
+                            "install",
+                            "--yes",
+                            "bubblewrap",
+                            "darcs",
+                            "musl-tools",
+                        ])];
                 case 2:
-                    if (!(system_1.getPlatform() === "macos")) return [3 /*break*/, 4];
-                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial"])];
-                case 3:
                     _a.sent();
-                    _a.label = 4;
+                    return [3 /*break*/, 5];
+                case 3:
+                    if (!(system_1.getPlatform() === "macos")) return [3 /*break*/, 5];
+                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial"])];
                 case 4:
+                    _a.sent();
+                    _a.label = 5;
+                case 5:
                     repository = constants_1.OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
                     baseUrl = "https://cache.actions-ml.org";
                     return [4 /*yield*/, imageName_1.makeImageName()];
-                case 5:
+                case 6:
                     imageName = _a.sent();
                     url = baseUrl + "/" + version + "/" + imageName + "/" + version + ".tar.gz";
                     isSelfHostedRunner = process.env.ImageOS === undefined;
                     return [4 /*yield*/, cacheHttpClient_1.checkIfCacheFileExists(url)];
-                case 6:
-                    isCacheFileExist = _a.sent();
-                    isCacheEnabled = !isSelfHostedRunner && !system_1.IS_WINDOWS && isCacheFileExist;
-                    if (!isCacheEnabled) return [3 /*break*/, 10];
-                    _a.label = 7;
                 case 7:
-                    _a.trys.push([7, 9, , 10]);
-                    return [4 /*yield*/, cacheHttpClient_1.retrieveCache(url, version)];
+                    isCacheFileExist = _a.sent();
+                    isVariant = version.includes("+");
+                    isCacheEnabled = !isSelfHostedRunner && !system_1.IS_WINDOWS && isCacheFileExist;
+                    if (!isCacheEnabled) return [3 /*break*/, 11];
+                    _a.label = 8;
                 case 8:
-                    _a.sent();
-                    return [3 /*break*/, 10];
+                    _a.trys.push([8, 10, , 11]);
+                    return [4 /*yield*/, cacheHttpClient_1.retrieveCache(url, version)];
                 case 9:
+                    _a.sent();
+                    return [3 /*break*/, 11];
+                case 10:
                     error_1 = _a.sent();
                     isCacheEnabled = false;
                     core.error(error_1.message);
-                    return [3 /*break*/, 10];
-                case 10: return [4 /*yield*/, exec_1.exec("opam", [
+                    return [3 /*break*/, 11];
+                case 11: return [4 /*yield*/, exec_1.exec("opam", [
                         "init",
                         "default",
                         repository,
                         "--compiler",
                         isCacheEnabled
                             ? "ocaml-system." + version
-                            : "ocaml-base-compiler." + version,
+                            : isVariant
+                                ? "ocaml-variants." + version
+                                : "ocaml-base-compiler." + version,
                         "--auto-setup",
                         "--verbose",
                     ])];
-                case 11:
+                case 12:
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -31154,10 +31174,11 @@ function acquireOpamWindows() {
 }
 function initializeOpamWindows(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var repository, wrapperbin, opamBat;
+        var isVariant, repository, wrapperbin, opamBat;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    isVariant = version.includes("+");
                     repository = constants_1.OPAM_REPOSITORY ||
                         "https://github.com/fdopen/opam-repository-mingw.git#opam2";
                     return [4 /*yield*/, exec_1.exec("opam", [
@@ -31165,7 +31186,9 @@ function initializeOpamWindows(version) {
                             "default",
                             repository,
                             "--compiler",
-                            "ocaml-variants." + version + "+mingw64c",
+                            isVariant
+                                ? "ocaml-variants." + version
+                                : "ocaml-variants." + version + "+mingw64c",
                             "--auto-setup",
                             "--disable-sandboxing",
                             "--enable-completion",

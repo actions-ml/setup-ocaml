@@ -7,7 +7,7 @@ branding:
 inputs:
   ocaml-version:
     description: Version of the OCaml compiler to initialise
-    default: 4.11.1
+    default: latest
   opam-repository:
     description: URL of the repository to fetch packages from
   github-token:

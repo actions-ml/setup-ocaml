@@ -62,7 +62,17 @@ async function acquireOpamUnix() {
 
 async function initializeOpamUnix(version: string) {
   if (getPlatform() === "linux") {
-    await exec("sudo", ["apt-get", "install", "--yes", "bubblewrap", "darcs"]);
+    // Fix musl-tools bug in ubuntu 18.04;
+    // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
+    await exec("sudo", ["add-apt-repository", "--yes", "ppa:avsm/musl"]);
+    await exec("sudo", [
+      "apt-get",
+      "install",
+      "--yes",
+      "bubblewrap",
+      "darcs",
+      "musl-tools",
+    ]);
   } else if (getPlatform() === "macos") {
     await exec("brew", ["install", "darcs", "mercurial"]);
   }
@@ -73,6 +83,7 @@ async function initializeOpamUnix(version: string) {
   const url = `${baseUrl}/${version}/${imageName}/${version}.tar.gz`;
   const isSelfHostedRunner = process.env.ImageOS === undefined;
   const isCacheFileExist = await checkIfCacheFileExists(url);
+  const isVariant = version.includes("+");
   let isCacheEnabled = !isSelfHostedRunner && !IS_WINDOWS && isCacheFileExist;
   if (isCacheEnabled) {
     try {
@@ -89,6 +100,8 @@ async function initializeOpamUnix(version: string) {
     "--compiler",
     isCacheEnabled
       ? `ocaml-system.${version}`
+      : isVariant
+      ? `ocaml-variants.${version}`
       : `ocaml-base-compiler.${version}`,
     "--auto-setup",
     "--verbose",
@@ -192,6 +205,7 @@ async function acquireOpamWindows() {
 }
 
 async function initializeOpamWindows(version: string) {
+  const isVariant = version.includes("+");
   const repository =
     OPAM_REPOSITORY ||
     "https://github.com/fdopen/opam-repository-mingw.git#opam2";
@@ -200,7 +214,9 @@ async function initializeOpamWindows(version: string) {
     "default",
     repository,
     "--compiler",
-    `ocaml-variants.${version}+mingw64c`,
+    isVariant
+      ? `ocaml-variants.${version}`
+      : `ocaml-variants.${version}+mingw64c`,
     "--auto-setup",
     "--disable-sandboxing",
     "--enable-completion",
