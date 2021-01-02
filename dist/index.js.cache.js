@@ -30295,7 +30295,7 @@ function installer() {
                 case 0: return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
                 case 1:
                     version = _a.sent();
-                    return [4 /*yield*/, opam_1.acquireOpam(version)];
+                    return [4 /*yield*/, opam_1.setupOpam(version)];
                 case 2:
                     _a.sent();
                     return [4 /*yield*/, depext_1.installDepext()];
@@ -30860,7 +30860,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.pin = exports.acquireOpam = void 0;
+exports.pin = exports.setupOpam = void 0;
 var core = __webpack_require__(2186);
 var exec_1 = __webpack_require__(1514);
 var github = __webpack_require__(5438);
@@ -30897,7 +30897,7 @@ function getLatestOpamRelease() {
         });
     });
 }
-function setupOpamUnix() {
+function acquireOpamUnix() {
     return __awaiter(this, void 0, void 0, function () {
         var _a, version, browserDownloadUrl, architecture, cachedPath, downloadedPath, cachedPath_1;
         return __generator(this, function (_b) {
@@ -30911,16 +30911,20 @@ function setupOpamUnix() {
                     return [4 /*yield*/, tc.downloadTool(browserDownloadUrl)];
                 case 2:
                     downloadedPath = _b.sent();
+                    core.info("Acquired " + version + " from " + browserDownloadUrl);
                     return [4 /*yield*/, tc.cacheFile(downloadedPath, "opam", "opam", version, architecture)];
                 case 3:
                     cachedPath_1 = _b.sent();
+                    core.info("Successfully cached opam to " + cachedPath_1);
                     return [4 /*yield*/, fs_1.promises.chmod(cachedPath_1 + "/opam", 755)];
                 case 4:
                     _b.sent();
                     core.addPath(cachedPath_1);
+                    core.info("Added opam to the path");
                     return [3 /*break*/, 6];
                 case 5:
                     core.addPath(cachedPath);
+                    core.info("Added cached opam to the path");
                     _b.label = 6;
                 case 6: return [2 /*return*/];
             }
@@ -30987,13 +30991,13 @@ function initializeOpamUnix(version) {
         });
     });
 }
-function acquireOpamUnix(version) {
+function setupOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install opam");
-                    return [4 /*yield*/, setupOpamUnix()];
+                    return [4 /*yield*/, acquireOpamUnix()];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -31097,7 +31101,7 @@ function setupCygwin() {
         });
     });
 }
-function setupOpamWindows() {
+function acquireOpamWindows() {
     return __awaiter(this, void 0, void 0, function () {
         function install(path) {
             return __awaiter(this, void 0, void 0, function () {
@@ -31186,7 +31190,7 @@ function initializeOpamWindows(version) {
         });
     });
 }
-function acquireOpamWindows(version) {
+function setupOpamWindows(version) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -31197,7 +31201,7 @@ function acquireOpamWindows(version) {
                     _a.sent();
                     core.endGroup();
                     core.startGroup("Install opam");
-                    return [4 /*yield*/, setupOpamWindows()];
+                    return [4 /*yield*/, acquireOpamWindows()];
                 case 2:
                     _a.sent();
                     core.endGroup();
@@ -31211,7 +31215,7 @@ function acquireOpamWindows(version) {
         });
     });
 }
-function acquireOpam(version) {
+function setupOpam(version) {
     return __awaiter(this, void 0, void 0, function () {
         var numberOfProcessors, jobs;
         return __generator(this, function (_a) {
@@ -31223,11 +31227,11 @@ function acquireOpam(version) {
                     core.exportVariable("OPAMYES", 1);
                     if (!system_1.IS_WINDOWS) return [3 /*break*/, 2];
                     core.exportVariable("OPAM_LINT", false);
-                    return [4 /*yield*/, acquireOpamWindows(version)];
+                    return [4 /*yield*/, setupOpamWindows(version)];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, acquireOpamUnix(version)];
+                case 2: return [4 /*yield*/, setupOpamUnix(version)];
                 case 3:
                     _a.sent();
                     _a.label = 4;
@@ -31236,7 +31240,7 @@ function acquireOpam(version) {
         });
     });
 }
-exports.acquireOpam = acquireOpam;
+exports.setupOpam = setupOpam;
 function pin(fnames) {
     return __awaiter(this, void 0, void 0, function () {
         var _i, fnames_1, fname;

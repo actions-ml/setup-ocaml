@@ -36,12 +36,13 @@ async function getLatestOpamRelease() {
   return { version, browserDownloadUrl };
 }
 
-async function setupOpamUnix() {
+async function acquireOpamUnix() {
   const { version, browserDownloadUrl } = await getLatestOpamRelease();
   const architecture = getArchitecture();
   const cachedPath = tc.find("opam", version, architecture);
   if (cachedPath === "") {
     const downloadedPath = await tc.downloadTool(browserDownloadUrl);
+    core.info(`Acquired ${version} from ${browserDownloadUrl}`);
     const cachedPath = await tc.cacheFile(
       downloadedPath,
       "opam",
@@ -49,10 +50,13 @@ async function setupOpamUnix() {
       version,
       architecture
     );
+    core.info(`Successfully cached opam to ${cachedPath}`);
     await fs.chmod(`${cachedPath}/opam`, 755);
     core.addPath(cachedPath);
+    core.info("Added opam to the path");
   } else {
     core.addPath(cachedPath);
+    core.info("Added cached opam to the path");
   }
 }
 
@@ -91,9 +95,9 @@ async function initializeOpamUnix(version: string) {
   ]);
 }
 
-async function acquireOpamUnix(version: string) {
+async function setupOpamUnix(version: string) {
   core.startGroup("Install opam");
-  await setupOpamUnix();
+  await acquireOpamUnix();
   core.endGroup();
   core.startGroup("Initialise the opam state");
   await initializeOpamUnix(version);
@@ -165,7 +169,7 @@ async function setupCygwin() {
   core.addPath(`${root}\\bin`);
 }
 
-async function setupOpamWindows() {
+async function acquireOpamWindows() {
   async function install(path: string) {
     const installSh = `${path}\\opam64\\install.sh`;
     await fs.chmod(installSh, 755);
@@ -213,28 +217,28 @@ async function initializeOpamWindows(version: string) {
   core.addPath(wrapperbin);
 }
 
-async function acquireOpamWindows(version: string) {
+async function setupOpamWindows(version: string) {
   core.startGroup("Prepare Cygwin environment");
   await setupCygwin();
   core.endGroup();
   core.startGroup("Install opam");
-  await setupOpamWindows();
+  await acquireOpamWindows();
   core.endGroup();
   core.startGroup("Initialise the opam state");
   await initializeOpamWindows(version);
   core.endGroup();
 }
 
-export async function acquireOpam(version: string): Promise<void> {
+export async function setupOpam(version: string): Promise<void> {
   const numberOfProcessors = os.cpus().length;
   const jobs = numberOfProcessors + 2;
   core.exportVariable("OPAMJOBS", jobs);
   core.exportVariable("OPAMYES", 1);
   if (IS_WINDOWS) {
     core.exportVariable("OPAM_LINT", false);
-    await acquireOpamWindows(version);
+    await setupOpamWindows(version);
   } else {
-    await acquireOpamUnix(version);
+    await setupOpamUnix(version);
   }
 }
 

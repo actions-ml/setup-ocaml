@@ -4,11 +4,11 @@ import { OCAML_VERSION } from "./constants";
 import { installDepext, installSystemPackages } from "./depext";
 import { listAllOpamFileNames } from "./internal/listAllOpamFileNames";
 import { resolveVersion } from "./internal/resolveVersion";
-import { acquireOpam, pin } from "./opam";
+import { pin, setupOpam } from "./opam";
 
 export async function installer(): Promise<void> {
   const version = await resolveVersion(OCAML_VERSION);
-  await acquireOpam(version);
+  await setupOpam(version);
   await installDepext();
   const fnames = await listAllOpamFileNames();
   if (fnames.length > 0) {
