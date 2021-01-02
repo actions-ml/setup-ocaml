@@ -238,8 +238,10 @@ export async function acquireOpam(version: string): Promise<void> {
   }
 }
 
-export async function installDepext(): Promise<void> {
-  core.startGroup("Install depext");
-  await exec("opam", ["install", "depext"]);
+export async function pin(fnames: string[]): Promise<void> {
+  core.startGroup("Pin local packages");
+  for (const fname of fnames) {
+    await exec("opam", ["pin", "add", `${fname}.dev`, ".", "--no-action"]);
+  }
   core.endGroup();
 }
