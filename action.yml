@@ -6,12 +6,14 @@ branding:
   color: orange
 inputs:
   ocaml-version:
-    description: Version of the OCaml compiler to initialise
+    description: The version of the OCaml compiler to initialise
     default: latest
   opam-repository:
-    description: URL of the repository to fetch packages from
+    description: The URL of the repository to fetch packages from
   github-token:
-    description: Input for internal use; is not intended to be set by users
+    description:
+      The token of GitHub to authenticate on behalf of the GitHub App installed
+      on your repository
     default: ${{ github.token }}
 runs:
   using: node12
