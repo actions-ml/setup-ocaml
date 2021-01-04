@@ -30133,7 +30133,7 @@ function installDepext() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install depext");
-                    return [4 /*yield*/, exec_1.exec("opam", ["install", "depext"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["install", "depext", "--verbose", "--yes"])];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -30152,9 +30152,10 @@ function installSystemPackages(fnames) {
                     return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
                             "depext"
                         ], fnames, [
-                            "--yes",
+                            "--verbose",
                             "--with-doc",
                             "--with-test",
+                            "--yes",
                         ]))];
                 case 1:
                     _a.sent();
@@ -31003,6 +31004,7 @@ function initializeOpamUnix(version) {
                                 : "ocaml-base-compiler." + version,
                         "--auto-setup",
                         "--verbose",
+                        "--yes",
                     ])];
                 case 12:
                     _a.sent();
@@ -31191,9 +31193,8 @@ function initializeOpamWindows(version) {
                                 : "ocaml-variants." + version + "+mingw64c",
                             "--auto-setup",
                             "--disable-sandboxing",
-                            "--enable-completion",
-                            "--enable-shell-hook",
                             "--verbose",
+                            "--yes",
                         ])];
                 case 1:
                     _a.sent();
@@ -31240,16 +31241,14 @@ function setupOpamWindows(version) {
 }
 function setupOpam(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var numberOfProcessors, jobs;
+        var numberOfProcessors;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     numberOfProcessors = os.cpus().length;
-                    jobs = numberOfProcessors + 2;
-                    core.exportVariable("OPAMJOBS", jobs);
+                    core.exportVariable("OPAMJOBS", numberOfProcessors);
                     core.exportVariable("OPAMYES", 1);
                     if (!system_1.IS_WINDOWS) return [3 /*break*/, 2];
-                    core.exportVariable("OPAM_LINT", false);
                     return [4 /*yield*/, setupOpamWindows(version)];
                 case 1:
                     _a.sent();
@@ -31276,7 +31275,15 @@ function pin(fnames) {
                 case 1:
                     if (!(_i < fnames_1.length)) return [3 /*break*/, 4];
                     fname = fnames_1[_i];
-                    return [4 /*yield*/, exec_1.exec("opam", ["pin", "add", fname + ".dev", ".", "--no-action"])];
+                    return [4 /*yield*/, exec_1.exec("opam", [
+                            "pin",
+                            "add",
+                            fname + ".dev",
+                            ".",
+                            "--no-action",
+                            "--verbose",
+                            "--yes",
+                        ])];
                 case 2:
                     _a.sent();
                     _a.label = 3;

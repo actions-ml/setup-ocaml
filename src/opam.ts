@@ -105,6 +105,7 @@ async function initializeOpamUnix(version: string) {
       : `ocaml-base-compiler.${version}`,
     "--auto-setup",
     "--verbose",
+    "--yes",
   ]);
 }
 
@@ -219,9 +220,8 @@ async function initializeOpamWindows(version: string) {
       : `ocaml-variants.${version}+mingw64c`,
     "--auto-setup",
     "--disable-sandboxing",
-    "--enable-completion",
-    "--enable-shell-hook",
     "--verbose",
+    "--yes",
   ]);
   const wrapperbin = `c:\\cygwin\\wrapperbin`;
   await io.mkdirP(wrapperbin);
@@ -247,11 +247,9 @@ async function setupOpamWindows(version: string) {
 
 export async function setupOpam(version: string): Promise<void> {
   const numberOfProcessors = os.cpus().length;
-  const jobs = numberOfProcessors + 2;
-  core.exportVariable("OPAMJOBS", jobs);
+  core.exportVariable("OPAMJOBS", numberOfProcessors);
   core.exportVariable("OPAMYES", 1);
   if (IS_WINDOWS) {
-    core.exportVariable("OPAM_LINT", false);
     await setupOpamWindows(version);
   } else {
     await setupOpamUnix(version);
@@ -261,7 +259,15 @@ export async function setupOpam(version: string): Promise<void> {
 export async function pin(fnames: string[]): Promise<void> {
   core.startGroup("Pin local packages");
   for (const fname of fnames) {
-    await exec("opam", ["pin", "add", `${fname}.dev`, ".", "--no-action"]);
+    await exec("opam", [
+      "pin",
+      "add",
+      `${fname}.dev`,
+      ".",
+      "--no-action",
+      "--verbose",
+      "--yes",
+    ]);
   }
   core.endGroup();
 }

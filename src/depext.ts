@@ -3,7 +3,7 @@ import { exec } from "@actions/exec";
 
 export async function installDepext(): Promise<void> {
   core.startGroup("Install depext");
-  await exec("opam", ["install", "depext"]);
+  await exec("opam", ["install", "depext", "--verbose", "--yes"]);
   core.endGroup();
 }
 
@@ -12,9 +12,10 @@ export async function installSystemPackages(fnames: string[]): Promise<void> {
   await exec("opam", [
     "depext",
     ...fnames,
-    "--yes",
+    "--verbose",
     "--with-doc",
     "--with-test",
+    "--yes",
   ]);
   core.endGroup();
 }
