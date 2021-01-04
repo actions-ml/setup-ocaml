@@ -30944,7 +30944,7 @@ function initializeOpamUnix(version) {
                     if (!(system_1.getPlatform() === "linux")) return [3 /*break*/, 3];
                     // Fix musl-tools bug in ubuntu 18.04;
                     // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
-                    return [4 /*yield*/, exec_1.exec("sudo", ["add-apt-repository", "--yes", "ppa:avsm/musl"])];
+                    return [4 /*yield*/, exec_1.exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"])];
                 case 1:
                     // Fix musl-tools bug in ubuntu 18.04;
                     // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
@@ -30952,17 +30952,18 @@ function initializeOpamUnix(version) {
                     return [4 /*yield*/, exec_1.exec("sudo", [
                             "apt-get",
                             "install",
-                            "--yes",
                             "bubblewrap",
                             "darcs",
                             "musl-tools",
+                            "--verbose-versions",
+                            "--yes",
                         ])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 5];
                 case 3:
                     if (!(system_1.getPlatform() === "macos")) return [3 /*break*/, 5];
-                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial"])];
+                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial", "--verbose"])];
                 case 4:
                     _a.sent();
                     _a.label = 5;

@@ -64,17 +64,18 @@ async function initializeOpamUnix(version: string) {
   if (getPlatform() === "linux") {
     // Fix musl-tools bug in ubuntu 18.04;
     // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
-    await exec("sudo", ["add-apt-repository", "--yes", "ppa:avsm/musl"]);
+    await exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"]);
     await exec("sudo", [
       "apt-get",
       "install",
-      "--yes",
       "bubblewrap",
       "darcs",
       "musl-tools",
+      "--verbose-versions",
+      "--yes",
     ]);
   } else if (getPlatform() === "macos") {
-    await exec("brew", ["install", "darcs", "mercurial"]);
+    await exec("brew", ["install", "darcs", "mercurial", "--verbose"]);
   }
   const repository =
     OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
