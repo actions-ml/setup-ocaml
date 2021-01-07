@@ -30979,7 +30979,7 @@ function acquireOpamUnix() {
                 case 3:
                     cachedPath_1 = _b.sent();
                     core.info("Successfully cached opam to " + cachedPath_1);
-                    return [4 /*yield*/, fs_1.promises.chmod(cachedPath_1 + "/opam", 755)];
+                    return [4 /*yield*/, fs_1.promises.chmod(cachedPath_1 + "/opam", 493)];
                 case 4:
                     _b.sent();
                     core.addPath(cachedPath_1);
@@ -31197,7 +31197,7 @@ function acquireOpamWindows() {
                     switch (_a.label) {
                         case 0:
                             installSh = path + "\\opam64\\install.sh";
-                            return [4 /*yield*/, fs_1.promises.chmod(installSh, 755)];
+                            return [4 /*yield*/, fs_1.promises.chmod(installSh, 493)];
                         case 1:
                             _a.sent();
                             return [4 /*yield*/, exec_1.exec("bash", [installSh, "--prefix", "/usr"])];
