@@ -30996,63 +30996,68 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, isCacheEnabled, error_1;
+        var systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, isCacheEnabled, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(system_1.getPlatform() === "linux")) return [3 /*break*/, 3];
+                    if (!(system_1.getPlatform() === "linux")) return [3 /*break*/, 5];
+                    return [4 /*yield*/, system_1.getSystemIdentificationData()];
+                case 1:
+                    systemVersion = (_a.sent()).version;
+                    if (!(systemVersion === "16.04" || systemVersion === "18.04")) return [3 /*break*/, 3];
                     // Fix musl-tools bug in ubuntu 18.04;
                     // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
                     return [4 /*yield*/, exec_1.exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"])];
-                case 1:
+                case 2:
                     // Fix musl-tools bug in ubuntu 18.04;
                     // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("sudo", [
-                            "apt-get",
-                            "install",
-                            "bubblewrap",
-                            "darcs",
-                            "musl-tools",
-                            "--verbose-versions",
-                            "--yes",
-                        ])];
-                case 2:
-                    _a.sent();
-                    return [3 /*break*/, 5];
-                case 3:
-                    if (!(system_1.getPlatform() === "macos")) return [3 /*break*/, 5];
-                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial", "--verbose"])];
+                    _a.label = 3;
+                case 3: return [4 /*yield*/, exec_1.exec("sudo", [
+                        "apt-get",
+                        "install",
+                        "bubblewrap",
+                        "darcs",
+                        "musl-tools",
+                        "--verbose-versions",
+                        "--yes",
+                    ])];
                 case 4:
                     _a.sent();
-                    _a.label = 5;
+                    return [3 /*break*/, 7];
                 case 5:
+                    if (!(system_1.getPlatform() === "macos")) return [3 /*break*/, 7];
+                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial", "--verbose"])];
+                case 6:
+                    _a.sent();
+                    _a.label = 7;
+                case 7:
                     repository = constants_1.OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
                     baseUrl = "https://cache.actions-ml.org";
                     return [4 /*yield*/, imageName_1.makeImageName()];
-                case 6:
+                case 8:
                     imageName = _a.sent();
                     url = baseUrl + "/" + version + "/" + imageName + "/" + version + ".tar.gz";
                     isSelfHostedRunner = process.env.ImageOS === undefined;
                     return [4 /*yield*/, cacheHttpClient_1.checkIfCacheFileExists(url)];
-                case 7:
+                case 9:
                     isCacheFileExist = _a.sent();
                     isVariant = version.includes("+");
                     isCacheEnabled = !isSelfHostedRunner && !system_1.IS_WINDOWS && isCacheFileExist;
-                    if (!isCacheEnabled) return [3 /*break*/, 11];
-                    _a.label = 8;
-                case 8:
-                    _a.trys.push([8, 10, , 11]);
-                    return [4 /*yield*/, cacheHttpClient_1.retrieveCache(url, version)];
-                case 9:
-                    _a.sent();
-                    return [3 /*break*/, 11];
+                    if (!isCacheEnabled) return [3 /*break*/, 13];
+                    _a.label = 10;
                 case 10:
+                    _a.trys.push([10, 12, , 13]);
+                    return [4 /*yield*/, cacheHttpClient_1.retrieveCache(url, version)];
+                case 11:
+                    _a.sent();
+                    return [3 /*break*/, 13];
+                case 12:
                     error_1 = _a.sent();
                     isCacheEnabled = false;
                     core.error(error_1.message);
-                    return [3 /*break*/, 11];
-                case 11: return [4 /*yield*/, exec_1.exec("opam", [
+                    return [3 /*break*/, 13];
+                case 13: return [4 /*yield*/, exec_1.exec("opam", [
                         "init",
                         "default",
                         repository,
@@ -31066,7 +31071,7 @@ function initializeOpamUnix(version) {
                         "--verbose",
                         "--yes",
                     ])];
-                case 12:
+                case 14:
                     _a.sent();
                     return [2 /*return*/];
             }

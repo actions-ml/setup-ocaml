@@ -15,7 +15,12 @@ import {
   retrieveCache,
 } from "./internal/cacheHttpClient";
 import { makeImageName } from "./internal/imageName";
-import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
+import {
+  getArchitecture,
+  getPlatform,
+  getSystemIdentificationData,
+  IS_WINDOWS,
+} from "./internal/system";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
 
@@ -62,9 +67,12 @@ async function acquireOpamUnix() {
 
 async function initializeOpamUnix(version: string) {
   if (getPlatform() === "linux") {
-    // Fix musl-tools bug in ubuntu 18.04;
-    // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
-    await exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"]);
+    const { version: systemVersion } = await getSystemIdentificationData();
+    if (systemVersion === "16.04" || systemVersion === "18.04") {
+      // Fix musl-tools bug in ubuntu 18.04;
+      // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
+      await exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"]);
+    }
     await exec("sudo", [
       "apt-get",
       "install",
