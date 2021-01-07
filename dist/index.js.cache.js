@@ -30491,57 +30491,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.makeImageName = void 0;
-var exec_1 = __webpack_require__(1514);
-var fs_1 = __webpack_require__(5747);
 var system_1 = __webpack_require__(2704);
 function makeImageName() {
     return __awaiter(this, void 0, void 0, function () {
-        var osRelease, lines, distro, version, _i, lines_1, line, kv, output_1, options, lines, version, _a, lines_2, line, kv, _version;
+        var _a, distro, version, versionArr;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0:
-                    if (!(system_1.getPlatform() === "linux")) return [3 /*break*/, 2];
-                    return [4 /*yield*/, fs_1.promises.readFile("/etc/os-release")];
+                case 0: return [4 /*yield*/, system_1.getSystemIdentificationData()];
                 case 1:
-                    osRelease = (_b.sent()).toString();
-                    lines = osRelease.split("\n");
-                    distro = "";
-                    version = "";
-                    for (_i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
-                        line = lines_1[_i];
-                        kv = line.split("=");
-                        if (kv[0] === "ID") {
-                            distro = kv[1].trim().toLowerCase();
-                        }
-                        else if (kv[0] === "VERSION_ID") {
-                            version = kv[1].trim().toLowerCase().replace(/["]/g, "");
-                        }
+                    _a = _b.sent(), distro = _a.distro, version = _a.version;
+                    if (system_1.getPlatform() === "linux") {
+                        return [2 /*return*/, distro + "-" + version];
                     }
-                    return [2 /*return*/, distro + "-" + version];
-                case 2:
-                    if (!(system_1.getPlatform() === "macos")) return [3 /*break*/, 4];
-                    output_1 = "";
-                    options = {};
-                    options.listeners = {
-                        stdout: function (data) {
-                            output_1 += data.toString();
-                        },
-                    };
-                    return [4 /*yield*/, exec_1.exec("sw_vers", undefined, options)];
-                case 3:
-                    _b.sent();
-                    lines = output_1.split("\n");
-                    version = "";
-                    for (_a = 0, lines_2 = lines; _a < lines_2.length; _a++) {
-                        line = lines_2[_a];
-                        kv = line.split(":");
-                        if (kv[0] === "ProductVersion") {
-                            _version = kv[1].trim().split(".");
-                            version = _version[0] + "." + _version[1];
-                        }
+                    else if (system_1.getPlatform() === "macos") {
+                        versionArr = version.split(".");
+                        return [2 /*return*/, "macos-" + versionArr[0] + "." + versionArr[1]];
                     }
-                    return [2 /*return*/, "macos-" + version];
-                case 4: throw new Error("The image type is not supported.");
+                    else {
+                        throw new Error("The image type is not supported.");
+                    }
+                    return [2 /*return*/];
             }
         });
     });
@@ -30788,12 +30757,50 @@ exports.resolveVersion = resolveVersion;
 /***/ }),
 
 /***/ 2704:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 exports.__esModule = true;
-exports.getPlatform = exports.getArchitecture = exports.IS_WINDOWS = void 0;
+exports.getSystemIdentificationData = exports.getPlatform = exports.getArchitecture = exports.IS_WINDOWS = void 0;
+var exec_1 = __webpack_require__(1514);
+var fs_1 = __webpack_require__(5747);
 var os = __webpack_require__(2087);
 exports.IS_WINDOWS = process.platform === "win32";
 function getArchitecture() {
@@ -30818,6 +30825,58 @@ function getPlatform() {
     }
 }
 exports.getPlatform = getPlatform;
+function getSystemIdentificationData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var osRelease, lines, distro, version, _i, lines_1, line, kv, output_1, options, lines, version, _a, lines_2, line, kv;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!(getPlatform() === "linux")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, fs_1.promises.readFile("/etc/os-release")];
+                case 1:
+                    osRelease = (_b.sent()).toString();
+                    lines = osRelease.split("\n");
+                    distro = "";
+                    version = "";
+                    for (_i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
+                        line = lines_1[_i];
+                        kv = line.split("=");
+                        if (kv[0] === "ID") {
+                            distro = kv[1].trim().toLowerCase();
+                        }
+                        else if (kv[0] === "VERSION_ID") {
+                            version = kv[1].trim().toLowerCase().replace(/["]/g, "");
+                        }
+                    }
+                    return [2 /*return*/, { distro: distro, version: version }];
+                case 2:
+                    if (!(getPlatform() === "macos")) return [3 /*break*/, 4];
+                    output_1 = "";
+                    options = { silent: true };
+                    options.listeners = {
+                        stdout: function (data) {
+                            output_1 += data.toString();
+                        },
+                    };
+                    return [4 /*yield*/, exec_1.exec("sw_vers", undefined, options)];
+                case 3:
+                    _b.sent();
+                    lines = output_1.split("\n");
+                    version = "";
+                    for (_a = 0, lines_2 = lines; _a < lines_2.length; _a++) {
+                        line = lines_2[_a];
+                        kv = line.split(":");
+                        if (kv[0] === "ProductVersion") {
+                            version = kv[1].trim();
+                        }
+                    }
+                    return [2 /*return*/, { distro: "macos", version: version }];
+                case 4: throw new Error("The system is not supported.");
+            }
+        });
+    });
+}
+exports.getSystemIdentificationData = getSystemIdentificationData;
 
 
 /***/ }),

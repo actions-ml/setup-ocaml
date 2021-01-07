@@ -1,3 +1,6 @@
+import type { ExecOptions } from "@actions/exec";
+import { exec } from "@actions/exec";
+import { promises as fs } from "fs";
 import * as os from "os";
 
 export const IS_WINDOWS = process.platform === "win32";
@@ -21,5 +24,46 @@ export function getPlatform(): "linux" | "windows" | "macos" {
       return "macos";
     default:
       throw new Error("The platform is not supported.");
+  }
+}
+
+export async function getSystemIdentificationData(): Promise<{
+  distro: string;
+  version: string;
+}> {
+  if (getPlatform() === "linux") {
+    const osRelease = (await fs.readFile("/etc/os-release")).toString();
+    const lines = osRelease.split("\n");
+    let distro = "";
+    let version = "";
+    for (const line of lines) {
+      const kv = line.split("=");
+      if (kv[0] === "ID") {
+        distro = kv[1].trim().toLowerCase();
+      } else if (kv[0] === "VERSION_ID") {
+        version = kv[1].trim().toLowerCase().replace(/["]/g, "");
+      }
+    }
+    return { distro, version };
+  } else if (getPlatform() === "macos") {
+    let output = "";
+    const options: ExecOptions = { silent: true };
+    options.listeners = {
+      stdout: (data) => {
+        output += data.toString();
+      },
+    };
+    await exec("sw_vers", undefined, options);
+    const lines = output.split("\n");
+    let version = "";
+    for (const line of lines) {
+      const kv = line.split(":");
+      if (kv[0] === "ProductVersion") {
+        version = kv[1].trim();
+      }
+    }
+    return { distro: "macos", version };
+  } else {
+    throw new Error("The system is not supported.");
   }
 }
