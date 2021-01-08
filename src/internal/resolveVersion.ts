@@ -22,6 +22,10 @@ function versionCompare(v1: string, v2: string) {
   return 0;
 }
 
+function unique(array: string[]) {
+  return Array.from(new Set(array));
+}
+
 async function getAllVersions() {
   const releases = [];
   const state = { continue: true, count: 0 };
@@ -38,9 +42,6 @@ async function getAllVersions() {
     } else {
       state.continue = false;
     }
-  }
-  function unique(array: string[]) {
-    return array.filter((elem, index, self) => self.indexOf(elem) === index);
   }
   const versions = unique(releases.map(({ tag_name }) => tag_name));
   return versions;

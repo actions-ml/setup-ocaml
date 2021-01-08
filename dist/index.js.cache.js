@@ -30667,11 +30667,11 @@ function versionCompare(v1, v2) {
     }
     return 0;
 }
+function unique(array) {
+    return Array.from(new Set(array));
+}
 function getAllVersions() {
     return __awaiter(this, void 0, void 0, function () {
-        function unique(array) {
-            return array.filter(function (elem, index, self) { return self.indexOf(elem) === index; });
-        }
         var releases, state, response, versions;
         return __generator(this, function (_a) {
             switch (_a.label) {
