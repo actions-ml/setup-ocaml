@@ -56,7 +56,7 @@ async function acquireOpamUnix() {
       architecture
     );
     core.info(`Successfully cached opam to ${cachedPath}`);
-    await fs.chmod(`${cachedPath}/opam`, 755);
+    await fs.chmod(`${cachedPath}/opam`, 0o755);
     core.addPath(cachedPath);
     core.info("Added opam to the path");
   } else {
@@ -195,7 +195,7 @@ async function setupCygwin() {
 async function acquireOpamWindows() {
   async function install(path: string) {
     const installSh = `${path}\\opam64\\install.sh`;
-    await fs.chmod(installSh, 755);
+    await fs.chmod(installSh, 0o755);
     await exec("bash", [installSh, "--prefix", "/usr"]);
   }
   const version = "0.0.0.2";
