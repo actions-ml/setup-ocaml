@@ -5,7 +5,6 @@ import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import * as cheerio from "cheerio";
 import { promises as fs } from "fs";
-import * as os from "os";
 import * as semver from "semver";
 
 import { GITHUB_TOKEN, OPAM_REPOSITORY } from "./constants";
@@ -143,8 +142,6 @@ async function getCygwinVersion() {
 }
 
 async function setupCygwin() {
-  core.exportVariable("CYGWIN", "winsymlinks:native");
-  core.exportVariable("HOME", process.env.USERPROFILE);
   const version = await getCygwinVersion();
   const cachedPath = tc.find("cygwin", version, "x86_64");
   if (cachedPath === "") {
@@ -255,9 +252,6 @@ async function setupOpamWindows(version: string) {
 }
 
 export async function setupOpam(version: string): Promise<void> {
-  const numberOfProcessors = os.cpus().length;
-  core.exportVariable("OPAMJOBS", numberOfProcessors);
-  core.exportVariable("OPAMYES", 1);
   if (IS_WINDOWS) {
     await setupOpamWindows(version);
   } else {

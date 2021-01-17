@@ -1,12 +1,26 @@
+import * as core from "@actions/core";
 import { exec } from "@actions/exec";
+import * as os from "os";
 
 import { OCAML_VERSION, OPAM_DEPEXT, OPAM_PIN } from "./constants";
 import { installDepext, installSystemPackages } from "./depext";
 import { listAllOpamFileNames } from "./internal/listAllOpamFileNames";
 import { resolveVersion } from "./internal/resolveVersion";
+import { getPlatform } from "./internal/system";
 import { pin, setupOpam } from "./opam";
 
 export async function installer(): Promise<void> {
+  const numberOfProcessors = os.cpus().length;
+  core.exportVariable("OPAMJOBS", numberOfProcessors);
+  core.exportVariable("OPAMYES", 1);
+  const platform = getPlatform();
+  if (platform === "windows") {
+    core.exportVariable("CYGWIN", "winsymlinks:native");
+    core.exportVariable("HOME", process.env.USERPROFILE);
+  } else if (platform === "macos") {
+    core.exportVariable("HOMEBREW_NO_AUTO_UPDATE", 1);
+    core.exportVariable("HOMEBREW_NO_INSTALL_CLEANUP", 1);
+  }
   const version = await resolveVersion(OCAML_VERSION);
   await setupOpam(version);
   await installDepext();

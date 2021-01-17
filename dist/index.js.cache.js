@@ -30284,18 +30284,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.installer = void 0;
+var core = __webpack_require__(2186);
 var exec_1 = __webpack_require__(1514);
+var os = __webpack_require__(2087);
 var constants_1 = __webpack_require__(9042);
 var depext_1 = __webpack_require__(4723);
 var listAllOpamFileNames_1 = __webpack_require__(2098);
 var resolveVersion_1 = __webpack_require__(2026);
+var system_1 = __webpack_require__(2704);
 var opam_1 = __webpack_require__(1078);
 function installer() {
     return __awaiter(this, void 0, void 0, function () {
-        var version, fnames;
+        var numberOfProcessors, platform, version, fnames;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
+                case 0:
+                    numberOfProcessors = os.cpus().length;
+                    core.exportVariable("OPAMJOBS", numberOfProcessors);
+                    core.exportVariable("OPAMYES", 1);
+                    platform = system_1.getPlatform();
+                    if (platform === "windows") {
+                        core.exportVariable("CYGWIN", "winsymlinks:native");
+                        core.exportVariable("HOME", process.env.USERPROFILE);
+                    }
+                    else if (platform === "macos") {
+                        core.exportVariable("HOMEBREW_NO_AUTO_UPDATE", 1);
+                        core.exportVariable("HOMEBREW_NO_INSTALL_CLEANUP", 1);
+                    }
+                    return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
                 case 1:
                     version = _a.sent();
                     return [4 /*yield*/, opam_1.setupOpam(version)];
@@ -30937,7 +30953,6 @@ var io = __webpack_require__(7436);
 var tc = __webpack_require__(7784);
 var cheerio = __webpack_require__(3094);
 var fs_1 = __webpack_require__(5747);
-var os = __webpack_require__(2087);
 var semver = __webpack_require__(1383);
 var constants_1 = __webpack_require__(9042);
 var cacheHttpClient_1 = __webpack_require__(1650);
@@ -31135,10 +31150,7 @@ function setupCygwin() {
         var version, cachedPath, downloadedPath, cachedPath_2, root, site, packages, setupExePath;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    core.exportVariable("CYGWIN", "winsymlinks:native");
-                    core.exportVariable("HOME", process.env.USERPROFILE);
-                    return [4 /*yield*/, getCygwinVersion()];
+                case 0: return [4 /*yield*/, getCygwinVersion()];
                 case 1:
                     version = _a.sent();
                     cachedPath = tc.find("cygwin", version, "x86_64");
@@ -31312,13 +31324,9 @@ function setupOpamWindows(version) {
 }
 function setupOpam(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var numberOfProcessors;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    numberOfProcessors = os.cpus().length;
-                    core.exportVariable("OPAMJOBS", numberOfProcessors);
-                    core.exportVariable("OPAMYES", 1);
                     if (!system_1.IS_WINDOWS) return [3 /*break*/, 2];
                     return [4 /*yield*/, setupOpamWindows(version)];
                 case 1:
