@@ -8,6 +8,16 @@ inputs:
   ocaml-version:
     description: The version of the OCaml compiler to initialise
     default: latest
+  opam-depext:
+    description:
+      Specify whether to query and install external dependencies of opam
+      packages automatically
+    default: true
+  opam-pin:
+    description:
+      Specify whether to pin all opam local packages automatically that exist in
+      the repository root
+    default: true
   opam-repository:
     description: The URL of the repository to fetch packages from
   github-token:

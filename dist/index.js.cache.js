@@ -30066,10 +30066,12 @@ try {
 "use strict";
 
 exports.__esModule = true;
-exports.OPAM_REPOSITORY = exports.OCAML_VERSION = exports.GITHUB_TOKEN = void 0;
+exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.GITHUB_TOKEN = void 0;
 var core = __webpack_require__(2186);
 exports.GITHUB_TOKEN = core.getInput("github-token");
 exports.OCAML_VERSION = core.getInput("ocaml-version");
+exports.OPAM_DEPEXT = core.getInput("opam-depext");
+exports.OPAM_PIN = core.getInput("opam-pin");
 exports.OPAM_REPOSITORY = core.getInput("opam-repository");
 
 
@@ -30305,22 +30307,26 @@ function installer() {
                     return [4 /*yield*/, listAllOpamFileNames_1.listAllOpamFileNames()];
                 case 4:
                     fnames = _a.sent();
-                    if (!(fnames.length > 0)) return [3 /*break*/, 7];
+                    if (!(fnames.length > 0)) return [3 /*break*/, 8];
+                    if (!(constants_1.OPAM_PIN.toLocaleLowerCase() === "true")) return [3 /*break*/, 6];
                     return [4 /*yield*/, opam_1.pin(fnames)];
                 case 5:
                     _a.sent();
-                    return [4 /*yield*/, depext_1.installSystemPackages(fnames)];
+                    _a.label = 6;
                 case 6:
+                    if (!(constants_1.OPAM_DEPEXT.toLocaleLowerCase() === "true")) return [3 /*break*/, 8];
+                    return [4 /*yield*/, depext_1.installSystemPackages(fnames)];
+                case 7:
                     _a.sent();
-                    _a.label = 7;
-                case 7: return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
-                case 8:
-                    _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
+                    _a.label = 8;
+                case 8: return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
                 case 9:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "-version"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
                 case 10:
+                    _a.sent();
+                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "-version"])];
+                case 11:
                     _a.sent();
                     return [2 /*return*/];
             }
