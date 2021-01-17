@@ -30516,16 +30516,17 @@ exports.makeImageName = void 0;
 var system_1 = __webpack_require__(2704);
 function makeImageName() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, distro, version, versionArr;
+        var _a, distro, version, platform, versionArr;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0: return [4 /*yield*/, system_1.getSystemIdentificationData()];
                 case 1:
                     _a = _b.sent(), distro = _a.distro, version = _a.version;
-                    if (system_1.getPlatform() === "linux") {
+                    platform = system_1.getPlatform();
+                    if (platform === "linux") {
                         return [2 /*return*/, distro + "-" + version];
                     }
-                    else if (system_1.getPlatform() === "macos") {
+                    else if (platform === "macos") {
                         versionArr = version.split(".");
                         return [2 /*return*/, "macos-" + versionArr[0] + "." + versionArr[1]];
                     }
@@ -30849,11 +30850,12 @@ function getPlatform() {
 exports.getPlatform = getPlatform;
 function getSystemIdentificationData() {
     return __awaiter(this, void 0, void 0, function () {
-        var osRelease, lines, distro, version, _i, lines_1, line, kv, output_1, options, lines, version, _a, lines_2, line, kv;
+        var platform, osRelease, lines, distro, version, _i, lines_1, line, kv, output_1, options, lines, version, _a, lines_2, line, kv;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    if (!(getPlatform() === "linux")) return [3 /*break*/, 2];
+                    platform = getPlatform();
+                    if (!(platform === "linux")) return [3 /*break*/, 2];
                     return [4 /*yield*/, fs_1.promises.readFile("/etc/os-release")];
                 case 1:
                     osRelease = (_b.sent()).toString();
@@ -30872,7 +30874,7 @@ function getSystemIdentificationData() {
                     }
                     return [2 /*return*/, { distro: distro, version: version }];
                 case 2:
-                    if (!(getPlatform() === "macos")) return [3 /*break*/, 4];
+                    if (!(platform === "macos")) return [3 /*break*/, 4];
                     output_1 = "";
                     options = { silent: true };
                     options.listeners = {
@@ -31017,11 +31019,12 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, isCacheEnabled, error_1;
+        var platform, systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, isCacheEnabled, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(system_1.getPlatform() === "linux")) return [3 /*break*/, 5];
+                    platform = system_1.getPlatform();
+                    if (!(platform === "linux")) return [3 /*break*/, 5];
                     return [4 /*yield*/, system_1.getSystemIdentificationData()];
                 case 1:
                     systemVersion = (_a.sent()).version;
@@ -31047,7 +31050,7 @@ function initializeOpamUnix(version) {
                     _a.sent();
                     return [3 /*break*/, 7];
                 case 5:
-                    if (!(system_1.getPlatform() === "macos")) return [3 /*break*/, 7];
+                    if (!(platform === "macos")) return [3 /*break*/, 7];
                     return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial", "--verbose"])];
                 case 6:
                     _a.sent();

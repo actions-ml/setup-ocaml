@@ -31,7 +31,8 @@ export async function getSystemIdentificationData(): Promise<{
   distro: string;
   version: string;
 }> {
-  if (getPlatform() === "linux") {
+  const platform = getPlatform();
+  if (platform === "linux") {
     const osRelease = (await fs.readFile("/etc/os-release")).toString();
     const lines = osRelease.split("\n");
     let distro = "";
@@ -45,7 +46,7 @@ export async function getSystemIdentificationData(): Promise<{
       }
     }
     return { distro, version };
-  } else if (getPlatform() === "macos") {
+  } else if (platform === "macos") {
     let output = "";
     const options: ExecOptions = { silent: true };
     options.listeners = {

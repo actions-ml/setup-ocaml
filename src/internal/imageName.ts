@@ -2,9 +2,10 @@ import { getPlatform, getSystemIdentificationData } from "./system";
 
 export async function makeImageName(): Promise<string> {
   const { distro, version } = await getSystemIdentificationData();
-  if (getPlatform() === "linux") {
+  const platform = getPlatform();
+  if (platform === "linux") {
     return `${distro}-${version}`;
-  } else if (getPlatform() === "macos") {
+  } else if (platform === "macos") {
     const versionArr = version.split(".");
     return `macos-${versionArr[0]}.${versionArr[1]}`;
   } else {

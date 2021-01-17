@@ -65,7 +65,8 @@ async function acquireOpamUnix() {
 }
 
 async function initializeOpamUnix(version: string) {
-  if (getPlatform() === "linux") {
+  const platform = getPlatform();
+  if (platform === "linux") {
     const { version: systemVersion } = await getSystemIdentificationData();
     if (systemVersion === "16.04" || systemVersion === "18.04") {
       // Fix musl-tools bug in ubuntu 18.04;
@@ -81,7 +82,7 @@ async function initializeOpamUnix(version: string) {
       "--verbose-versions",
       "--yes",
     ]);
-  } else if (getPlatform() === "macos") {
+  } else if (platform === "macos") {
     await exec("brew", ["install", "darcs", "mercurial", "--verbose"]);
   }
   const repository =
