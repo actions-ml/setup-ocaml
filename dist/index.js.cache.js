@@ -30301,6 +30301,10 @@ function installer() {
                 case 0:
                     numberOfProcessors = os.cpus().length;
                     core.exportVariable("OPAMJOBS", numberOfProcessors);
+                    core.exportVariable("OPAMDOWNLOADJOBS", 1);
+                    core.exportVariable("OPAMERRLOGLEN", 0);
+                    core.exportVariable("OPAMPRECISETRACKING", 1);
+                    core.exportVariable("OPAMSOLVERTIMEOUT", 500);
                     core.exportVariable("OPAMYES", 1);
                     platform = system_1.getPlatform();
                     if (platform === "windows") {
