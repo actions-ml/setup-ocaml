@@ -16,6 +16,7 @@ import {
 import { composeImageName } from "./internal/imageName";
 import {
   getArchitecture,
+  getOpamRoot,
   getPlatform,
   getSystemIdentificationData,
   IS_WINDOWS,
@@ -103,22 +104,44 @@ async function initializeOpamUnix(version: string) {
       core.error(error.message);
     }
   }
-  await exec("opam", [
-    "init",
-    "default",
-    repository,
-    "--compiler",
-    isCacheExist
-      ? isVariant
-        ? `ocaml-system.${variantVersion}`
-        : `ocaml-system.${version}`
-      : isVariant
-      ? `ocaml-variants.${version}`
-      : `ocaml-base-compiler.${version}`,
-    "--auto-setup",
-    "--verbose",
-    "--yes",
-  ]);
+  let shouldRetry = false;
+  try {
+    await exec("opam", [
+      "init",
+      "default",
+      repository,
+      "--compiler",
+      isCacheExist
+        ? isVariant
+          ? `ocaml-system.${variantVersion}`
+          : `ocaml-system.${version}`
+        : isVariant
+        ? `ocaml-variants.${version}`
+        : `ocaml-base-compiler.${version}`,
+      "--auto-setup",
+      "--verbose",
+      "--yes",
+    ]);
+  } catch (error) {
+    core.debug(error.message);
+    shouldRetry = true;
+  }
+  if (shouldRetry) {
+    const opamRoot = await getOpamRoot();
+    await io.rmRF(opamRoot);
+    await exec("opam", [
+      "init",
+      "default",
+      repository,
+      "--compiler",
+      isVariant
+        ? `ocaml-variants.${version}`
+        : `ocaml-base-compiler.${version}`,
+      "--auto-setup",
+      "--verbose",
+      "--yes",
+    ]);
+  }
 }
 
 async function setupOpamUnix(version: string) {

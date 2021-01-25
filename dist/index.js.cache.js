@@ -30825,7 +30825,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getSystemIdentificationData = exports.getPlatform = exports.getArchitecture = exports.IS_WINDOWS = void 0;
+exports.getOpamRoot = exports.getSystemIdentificationData = exports.getPlatform = exports.getArchitecture = exports.IS_WINDOWS = void 0;
 var exec_1 = __webpack_require__(1514);
 var fs_1 = __webpack_require__(5747);
 var os = __webpack_require__(2087);
@@ -30905,6 +30905,28 @@ function getSystemIdentificationData() {
     });
 }
 exports.getSystemIdentificationData = getSystemIdentificationData;
+function getOpamRoot() {
+    return __awaiter(this, void 0, void 0, function () {
+        var output, options;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    output = "";
+                    options = { silent: true };
+                    options.listeners = {
+                        stdout: function (data) {
+                            output += data.toString().trim();
+                        },
+                    };
+                    return [4 /*yield*/, exec_1.exec("opam", ["config", "var", "root"], options)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, output];
+            }
+        });
+    });
+}
+exports.getOpamRoot = getOpamRoot;
 
 
 /***/ }),
@@ -31023,7 +31045,7 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var platform, systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1;
+        var platform, systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -31086,25 +31108,59 @@ function initializeOpamUnix(version) {
                     isCacheExist = false;
                     core.error(error_1.message);
                     return [3 /*break*/, 13];
-                case 13: return [4 /*yield*/, exec_1.exec("opam", [
-                        "init",
-                        "default",
-                        repository,
-                        "--compiler",
-                        isCacheExist
-                            ? isVariant
-                                ? "ocaml-system." + variantVersion
-                                : "ocaml-system." + version
-                            : isVariant
+                case 13:
+                    shouldRetry = false;
+                    _a.label = 14;
+                case 14:
+                    _a.trys.push([14, 16, , 17]);
+                    return [4 /*yield*/, exec_1.exec("opam", [
+                            "init",
+                            "default",
+                            repository,
+                            "--compiler",
+                            isCacheExist
+                                ? isVariant
+                                    ? "ocaml-system." + variantVersion
+                                    : "ocaml-system." + version
+                                : isVariant
+                                    ? "ocaml-variants." + version
+                                    : "ocaml-base-compiler." + version,
+                            "--auto-setup",
+                            "--verbose",
+                            "--yes",
+                        ])];
+                case 15:
+                    _a.sent();
+                    return [3 /*break*/, 17];
+                case 16:
+                    error_2 = _a.sent();
+                    core.debug(error_2.message);
+                    shouldRetry = true;
+                    return [3 /*break*/, 17];
+                case 17:
+                    if (!shouldRetry) return [3 /*break*/, 21];
+                    return [4 /*yield*/, system_1.getOpamRoot()];
+                case 18:
+                    opamRoot = _a.sent();
+                    return [4 /*yield*/, io.rmRF(opamRoot)];
+                case 19:
+                    _a.sent();
+                    return [4 /*yield*/, exec_1.exec("opam", [
+                            "init",
+                            "default",
+                            repository,
+                            "--compiler",
+                            isVariant
                                 ? "ocaml-variants." + version
                                 : "ocaml-base-compiler." + version,
-                        "--auto-setup",
-                        "--verbose",
-                        "--yes",
-                    ])];
-                case 14:
+                            "--auto-setup",
+                            "--verbose",
+                            "--yes",
+                        ])];
+                case 20:
                     _a.sent();
-                    return [2 /*return*/];
+                    _a.label = 21;
+                case 21: return [2 /*return*/];
             }
         });
     });
