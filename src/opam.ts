@@ -93,12 +93,13 @@ async function initializeOpamUnix(version: string) {
   const isSelfHostedRunner = process.env.ImageOS === undefined;
   const isCacheFileExist = await checkIfCacheFileExists(url);
   const isVariant = version.includes("+");
-  let isCacheEnabled = !isSelfHostedRunner && !IS_WINDOWS && isCacheFileExist;
-  if (isCacheEnabled) {
+  const variantVersion = version.split("+")[0];
+  let isCacheExist = !isSelfHostedRunner && !IS_WINDOWS && isCacheFileExist;
+  if (isCacheExist) {
     try {
       await retrieveCache(url, version);
     } catch (error) {
-      isCacheEnabled = false;
+      isCacheExist = false;
       core.error(error.message);
     }
   }
@@ -107,8 +108,10 @@ async function initializeOpamUnix(version: string) {
     "default",
     repository,
     "--compiler",
-    isCacheEnabled
-      ? `ocaml-system.${version}`
+    isCacheExist
+      ? isVariant
+        ? `ocaml-system.${variantVersion}`
+        : `ocaml-system.${version}`
       : isVariant
       ? `ocaml-variants.${version}`
       : `ocaml-base-compiler.${version}`,

@@ -31023,7 +31023,7 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var platform, systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, isCacheEnabled, error_1;
+        var platform, systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -31071,8 +31071,9 @@ function initializeOpamUnix(version) {
                 case 9:
                     isCacheFileExist = _a.sent();
                     isVariant = version.includes("+");
-                    isCacheEnabled = !isSelfHostedRunner && !system_1.IS_WINDOWS && isCacheFileExist;
-                    if (!isCacheEnabled) return [3 /*break*/, 13];
+                    variantVersion = version.split("+")[0];
+                    isCacheExist = !isSelfHostedRunner && !system_1.IS_WINDOWS && isCacheFileExist;
+                    if (!isCacheExist) return [3 /*break*/, 13];
                     _a.label = 10;
                 case 10:
                     _a.trys.push([10, 12, , 13]);
@@ -31082,7 +31083,7 @@ function initializeOpamUnix(version) {
                     return [3 /*break*/, 13];
                 case 12:
                     error_1 = _a.sent();
-                    isCacheEnabled = false;
+                    isCacheExist = false;
                     core.error(error_1.message);
                     return [3 /*break*/, 13];
                 case 13: return [4 /*yield*/, exec_1.exec("opam", [
@@ -31090,8 +31091,10 @@ function initializeOpamUnix(version) {
                         "default",
                         repository,
                         "--compiler",
-                        isCacheEnabled
-                            ? "ocaml-system." + version
+                        isCacheExist
+                            ? isVariant
+                                ? "ocaml-system." + variantVersion
+                                : "ocaml-system." + version
                             : isVariant
                                 ? "ocaml-variants." + version
                                 : "ocaml-base-compiler." + version,
