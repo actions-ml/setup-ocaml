@@ -13,7 +13,7 @@ import {
   makeHttpClient,
   retrieveCache,
 } from "./internal/cacheHttpClient";
-import { makeImageName } from "./internal/imageName";
+import { composeImageName } from "./internal/imageName";
 import {
   getArchitecture,
   getPlatform,
@@ -88,7 +88,7 @@ async function initializeOpamUnix(version: string) {
   const repository =
     OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
   const baseUrl = "https://cache.actions-ml.org";
-  const imageName = await makeImageName();
+  const imageName = await composeImageName();
   const url = `${baseUrl}/${version}/${imageName}/${version}.tar.gz`;
   const isSelfHostedRunner = process.env.ImageOS === undefined;
   const isCacheFileExist = await checkIfCacheFileExists(url);

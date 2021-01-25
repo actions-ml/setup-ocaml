@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import { HttpClient } from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
 
-import { makeImageName } from "./imageName";
+import { composeImageName } from "./imageName";
 
 export function makeHttpClient(): HttpClient {
   return new HttpClient("ocaml/setup-ocaml", [], {
@@ -25,7 +25,7 @@ export async function retrieveCache(
   url: string,
   version: string
 ): Promise<void> {
-  const imageName = await makeImageName();
+  const imageName = await composeImageName();
   const cachedPath = await tc.find("ocaml", version, imageName);
   if (cachedPath === "") {
     const downloadedPath = await tc.downloadTool(url);

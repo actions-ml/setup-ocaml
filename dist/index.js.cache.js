@@ -30439,7 +30439,7 @@ function retrieveCache(url, version) {
         var imageName, cachedPath, downloadedPath, extractedPath, cachedPath_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, imageName_1.makeImageName()];
+                case 0: return [4 /*yield*/, imageName_1.composeImageName()];
                 case 1:
                     imageName = _a.sent();
                     return [4 /*yield*/, tc.find("ocaml", version, imageName)];
@@ -30516,9 +30516,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.makeImageName = void 0;
+exports.composeImageName = void 0;
 var system_1 = __webpack_require__(2704);
-function makeImageName() {
+function composeImageName() {
     return __awaiter(this, void 0, void 0, function () {
         var _a, distro, version, platform, versionArr;
         return __generator(this, function (_b) {
@@ -30542,7 +30542,7 @@ function makeImageName() {
         });
     });
 }
-exports.makeImageName = makeImageName;
+exports.composeImageName = composeImageName;
 
 
 /***/ }),
@@ -31062,7 +31062,7 @@ function initializeOpamUnix(version) {
                 case 7:
                     repository = constants_1.OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
                     baseUrl = "https://cache.actions-ml.org";
-                    return [4 /*yield*/, imageName_1.makeImageName()];
+                    return [4 /*yield*/, imageName_1.composeImageName()];
                 case 8:
                     imageName = _a.sent();
                     url = baseUrl + "/" + version + "/" + imageName + "/" + version + ".tar.gz";

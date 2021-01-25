@@ -1,6 +1,6 @@
 import { getPlatform, getSystemIdentificationData } from "./system";
 
-export async function makeImageName(): Promise<string> {
+export async function composeImageName(): Promise<string> {
   const { distro, version } = await getSystemIdentificationData();
   const platform = getPlatform();
   if (platform === "linux") {
