@@ -3,6 +3,7 @@ import { exec } from "@actions/exec";
 import * as os from "os";
 import * as process from "process";
 
+import { restoreCache } from "./cache";
 import { DUNE_CACHE, OCAML_VERSION, OPAM_DEPEXT, OPAM_PIN } from "./constants";
 import { installDepext, installSystemPackages } from "./depext";
 import { installDune, startDuneCacheDaemon } from "./dune";
@@ -29,6 +30,7 @@ export async function installer(): Promise<void> {
   }
   const version = await resolveVersion(OCAML_VERSION);
   await setupOpam(version);
+  await restoreCache();
   await installDepext();
   if (DUNE_CACHE.toLowerCase() === "true") {
     await installDune();
