@@ -76,16 +76,21 @@ async function initializeOpamUnix(version: string) {
     if (platform === "linux") {
       const { version: systemVersion } = await getSystemIdentificationData();
       if (systemVersion === "16.04" || systemVersion === "18.04") {
-        // Fix musl-tools bug in ubuntu 18.04;
-        // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
+        // [info]: musl-tools bug in ubuntu 18.04;
+        // <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
         await exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"]);
+      }
+      const bubblewrap = [];
+      // [info]: <https://github.com/ocaml/opam/issues/3424>
+      if (systemVersion !== "16.04") {
+        bubblewrap.push("bubblewrap");
       }
       await exec("sudo", [
         "apt-get",
         "install",
-        "bubblewrap",
         "darcs",
         "musl-tools",
+        ...bubblewrap,
         "--verbose-versions",
         "--yes",
       ]);

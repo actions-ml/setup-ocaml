@@ -31053,7 +31053,7 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var platform, isGitHubRunner, systemVersion, disableSandboxing, repository, baseUrl, imageName, url, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
+        var platform, isGitHubRunner, systemVersion, bubblewrap, disableSandboxing, repository, baseUrl, imageName, url, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -31065,23 +31065,29 @@ function initializeOpamUnix(version) {
                 case 1:
                     systemVersion = (_a.sent()).version;
                     if (!(systemVersion === "16.04" || systemVersion === "18.04")) return [3 /*break*/, 3];
-                    // Fix musl-tools bug in ubuntu 18.04;
-                    // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
+                    // [info]: musl-tools bug in ubuntu 18.04;
+                    // <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
                     return [4 /*yield*/, exec_1.exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"])];
                 case 2:
-                    // Fix musl-tools bug in ubuntu 18.04;
-                    // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
+                    // [info]: musl-tools bug in ubuntu 18.04;
+                    // <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
                     _a.sent();
                     _a.label = 3;
-                case 3: return [4 /*yield*/, exec_1.exec("sudo", [
-                        "apt-get",
-                        "install",
-                        "bubblewrap",
-                        "darcs",
-                        "musl-tools",
-                        "--verbose-versions",
-                        "--yes",
-                    ])];
+                case 3:
+                    bubblewrap = [];
+                    // [info]: <https://github.com/ocaml/opam/issues/3424>
+                    if (systemVersion !== "16.04") {
+                        bubblewrap.push("bubblewrap");
+                    }
+                    return [4 /*yield*/, exec_1.exec("sudo", __spreadArrays([
+                            "apt-get",
+                            "install",
+                            "darcs",
+                            "musl-tools"
+                        ], bubblewrap, [
+                            "--verbose-versions",
+                            "--yes",
+                        ]))];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 7];
