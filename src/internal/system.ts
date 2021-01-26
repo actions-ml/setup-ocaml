@@ -2,6 +2,7 @@ import type { ExecOptions } from "@actions/exec";
 import { exec } from "@actions/exec";
 import { promises as fs } from "fs";
 import * as os from "os";
+import * as process from "process";
 
 export const IS_WINDOWS = process.platform === "win32";
 

@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import { exec } from "@actions/exec";
 import * as os from "os";
+import * as process from "process";
 
 import { DUNE_CACHE, OCAML_VERSION, OPAM_DEPEXT, OPAM_PIN } from "./constants";
 import { installDepext, installSystemPackages } from "./depext";

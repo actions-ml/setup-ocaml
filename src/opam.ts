@@ -5,6 +5,7 @@ import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import * as cheerio from "cheerio";
 import { promises as fs } from "fs";
+import * as process from "process";
 import * as semver from "semver";
 
 import {

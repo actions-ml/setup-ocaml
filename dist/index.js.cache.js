@@ -30370,6 +30370,7 @@ exports.installer = void 0;
 var core = __webpack_require__(2186);
 var exec_1 = __webpack_require__(1514);
 var os = __webpack_require__(2087);
+var process = __webpack_require__(1765);
 var constants_1 = __webpack_require__(9042);
 var depext_1 = __webpack_require__(4723);
 var dune_1 = __webpack_require__(1903);
@@ -30921,6 +30922,7 @@ exports.getOpamRoot = exports.getSystemIdentificationData = exports.getPlatform 
 var exec_1 = __webpack_require__(1514);
 var fs_1 = __webpack_require__(5747);
 var os = __webpack_require__(2087);
+var process = __webpack_require__(1765);
 exports.IS_WINDOWS = process.platform === "win32";
 function getArchitecture() {
     switch (os.arch()) {
@@ -31080,6 +31082,7 @@ var io = __webpack_require__(7436);
 var tc = __webpack_require__(7784);
 var cheerio = __webpack_require__(3094);
 var fs_1 = __webpack_require__(5747);
+var process = __webpack_require__(1765);
 var semver = __webpack_require__(1383);
 var constants_1 = __webpack_require__(9042);
 var cacheHttpClient_1 = __webpack_require__(1650);
@@ -31689,6 +31692,14 @@ module.exports = require("os");;
 
 "use strict";
 module.exports = require("path");;
+
+/***/ }),
+
+/***/ 1765:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("process");;
 
 /***/ }),
 
