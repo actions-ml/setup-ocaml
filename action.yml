@@ -8,6 +8,9 @@ inputs:
   ocaml-version:
     description: The version of the OCaml compiler to initialise
     default: latest
+  dune-cache:
+    description: Specify whether to use the dune cache
+    default: false
   opam-depext:
     description:
       Specify whether to query and install external dependencies of opam

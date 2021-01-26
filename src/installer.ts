@@ -2,8 +2,9 @@ import * as core from "@actions/core";
 import { exec } from "@actions/exec";
 import * as os from "os";
 
-import { OCAML_VERSION, OPAM_DEPEXT, OPAM_PIN } from "./constants";
+import { DUNE_CACHE, OCAML_VERSION, OPAM_DEPEXT, OPAM_PIN } from "./constants";
 import { installDepext, installSystemPackages } from "./depext";
+import { installDune, startDuneCacheDaemon } from "./dune";
 import { listAllOpamFileNames } from "./internal/listAllOpamFileNames";
 import { resolveVersion } from "./internal/resolveVersion";
 import { getPlatform } from "./internal/system";
@@ -28,6 +29,10 @@ export async function installer(): Promise<void> {
   const version = await resolveVersion(OCAML_VERSION);
   await setupOpam(version);
   await installDepext();
+  if (DUNE_CACHE.toLowerCase() === "true") {
+    await installDune();
+    await startDuneCacheDaemon();
+  }
   const fnames = await listAllOpamFileNames();
   if (fnames.length > 0) {
     if (OPAM_PIN.toLocaleLowerCase() === "true") {

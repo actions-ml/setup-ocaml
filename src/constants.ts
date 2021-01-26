@@ -2,6 +2,8 @@ import * as core from "@actions/core";
 
 export const GITHUB_TOKEN = core.getInput("github-token");
 
+export const DUNE_CACHE = core.getInput("dune-cache");
+
 export const OCAML_VERSION = core.getInput("ocaml-version");
 
 export const OPAM_DEPEXT = core.getInput("opam-depext");
