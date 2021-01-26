@@ -23,8 +23,6 @@ async function composeKeys() {
     key,
     `${platform}-${architecture}-${OCAML_VERSION}-${runId}-`,
     `${platform}-${architecture}-${OCAML_VERSION}-`,
-    `${platform}-${architecture}-`,
-    `${platform}-`,
   ];
   return { key, restoreKeys };
 }

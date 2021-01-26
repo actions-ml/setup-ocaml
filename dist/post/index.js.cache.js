@@ -54869,8 +54869,6 @@ function composeKeys() {
                         key,
                         platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + runId + "-",
                         platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-",
-                        platform + "-" + architecture + "-",
-                        platform + "-",
                     ];
                     return [2 /*return*/, { key: key, restoreKeys: restoreKeys }];
             }
