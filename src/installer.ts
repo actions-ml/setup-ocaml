@@ -35,10 +35,10 @@ export async function installer(): Promise<void> {
   }
   const fnames = await listAllOpamFileNames();
   if (fnames.length > 0) {
-    if (OPAM_PIN.toLocaleLowerCase() === "true") {
+    if (OPAM_PIN.toLowerCase() === "true") {
       await pin(fnames);
     }
-    if (OPAM_DEPEXT.toLocaleLowerCase() === "true") {
+    if (OPAM_DEPEXT.toLowerCase() === "true") {
       await installSystemPackages(fnames);
     }
   }

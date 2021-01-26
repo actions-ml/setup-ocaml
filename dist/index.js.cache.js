@@ -30420,13 +30420,13 @@ function installer() {
                 case 7:
                     fnames = _a.sent();
                     if (!(fnames.length > 0)) return [3 /*break*/, 11];
-                    if (!(constants_1.OPAM_PIN.toLocaleLowerCase() === "true")) return [3 /*break*/, 9];
+                    if (!(constants_1.OPAM_PIN.toLowerCase() === "true")) return [3 /*break*/, 9];
                     return [4 /*yield*/, opam_1.pin(fnames)];
                 case 8:
                     _a.sent();
                     _a.label = 9;
                 case 9:
-                    if (!(constants_1.OPAM_DEPEXT.toLocaleLowerCase() === "true")) return [3 /*break*/, 11];
+                    if (!(constants_1.OPAM_DEPEXT.toLowerCase() === "true")) return [3 /*break*/, 11];
                     return [4 /*yield*/, depext_1.installSystemPackages(fnames)];
                 case 10:
                     _a.sent();
