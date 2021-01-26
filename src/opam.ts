@@ -71,24 +71,27 @@ async function acquireOpamUnix() {
 
 async function initializeOpamUnix(version: string) {
   const platform = getPlatform();
-  if (platform === "linux") {
-    const { version: systemVersion } = await getSystemIdentificationData();
-    if (systemVersion === "16.04" || systemVersion === "18.04") {
-      // Fix musl-tools bug in ubuntu 18.04;
-      // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
-      await exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"]);
+  const isGitHubRunner = process.env.ImageOS !== undefined;
+  if (isGitHubRunner) {
+    if (platform === "linux") {
+      const { version: systemVersion } = await getSystemIdentificationData();
+      if (systemVersion === "16.04" || systemVersion === "18.04") {
+        // Fix musl-tools bug in ubuntu 18.04;
+        // ref: <https://github.com/ocaml/ocaml/issues/9131#issuecomment-599765888>
+        await exec("sudo", ["add-apt-repository", "ppa:avsm/musl", "--yes"]);
+      }
+      await exec("sudo", [
+        "apt-get",
+        "install",
+        "bubblewrap",
+        "darcs",
+        "musl-tools",
+        "--verbose-versions",
+        "--yes",
+      ]);
+    } else if (platform === "macos") {
+      await exec("brew", ["install", "darcs", "mercurial", "--verbose"]);
     }
-    await exec("sudo", [
-      "apt-get",
-      "install",
-      "bubblewrap",
-      "darcs",
-      "musl-tools",
-      "--verbose-versions",
-      "--yes",
-    ]);
-  } else if (platform === "macos") {
-    await exec("brew", ["install", "darcs", "mercurial", "--verbose"]);
   }
   const disableSandboxing = [];
   if (OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true") {
@@ -99,11 +102,10 @@ async function initializeOpamUnix(version: string) {
   const baseUrl = "https://cache.actions-ml.org";
   const imageName = await composeImageName();
   const url = `${baseUrl}/${version}/${imageName}/${version}.tar.gz`;
-  const isSelfHostedRunner = process.env.ImageOS === undefined;
   const isCacheFileExist = await checkIfCacheFileExists(url);
   const isVariant = version.includes("+");
   const variantVersion = version.split("+")[0];
-  let isCacheExist = !isSelfHostedRunner && !IS_WINDOWS && isCacheFileExist;
+  let isCacheExist = !IS_WINDOWS && isGitHubRunner && isCacheFileExist;
   if (isCacheExist) {
     try {
       await retrieveCache(url, version);

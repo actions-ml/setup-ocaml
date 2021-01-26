@@ -31053,11 +31053,13 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var platform, systemVersion, disableSandboxing, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
+        var platform, isGitHubRunner, systemVersion, disableSandboxing, repository, baseUrl, imageName, url, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     platform = system_1.getPlatform();
+                    isGitHubRunner = process.env.ImageOS !== undefined;
+                    if (!isGitHubRunner) return [3 /*break*/, 7];
                     if (!(platform === "linux")) return [3 /*break*/, 5];
                     return [4 /*yield*/, system_1.getSystemIdentificationData()];
                 case 1:
@@ -31100,13 +31102,12 @@ function initializeOpamUnix(version) {
                 case 8:
                     imageName = _a.sent();
                     url = baseUrl + "/" + version + "/" + imageName + "/" + version + ".tar.gz";
-                    isSelfHostedRunner = process.env.ImageOS === undefined;
                     return [4 /*yield*/, cacheHttpClient_1.checkIfCacheFileExists(url)];
                 case 9:
                     isCacheFileExist = _a.sent();
                     isVariant = version.includes("+");
                     variantVersion = version.split("+")[0];
-                    isCacheExist = !isSelfHostedRunner && !system_1.IS_WINDOWS && isCacheFileExist;
+                    isCacheExist = !system_1.IS_WINDOWS && isGitHubRunner && isCacheFileExist;
                     if (!isCacheExist) return [3 /*break*/, 13];
                     _a.label = 10;
                 case 10:
