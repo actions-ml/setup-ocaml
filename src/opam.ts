@@ -7,7 +7,11 @@ import * as cheerio from "cheerio";
 import { promises as fs } from "fs";
 import * as semver from "semver";
 
-import { GITHUB_TOKEN, OPAM_REPOSITORY } from "./constants";
+import {
+  GITHUB_TOKEN,
+  OPAM_DISABLE_SANDBOXING,
+  OPAM_REPOSITORY,
+} from "./constants";
 import {
   checkIfCacheFileExists,
   makeHttpClient,
@@ -86,6 +90,10 @@ async function initializeOpamUnix(version: string) {
   } else if (platform === "macos") {
     await exec("brew", ["install", "darcs", "mercurial", "--verbose"]);
   }
+  const disableSandboxing = [];
+  if (OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true") {
+    disableSandboxing.push("--disable-sandboxing");
+  }
   const repository =
     OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
   const baseUrl = "https://cache.actions-ml.org";
@@ -119,6 +127,7 @@ async function initializeOpamUnix(version: string) {
         ? `ocaml-variants.${version}`
         : `ocaml-base-compiler.${version}`,
       "--auto-setup",
+      ...disableSandboxing,
       "--verbose",
       "--yes",
     ]);
@@ -138,6 +147,7 @@ async function initializeOpamUnix(version: string) {
         ? `ocaml-variants.${version}`
         : `ocaml-base-compiler.${version}`,
       "--auto-setup",
+      ...disableSandboxing,
       "--verbose",
       "--yes",
     ]);
@@ -243,6 +253,13 @@ async function initializeOpamWindows(version: string) {
   const repository =
     OPAM_REPOSITORY ||
     "https://github.com/fdopen/opam-repository-mingw.git#opam2";
+  const disableSandboxing = [];
+  if (
+    OPAM_DISABLE_SANDBOXING === "" ||
+    OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true"
+  ) {
+    disableSandboxing.push("--disable-sandboxing");
+  }
   await exec("opam", [
     "init",
     "default",
@@ -252,7 +269,7 @@ async function initializeOpamWindows(version: string) {
       ? `ocaml-variants.${version}`
       : `ocaml-variants.${version}+mingw64c`,
     "--auto-setup",
-    "--disable-sandboxing",
+    ...disableSandboxing,
     "--verbose",
     "--yes",
   ]);

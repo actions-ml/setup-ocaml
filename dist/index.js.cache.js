@@ -30066,11 +30066,12 @@ try {
 "use strict";
 
 exports.__esModule = true;
-exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.GITHUB_TOKEN = void 0;
+exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.GITHUB_TOKEN = void 0;
 var core = __webpack_require__(2186);
 exports.GITHUB_TOKEN = core.getInput("github-token");
 exports.OCAML_VERSION = core.getInput("ocaml-version");
 exports.OPAM_DEPEXT = core.getInput("opam-depext");
+exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing");
 exports.OPAM_PIN = core.getInput("opam-pin");
 exports.OPAM_REPOSITORY = core.getInput("opam-repository");
 
@@ -30972,6 +30973,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 exports.pin = exports.setupOpam = void 0;
 var core = __webpack_require__(2186);
@@ -31045,7 +31053,7 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var platform, systemVersion, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
+        var platform, systemVersion, disableSandboxing, repository, baseUrl, imageName, url, isSelfHostedRunner, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -31082,6 +31090,10 @@ function initializeOpamUnix(version) {
                     _a.sent();
                     _a.label = 7;
                 case 7:
+                    disableSandboxing = [];
+                    if (constants_1.OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true") {
+                        disableSandboxing.push("--disable-sandboxing");
+                    }
                     repository = constants_1.OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
                     baseUrl = "https://cache.actions-ml.org";
                     return [4 /*yield*/, imageName_1.composeImageName()];
@@ -31113,7 +31125,7 @@ function initializeOpamUnix(version) {
                     _a.label = 14;
                 case 14:
                     _a.trys.push([14, 16, , 17]);
-                    return [4 /*yield*/, exec_1.exec("opam", [
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
                             "init",
                             "default",
                             repository,
@@ -31125,10 +31137,11 @@ function initializeOpamUnix(version) {
                                 : isVariant
                                     ? "ocaml-variants." + version
                                     : "ocaml-base-compiler." + version,
-                            "--auto-setup",
+                            "--auto-setup"
+                        ], disableSandboxing, [
                             "--verbose",
                             "--yes",
-                        ])];
+                        ]))];
                 case 15:
                     _a.sent();
                     return [3 /*break*/, 17];
@@ -31145,7 +31158,7 @@ function initializeOpamUnix(version) {
                     return [4 /*yield*/, io.rmRF(opamRoot)];
                 case 19:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", [
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
                             "init",
                             "default",
                             repository,
@@ -31153,10 +31166,11 @@ function initializeOpamUnix(version) {
                             isVariant
                                 ? "ocaml-variants." + version
                                 : "ocaml-base-compiler." + version,
-                            "--auto-setup",
+                            "--auto-setup"
+                        ], disableSandboxing, [
                             "--verbose",
                             "--yes",
-                        ])];
+                        ]))];
                 case 20:
                     _a.sent();
                     _a.label = 21;
@@ -31325,14 +31339,19 @@ function acquireOpamWindows() {
 }
 function initializeOpamWindows(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var isVariant, repository, wrapperbin, opamBat;
+        var isVariant, repository, disableSandboxing, wrapperbin, opamBat;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     isVariant = version.includes("+");
                     repository = constants_1.OPAM_REPOSITORY ||
                         "https://github.com/fdopen/opam-repository-mingw.git#opam2";
-                    return [4 /*yield*/, exec_1.exec("opam", [
+                    disableSandboxing = [];
+                    if (constants_1.OPAM_DISABLE_SANDBOXING === "" ||
+                        constants_1.OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true") {
+                        disableSandboxing.push("--disable-sandboxing");
+                    }
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
                             "init",
                             "default",
                             repository,
@@ -31340,11 +31359,11 @@ function initializeOpamWindows(version) {
                             isVariant
                                 ? "ocaml-variants." + version
                                 : "ocaml-variants." + version + "+mingw64c",
-                            "--auto-setup",
-                            "--disable-sandboxing",
+                            "--auto-setup"
+                        ], disableSandboxing, [
                             "--verbose",
                             "--yes",
-                        ])];
+                        ]))];
                 case 1:
                     _a.sent();
                     wrapperbin = "c:\\cygwin\\wrapperbin";

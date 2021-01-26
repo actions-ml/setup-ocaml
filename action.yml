@@ -13,6 +13,10 @@ inputs:
       Specify whether to query and install external dependencies of opam
       packages automatically
     default: true
+  opam-disable-sandboxing:
+    description:
+      Specify whether to use a default configuration with sandboxing disabled
+    default:
   opam-pin:
     description:
       Specify whether to pin all opam local packages automatically that exist in
