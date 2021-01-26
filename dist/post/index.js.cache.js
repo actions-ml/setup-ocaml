@@ -54936,9 +54936,7 @@ function saveCache() {
         var paths, key;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    core.startGroup("Save opam and dune cache files");
-                    return [4 /*yield*/, composePaths()];
+                case 0: return [4 /*yield*/, composePaths()];
                 case 1:
                     paths = _a.sent();
                     return [4 /*yield*/, composeKeys()];
@@ -54947,7 +54945,6 @@ function saveCache() {
                     return [4 /*yield*/, cache.saveCache(paths, key)];
                 case 3:
                     _a.sent();
-                    core.endGroup();
                     return [2 /*return*/];
             }
         });

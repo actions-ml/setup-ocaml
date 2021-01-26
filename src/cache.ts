@@ -62,9 +62,7 @@ export async function restoreCache(): Promise<void> {
 }
 
 export async function saveCache(): Promise<void> {
-  core.startGroup("Save opam and dune cache files");
   const paths = await composePaths();
   const { key } = await composeKeys();
   await cache.saveCache(paths, key);
-  core.endGroup();
 }
