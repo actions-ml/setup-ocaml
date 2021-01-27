@@ -55073,7 +55073,7 @@ function trimDuneCacheDaemon() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Remove oldest files from the dune cache to free space");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "trim", "--size", "50MB"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "trim", "--size", "25MB"])];
                 case 1:
                     _a.sent();
                     core.endGroup();

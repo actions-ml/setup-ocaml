@@ -21,6 +21,6 @@ export async function stopDuneCacheDaemon(): Promise<void> {
 
 export async function trimDuneCacheDaemon(): Promise<void> {
   core.startGroup("Remove oldest files from the dune cache to free space");
-  await exec("opam", ["exec", "--", "dune", "cache", "trim", "--size", "50MB"]);
+  await exec("opam", ["exec", "--", "dune", "cache", "trim", "--size", "25MB"]);
   core.endGroup();
 }
