@@ -1,5 +1,11 @@
 import * as core from "@actions/core";
 import { exec } from "@actions/exec";
+import * as io from "@actions/io";
+import { promises as fs } from "fs";
+import * as os from "os";
+import * as path from "path";
+
+import { IS_WINDOWS } from "./internal/system";
 
 export async function installDune(): Promise<void> {
   core.startGroup("Install dune");
@@ -7,8 +13,28 @@ export async function installDune(): Promise<void> {
   core.endGroup();
 }
 
+async function createDuneGlobalConfigFile(): Promise<void> {
+  const xdgConfigHome = process.env.XDG_CONFIG_HOME;
+  const homeDir = os.homedir();
+  const configDir = IS_WINDOWS
+    ? path.join(homeDir, "Local Settings")
+    : xdgConfigHome
+    ? path.join(xdgConfigHome)
+    : path.join(homeDir, ".config");
+  const duneConfigDir = path.join(configDir, "dune");
+  await io.mkdirP(duneConfigDir);
+  const configFilePath = path.join(duneConfigDir, "config");
+  const config = IS_WINDOWS
+    ? "(lang dune 2.0)\r\n(cache enabled)"
+    : "(lang dune 2.0)\n(cache enabled)";
+  await fs.writeFile(configFilePath, config, {
+    mode: 0o666,
+  });
+}
+
 export async function startDuneCacheDaemon(): Promise<void> {
   core.startGroup("Start the dune cache daemon");
+  await createDuneGlobalConfigFile();
   await exec("opam", ["exec", "--", "dune", "cache", "start"]);
   core.endGroup();
 }

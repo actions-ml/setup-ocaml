@@ -80993,6 +80993,11 @@ exports.__esModule = true;
 exports.trimDuneCacheDaemon = exports.stopDuneCacheDaemon = exports.startDuneCacheDaemon = exports.installDune = void 0;
 var core = __webpack_require__(2186);
 var exec_1 = __webpack_require__(1514);
+var io = __webpack_require__(7436);
+var fs_1 = __webpack_require__(5747);
+var os = __webpack_require__(2087);
+var path = __webpack_require__(5622);
+var system_1 = __webpack_require__(2704);
 function installDune() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -81009,14 +81014,48 @@ function installDune() {
     });
 }
 exports.installDune = installDune;
+function createDuneGlobalConfigFile() {
+    return __awaiter(this, void 0, void 0, function () {
+        var xdgConfigHome, homeDir, configDir, duneConfigDir, configFilePath, config;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    xdgConfigHome = process.env.XDG_CONFIG_HOME;
+                    homeDir = os.homedir();
+                    configDir = system_1.IS_WINDOWS
+                        ? path.join(homeDir, "Local Settings")
+                        : xdgConfigHome
+                            ? path.join(xdgConfigHome)
+                            : path.join(homeDir, ".config");
+                    duneConfigDir = path.join(configDir, "dune");
+                    return [4 /*yield*/, io.mkdirP(duneConfigDir)];
+                case 1:
+                    _a.sent();
+                    configFilePath = path.join(duneConfigDir, "config");
+                    config = system_1.IS_WINDOWS
+                        ? "(lang dune 2.0)\r\n(cache enabled)"
+                        : "(lang dune 2.0)\n(cache enabled)";
+                    return [4 /*yield*/, fs_1.promises.writeFile(configFilePath, config, {
+                            mode: 438,
+                        })];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function startDuneCacheDaemon() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Start the dune cache daemon");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "start"])];
+                    return [4 /*yield*/, createDuneGlobalConfigFile()];
                 case 1:
+                    _a.sent();
+                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "start"])];
+                case 2:
                     _a.sent();
                     core.endGroup();
                     return [2 /*return*/];
