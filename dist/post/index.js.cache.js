@@ -54866,7 +54866,6 @@ function composeKeys() {
                     architecture = _a.sent();
                     key = platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + runId + "-" + runNumber;
                     restoreKeys = [
-                        key,
                         platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + runId + "-",
                         platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-",
                     ];

@@ -20,7 +20,6 @@ async function composeKeys() {
   const architecture = await getArchitecture();
   const key = `${platform}-${architecture}-${OCAML_VERSION}-${runId}-${runNumber}`;
   const restoreKeys = [
-    key,
     `${platform}-${architecture}-${OCAML_VERSION}-${runId}-`,
     `${platform}-${architecture}-${OCAML_VERSION}-`,
   ];
