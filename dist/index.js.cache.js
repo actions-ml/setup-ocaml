@@ -81997,7 +81997,7 @@ function initializeOpamUnix(version) {
                     return [3 /*break*/, 7];
                 case 5:
                     if (!(platform === "macos")) return [3 /*break*/, 7];
-                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial", "--verbose"])];
+                    return [4 /*yield*/, exec_1.exec("brew", ["install", "darcs", "mercurial"])];
                 case 6:
                     _a.sent();
                     _a.label = 7;

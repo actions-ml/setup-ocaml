@@ -96,7 +96,7 @@ async function initializeOpamUnix(version: string) {
         "--yes",
       ]);
     } else if (platform === "macos") {
-      await exec("brew", ["install", "darcs", "mercurial", "--verbose"]);
+      await exec("brew", ["install", "darcs", "mercurial"]);
     }
   }
   const disableSandboxing = [];
