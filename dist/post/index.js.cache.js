@@ -55042,7 +55042,7 @@ function installDune() {
 exports.installDune = installDune;
 function createDuneGlobalConfigFile() {
     return __awaiter(this, void 0, void 0, function () {
-        var xdgConfigHome, homeDir, configDir, duneConfigDir, configFilePath, config;
+        var xdgConfigHome, homeDir, configDir, duneConfigDir, configFilePath, config, contents;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -55058,10 +55058,13 @@ function createDuneGlobalConfigFile() {
                 case 1:
                     _a.sent();
                     configFilePath = path.join(duneConfigDir, "config");
-                    config = system_1.IS_WINDOWS
-                        ? "(lang dune 2.0)\r\n(cache enabled)"
-                        : "(lang dune 2.0)\n(cache enabled)";
-                    return [4 /*yield*/, fs_1.promises.writeFile(configFilePath, config, {
+                    config = [
+                        "(lang dune 2.1)",
+                        "(cache enabled)",
+                        "(cache-duplication copy)",
+                    ];
+                    contents = system_1.IS_WINDOWS ? config.join("\r\n") : config.join("\n");
+                    return [4 /*yield*/, fs_1.promises.writeFile(configFilePath, contents, {
                             mode: 438,
                         })];
                 case 2:
@@ -55112,7 +55115,15 @@ function trimDuneCacheDaemon() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Remove oldest files from the dune cache to free space");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "trim", "--size", "25MB"])];
+                    return [4 /*yield*/, exec_1.exec("opam", [
+                            "exec",
+                            "--",
+                            "dune",
+                            "cache",
+                            "trim",
+                            "--size",
+                            "100MB",
+                        ])];
                 case 1:
                     _a.sent();
                     core.endGroup();

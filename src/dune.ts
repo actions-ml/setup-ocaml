@@ -24,10 +24,13 @@ async function createDuneGlobalConfigFile(): Promise<void> {
   const duneConfigDir = path.join(configDir, "dune");
   await io.mkdirP(duneConfigDir);
   const configFilePath = path.join(duneConfigDir, "config");
-  const config = IS_WINDOWS
-    ? "(lang dune 2.0)\r\n(cache enabled)"
-    : "(lang dune 2.0)\n(cache enabled)";
-  await fs.writeFile(configFilePath, config, {
+  const config = [
+    "(lang dune 2.1)",
+    "(cache enabled)",
+    "(cache-duplication copy)",
+  ];
+  const contents = IS_WINDOWS ? config.join("\r\n") : config.join("\n");
+  await fs.writeFile(configFilePath, contents, {
     mode: 0o666,
   });
 }
@@ -47,6 +50,14 @@ export async function stopDuneCacheDaemon(): Promise<void> {
 
 export async function trimDuneCacheDaemon(): Promise<void> {
   core.startGroup("Remove oldest files from the dune cache to free space");
-  await exec("opam", ["exec", "--", "dune", "cache", "trim", "--size", "25MB"]);
+  await exec("opam", [
+    "exec",
+    "--",
+    "dune",
+    "cache",
+    "trim",
+    "--size",
+    "100MB",
+  ]);
   core.endGroup();
 }
