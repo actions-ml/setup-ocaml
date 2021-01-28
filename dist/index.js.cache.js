@@ -81242,7 +81242,7 @@ function installer() {
             switch (_a.label) {
                 case 0:
                     numberOfProcessors = os.cpus().length;
-                    core.exportVariable("OPAMJOBS", numberOfProcessors);
+                    core.exportVariable("OPAMJOBS", numberOfProcessors + 2);
                     core.exportVariable("OPAMDOWNLOADJOBS", 1);
                     core.exportVariable("OPAMERRLOGLEN", 0);
                     core.exportVariable("OPAMPRECISETRACKING", 1);
