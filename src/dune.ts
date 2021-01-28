@@ -13,7 +13,8 @@ export async function installDune(): Promise<void> {
   core.endGroup();
 }
 
-async function createDuneGlobalConfigFile(): Promise<void> {
+export async function createDuneGlobalConfigFile(): Promise<void> {
+  core.startGroup("Create the dune global configuration file");
   const xdgConfigHome = process.env.XDG_CONFIG_HOME;
   const homeDir = os.homedir();
   const configDir = IS_WINDOWS
@@ -25,19 +26,20 @@ async function createDuneGlobalConfigFile(): Promise<void> {
   await io.mkdirP(duneConfigDir);
   const configFilePath = path.join(duneConfigDir, "config");
   const config = [
-    "(lang dune 2.1)",
+    "(lang dune 2.0)",
     "(cache enabled)",
-    "(cache-duplication copy)",
+    "(cache-transport direct)",
   ];
   const contents = IS_WINDOWS ? config.join("\r\n") : config.join("\n");
   await fs.writeFile(configFilePath, contents, {
     mode: 0o666,
   });
+  core.info(`Successfully created the configuration file in ${configFilePath}`);
+  core.endGroup();
 }
 
 export async function startDuneCacheDaemon(): Promise<void> {
   core.startGroup("Start the dune cache daemon");
-  await createDuneGlobalConfigFile();
   await exec("opam", ["exec", "--", "dune", "cache", "start"]);
   core.endGroup();
 }
@@ -48,7 +50,7 @@ export async function stopDuneCacheDaemon(): Promise<void> {
   core.endGroup();
 }
 
-export async function trimDuneCacheDaemon(): Promise<void> {
+export async function trimDuneCache(): Promise<void> {
   core.startGroup("Remove oldest files from the dune cache to free space");
   await exec("opam", [
     "exec",
