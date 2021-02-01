@@ -80990,14 +80990,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.trimDuneCache = exports.stopDuneCacheDaemon = exports.startDuneCacheDaemon = exports.createDuneGlobalConfigFile = exports.installDune = void 0;
+exports.trimDuneCache = exports.installDune = void 0;
 var core = __webpack_require__(2186);
 var exec_1 = __webpack_require__(1514);
-var io = __webpack_require__(7436);
-var fs_1 = __webpack_require__(5747);
-var os = __webpack_require__(2087);
-var path = __webpack_require__(5622);
-var system_1 = __webpack_require__(2704);
 function installDune() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -81014,76 +81009,6 @@ function installDune() {
     });
 }
 exports.installDune = installDune;
-function createDuneGlobalConfigFile() {
-    return __awaiter(this, void 0, void 0, function () {
-        var xdgConfigHome, homeDir, configDir, duneConfigDir, configFilePath, config, contents;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Create the dune global configuration file");
-                    xdgConfigHome = process.env.XDG_CONFIG_HOME;
-                    homeDir = os.homedir();
-                    configDir = system_1.IS_WINDOWS
-                        ? path.join(homeDir, "Local Settings")
-                        : xdgConfigHome
-                            ? path.join(xdgConfigHome)
-                            : path.join(homeDir, ".config");
-                    duneConfigDir = path.join(configDir, "dune");
-                    return [4 /*yield*/, io.mkdirP(duneConfigDir)];
-                case 1:
-                    _a.sent();
-                    configFilePath = path.join(duneConfigDir, "config");
-                    config = [
-                        "(lang dune 2.0)",
-                        "(cache enabled)",
-                        "(cache-transport direct)",
-                    ];
-                    contents = system_1.IS_WINDOWS ? config.join("\r\n") : config.join("\n");
-                    return [4 /*yield*/, fs_1.promises.writeFile(configFilePath, contents, {
-                            mode: 438,
-                        })];
-                case 2:
-                    _a.sent();
-                    core.info("Successfully created the configuration file in " + configFilePath);
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.createDuneGlobalConfigFile = createDuneGlobalConfigFile;
-function startDuneCacheDaemon() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Start the dune cache daemon");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "start"])];
-                case 1:
-                    _a.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.startDuneCacheDaemon = startDuneCacheDaemon;
-function stopDuneCacheDaemon() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Stop the dune cache daemon");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "stop"])];
-                case 1:
-                    _a.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.stopDuneCacheDaemon = stopDuneCacheDaemon;
 function trimDuneCache() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -81270,40 +81195,36 @@ function installer() {
                     return [4 /*yield*/, depext_1.installDepext()];
                 case 4:
                     _a.sent();
-                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 8];
+                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 6];
                     return [4 /*yield*/, dune_1.installDune()];
                 case 5:
                     _a.sent();
-                    return [4 /*yield*/, dune_1.createDuneGlobalConfigFile()];
-                case 6:
-                    _a.sent();
-                    return [4 /*yield*/, dune_1.startDuneCacheDaemon()];
+                    core.exportVariable("DUNE_CACHE", "enabled");
+                    core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
+                    _a.label = 6;
+                case 6: return [4 /*yield*/, listAllOpamFileNames_1.listAllOpamFileNames()];
                 case 7:
-                    _a.sent();
-                    _a.label = 8;
-                case 8: return [4 /*yield*/, listAllOpamFileNames_1.listAllOpamFileNames()];
-                case 9:
                     fnames = _a.sent();
-                    if (!(fnames.length > 0)) return [3 /*break*/, 13];
-                    if (!(constants_1.OPAM_PIN.toLowerCase() === "true")) return [3 /*break*/, 11];
+                    if (!(fnames.length > 0)) return [3 /*break*/, 11];
+                    if (!(constants_1.OPAM_PIN.toLowerCase() === "true")) return [3 /*break*/, 9];
                     return [4 /*yield*/, opam_1.pin(fnames)];
+                case 8:
+                    _a.sent();
+                    _a.label = 9;
+                case 9:
+                    if (!(constants_1.OPAM_DEPEXT.toLowerCase() === "true")) return [3 /*break*/, 11];
+                    return [4 /*yield*/, depext_1.installSystemPackages(fnames)];
                 case 10:
                     _a.sent();
                     _a.label = 11;
-                case 11:
-                    if (!(constants_1.OPAM_DEPEXT.toLowerCase() === "true")) return [3 /*break*/, 13];
-                    return [4 /*yield*/, depext_1.installSystemPackages(fnames)];
+                case 11: return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
                 case 12:
                     _a.sent();
-                    _a.label = 13;
-                case 13: return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
-                case 14:
-                    _a.sent();
                     return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
-                case 15:
+                case 13:
                     _a.sent();
                     return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "-version"])];
-                case 16:
+                case 14:
                     _a.sent();
                     return [2 /*return*/];
             }

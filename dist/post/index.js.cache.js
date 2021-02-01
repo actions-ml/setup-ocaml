@@ -55016,14 +55016,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.trimDuneCache = exports.stopDuneCacheDaemon = exports.startDuneCacheDaemon = exports.createDuneGlobalConfigFile = exports.installDune = void 0;
+exports.trimDuneCache = exports.installDune = void 0;
 var core = __webpack_require__(2186);
 var exec_1 = __webpack_require__(1514);
-var io = __webpack_require__(7436);
-var fs_1 = __webpack_require__(5747);
-var os = __webpack_require__(2087);
-var path = __webpack_require__(5622);
-var system_1 = __webpack_require__(2704);
 function installDune() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -55040,76 +55035,6 @@ function installDune() {
     });
 }
 exports.installDune = installDune;
-function createDuneGlobalConfigFile() {
-    return __awaiter(this, void 0, void 0, function () {
-        var xdgConfigHome, homeDir, configDir, duneConfigDir, configFilePath, config, contents;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Create the dune global configuration file");
-                    xdgConfigHome = process.env.XDG_CONFIG_HOME;
-                    homeDir = os.homedir();
-                    configDir = system_1.IS_WINDOWS
-                        ? path.join(homeDir, "Local Settings")
-                        : xdgConfigHome
-                            ? path.join(xdgConfigHome)
-                            : path.join(homeDir, ".config");
-                    duneConfigDir = path.join(configDir, "dune");
-                    return [4 /*yield*/, io.mkdirP(duneConfigDir)];
-                case 1:
-                    _a.sent();
-                    configFilePath = path.join(duneConfigDir, "config");
-                    config = [
-                        "(lang dune 2.0)",
-                        "(cache enabled)",
-                        "(cache-transport direct)",
-                    ];
-                    contents = system_1.IS_WINDOWS ? config.join("\r\n") : config.join("\n");
-                    return [4 /*yield*/, fs_1.promises.writeFile(configFilePath, contents, {
-                            mode: 438,
-                        })];
-                case 2:
-                    _a.sent();
-                    core.info("Successfully created the configuration file in " + configFilePath);
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.createDuneGlobalConfigFile = createDuneGlobalConfigFile;
-function startDuneCacheDaemon() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Start the dune cache daemon");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "start"])];
-                case 1:
-                    _a.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.startDuneCacheDaemon = startDuneCacheDaemon;
-function stopDuneCacheDaemon() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Stop the dune cache daemon");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "cache", "stop"])];
-                case 1:
-                    _a.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.stopDuneCacheDaemon = stopDuneCacheDaemon;
 function trimDuneCache() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -55339,24 +55264,21 @@ function run() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 3];
-                    return [4 /*yield*/, dune_1.stopDuneCacheDaemon()];
+                    _a.trys.push([0, 4, , 5]);
+                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, dune_1.trimDuneCache()];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, dune_1.trimDuneCache()];
-                case 2:
+                    _a.label = 2;
+                case 2: return [4 /*yield*/, cache_1.saveCache()];
+                case 3:
                     _a.sent();
-                    _a.label = 3;
-                case 3: return [4 /*yield*/, cache_1.saveCache()];
+                    return [3 /*break*/, 5];
                 case 4:
-                    _a.sent();
-                    return [3 /*break*/, 6];
-                case 5:
                     error_1 = _a.sent();
                     core.info(error_1.message);
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
