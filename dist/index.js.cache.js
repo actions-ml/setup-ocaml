@@ -80993,6 +80993,9 @@ exports.__esModule = true;
 exports.trimDuneCache = exports.installDune = void 0;
 var core = __webpack_require__(2186);
 var exec_1 = __webpack_require__(1514);
+var github = __webpack_require__(5438);
+var constants_1 = __webpack_require__(9042);
+var octokit = github.getOctokit(constants_1.GITHUB_TOKEN);
 function installDune() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -81011,21 +81014,32 @@ function installDune() {
 exports.installDune = installDune;
 function trimDuneCache() {
     return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a, owner, repo, run_id, totalCount, cacheSize;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     core.startGroup("Remove oldest files from the dune cache to free space");
+                    _a = process.env.GITHUB_REPOSITORY.split("/"), owner = _a[0], repo = _a[1];
+                    run_id = parseInt(process.env.GITHUB_RUN_ID);
+                    return [4 /*yield*/, octokit.actions.listJobsForWorkflowRun({
+                            owner: owner,
+                            repo: repo,
+                            run_id: run_id,
+                        })];
+                case 1:
+                    totalCount = (_b.sent()).data.total_count;
+                    cacheSize = Math.floor(5000 / totalCount / 2);
                     return [4 /*yield*/, exec_1.exec("opam", [
                             "exec",
                             "--",
                             "dune",
                             "cache",
                             "trim",
-                            "--size",
-                            "100MB",
+                            "--trimmed-size",
+                            cacheSize + "MB",
                         ])];
-                case 1:
-                    _a.sent();
+                case 2:
+                    _b.sent();
                     core.endGroup();
                     return [2 /*return*/];
             }
