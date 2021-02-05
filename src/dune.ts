@@ -32,7 +32,7 @@ export async function trimDuneCache(): Promise<void> {
     "dune",
     "cache",
     "trim",
-    "--trimmed-size",
+    "--size",
     `${cacheSize}MB`,
   ]);
   core.endGroup();

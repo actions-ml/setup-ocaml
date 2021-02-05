@@ -57893,7 +57893,7 @@ function trimDuneCache() {
                             "dune",
                             "cache",
                             "trim",
-                            "--trimmed-size",
+                            "--size",
                             cacheSize + "MB",
                         ])];
                 case 2:
