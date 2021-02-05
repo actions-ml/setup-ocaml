@@ -80730,6 +80730,7 @@ var path = __webpack_require__(5622);
 var process = __webpack_require__(1765);
 var constants_1 = __webpack_require__(9042);
 var system_1 = __webpack_require__(2704);
+var workflowName = process.env.GITHUB_WORKFLOW;
 var runId = process.env.GITHUB_RUN_ID;
 var runNumber = process.env.GITHUB_RUN_NUMBER;
 function composeKeys() {
@@ -80743,9 +80744,10 @@ function composeKeys() {
                     return [4 /*yield*/, system_1.getArchitecture()];
                 case 2:
                     architecture = _a.sent();
-                    key = platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + runId + "-" + runNumber;
+                    key = platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflowName + "-" + runId + "-" + runNumber;
                     restoreKeys = [
-                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + runId + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflowName + "-" + runId + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflowName + "-",
                         platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-",
                     ];
                     return [2 /*return*/, { key: key, restoreKeys: restoreKeys }];

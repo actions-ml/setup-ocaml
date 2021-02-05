@@ -12,15 +12,17 @@ import {
   IS_WINDOWS,
 } from "./internal/system";
 
+const workflowName = process.env.GITHUB_WORKFLOW;
 const runId = process.env.GITHUB_RUN_ID;
 const runNumber = process.env.GITHUB_RUN_NUMBER;
 
 async function composeKeys() {
   const platform = await getPlatform();
   const architecture = await getArchitecture();
-  const key = `${platform}-${architecture}-${OCAML_VERSION}-${runId}-${runNumber}`;
+  const key = `${platform}-${architecture}-${OCAML_VERSION}-${workflowName}-${runId}-${runNumber}`;
   const restoreKeys = [
-    `${platform}-${architecture}-${OCAML_VERSION}-${runId}-`,
+    `${platform}-${architecture}-${OCAML_VERSION}-${workflowName}-${runId}-`,
+    `${platform}-${architecture}-${OCAML_VERSION}-${workflowName}-`,
     `${platform}-${architecture}-${OCAML_VERSION}-`,
   ];
   return { key, restoreKeys };
