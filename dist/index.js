@@ -80721,6 +80721,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
+var _a;
 exports.__esModule = true;
 exports.saveCache = exports.restoreCache = void 0;
 var cache = __nccwpck_require__(7799);
@@ -80730,7 +80731,7 @@ var path = __nccwpck_require__(5622);
 var process = __nccwpck_require__(1765);
 var constants_1 = __nccwpck_require__(9042);
 var system_1 = __nccwpck_require__(2704);
-var workflowName = process.env.GITHUB_WORKFLOW;
+var workflowName = (_a = process.env.GITHUB_WORKFLOW) === null || _a === void 0 ? void 0 : _a.toLowerCase().replace(" ", "_");
 var runId = process.env.GITHUB_RUN_ID;
 var runNumber = process.env.GITHUB_RUN_NUMBER;
 function composeKeys() {

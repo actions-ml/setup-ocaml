@@ -12,7 +12,10 @@ import {
   IS_WINDOWS,
 } from "./internal/system";
 
-const workflowName = process.env.GITHUB_WORKFLOW;
+const workflowName = process.env.GITHUB_WORKFLOW?.toLowerCase().replace(
+  " ",
+  "_"
+);
 const runId = process.env.GITHUB_RUN_ID;
 const runNumber = process.env.GITHUB_RUN_NUMBER;
 
