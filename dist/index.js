@@ -81299,9 +81299,11 @@ exports.retrieveCache = exports.checkIfCacheFileExists = exports.makeHttpClient 
 var core = __nccwpck_require__(2186);
 var http_client_1 = __nccwpck_require__(9925);
 var tc = __nccwpck_require__(7784);
+var process = __nccwpck_require__(1765);
 var imageName_1 = __nccwpck_require__(8059);
 function makeHttpClient() {
-    return new http_client_1.HttpClient("ocaml/setup-ocaml", [], {
+    var repositoryName = process.env.GITHUB_REPOSITORY;
+    return new http_client_1.HttpClient("ocaml/setup-ocaml (" + repositoryName + ")", [], {
         allowRetries: true,
         maxRetries: 5,
     });
