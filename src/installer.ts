@@ -7,10 +7,10 @@ import { restoreCache } from "./cache";
 import { DUNE_CACHE, OCAML_VERSION, OPAM_DEPEXT, OPAM_PIN } from "./constants";
 import { installDepext, installSystemPackages } from "./depext";
 import { installDune } from "./dune";
-import { listAllOpamFileNames } from "./internal/listAllOpamFileNames";
 import { resolveVersion } from "./internal/resolveVersion";
 import { getPlatform } from "./internal/system";
 import { pin, setupOpam } from "./opam";
+import { getOpamLocalPackages } from "./packages";
 
 export async function installer(): Promise<void> {
   const numberOfProcessors = os.cpus().length;
@@ -37,7 +37,7 @@ export async function installer(): Promise<void> {
     core.exportVariable("DUNE_CACHE", "enabled");
     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
   }
-  const fnames = await listAllOpamFileNames();
+  const fnames = await getOpamLocalPackages();
   if (fnames.length > 0) {
     if (OPAM_PIN.toLowerCase() === "true") {
       await pin(fnames);

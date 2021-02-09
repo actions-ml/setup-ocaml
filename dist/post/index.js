@@ -57793,13 +57793,14 @@ exports.saveCache = saveCache;
 "use strict";
 
 exports.__esModule = true;
-exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.DUNE_CACHE = exports.GITHUB_TOKEN = void 0;
+exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_LOCAL_PACKAGES = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.DUNE_CACHE = exports.GITHUB_TOKEN = void 0;
 var core = __nccwpck_require__(2186);
 exports.GITHUB_TOKEN = core.getInput("github-token");
 exports.DUNE_CACHE = core.getInput("dune-cache");
 exports.OCAML_VERSION = core.getInput("ocaml-version");
 exports.OPAM_DEPEXT = core.getInput("opam-depext");
 exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing");
+exports.OPAM_LOCAL_PACKAGES = core.getInput("opam-local-packages");
 exports.OPAM_PIN = core.getInput("opam-pin");
 exports.OPAM_REPOSITORY = core.getInput("opam-repository");
 
