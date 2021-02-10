@@ -21,7 +21,7 @@ async function run() {
     }
     await saveCache();
   } catch (error) {
-    core.warning(error.message);
+    core.info(error.message);
   }
 }
 

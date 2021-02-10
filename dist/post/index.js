@@ -58344,7 +58344,7 @@ function run() {
                     return [3 /*break*/, 9];
                 case 8:
                     error_2 = _a.sent();
-                    core.warning(error_2.message);
+                    core.info(error_2.message);
                     return [3 /*break*/, 9];
                 case 9: return [2 /*return*/];
             }
