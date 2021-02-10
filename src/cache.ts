@@ -1,5 +1,6 @@
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
+import * as github from "@actions/github";
 import * as os from "os";
 import * as path from "path";
 import * as process from "process";
@@ -7,20 +8,18 @@ import * as process from "process";
 import { DUNE_CACHE, OCAML_VERSION } from "./constants";
 import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
-const workflowName = process.env.GITHUB_WORKFLOW?.toLowerCase().replace(
-  " ",
-  "_"
-);
-const runId = process.env.GITHUB_RUN_ID;
-const runNumber = process.env.GITHUB_RUN_NUMBER;
+const { workflow: _workflow, job, runId, runNumber } = github.context;
+
+const workflow = _workflow.toLowerCase().replace(" ", "_");
 
 async function composeKeys() {
   const platform = await getPlatform();
   const architecture = await getArchitecture();
-  const key = `${platform}-${architecture}-${OCAML_VERSION}-${workflowName}-${runId}-${runNumber}`;
+  const key = `${platform}-${architecture}-${OCAML_VERSION}-${workflow}-${job}-${runId}-${runNumber}`;
   const restoreKeys = [
-    `${platform}-${architecture}-${OCAML_VERSION}-${workflowName}-${runId}-`,
-    `${platform}-${architecture}-${OCAML_VERSION}-${workflowName}-`,
+    `${platform}-${architecture}-${OCAML_VERSION}-${job}-${workflow}-${runId}-`,
+    `${platform}-${architecture}-${OCAML_VERSION}-${job}-${workflow}-`,
+    `${platform}-${architecture}-${OCAML_VERSION}-${job}-`,
     `${platform}-${architecture}-${OCAML_VERSION}-`,
   ];
   return { key, restoreKeys };

@@ -57716,19 +57716,18 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
-var _a;
 exports.__esModule = true;
 exports.saveCache = exports.restoreCache = void 0;
 var cache = __nccwpck_require__(7799);
 var core = __nccwpck_require__(2186);
+var github = __nccwpck_require__(5438);
 var os = __nccwpck_require__(2087);
 var path = __nccwpck_require__(5622);
 var process = __nccwpck_require__(1765);
 var constants_1 = __nccwpck_require__(9042);
 var system_1 = __nccwpck_require__(2704);
-var workflowName = (_a = process.env.GITHUB_WORKFLOW) === null || _a === void 0 ? void 0 : _a.toLowerCase().replace(" ", "_");
-var runId = process.env.GITHUB_RUN_ID;
-var runNumber = process.env.GITHUB_RUN_NUMBER;
+var _a = github.context, _workflow = _a.workflow, job = _a.job, runId = _a.runId, runNumber = _a.runNumber;
+var workflow = _workflow.toLowerCase().replace(" ", "_");
 function composeKeys() {
     return __awaiter(this, void 0, void 0, function () {
         var platform, architecture, key, restoreKeys;
@@ -57740,10 +57739,11 @@ function composeKeys() {
                     return [4 /*yield*/, system_1.getArchitecture()];
                 case 2:
                     architecture = _a.sent();
-                    key = platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflowName + "-" + runId + "-" + runNumber;
+                    key = platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflow + "-" + job + "-" + runId + "-" + runNumber;
                     restoreKeys = [
-                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflowName + "-" + runId + "-",
-                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflowName + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + job + "-" + workflow + "-" + runId + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + job + "-" + workflow + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + job + "-",
                         platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-",
                     ];
                     return [2 /*return*/, { key: key, restoreKeys: restoreKeys }];
