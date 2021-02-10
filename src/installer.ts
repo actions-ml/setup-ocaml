@@ -4,9 +4,16 @@ import * as os from "os";
 import * as process from "process";
 
 import { restoreCache } from "./cache";
-import { DUNE_CACHE, OCAML_VERSION, OPAM_DEPEXT, OPAM_PIN } from "./constants";
+import {
+  DUNE_CACHE,
+  OCAML_VERSION,
+  OPAM_DEPEXT,
+  OPAM_DUNE_LINT,
+  OPAM_PIN,
+} from "./constants";
 import { installDepext, installSystemPackages } from "./depext";
 import { installDune } from "./dune";
+import { installDuneLint } from "./duneLint";
 import { resolveVersion } from "./internal/resolveVersion";
 import { getPlatform } from "./internal/system";
 import { pin, setupOpam } from "./opam";
@@ -36,6 +43,9 @@ export async function installer(): Promise<void> {
     await installDune();
     core.exportVariable("DUNE_CACHE", "enabled");
     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
+  }
+  if (OPAM_DUNE_LINT.toLowerCase() === "true") {
+    await installDuneLint();
   }
   const fnames = await getOpamLocalPackages();
   if (fnames.length > 0) {

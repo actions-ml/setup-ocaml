@@ -58308,6 +58308,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var core = __nccwpck_require__(2186);
+var process = __nccwpck_require__(1765);
 var cache_1 = __nccwpck_require__(4810);
 var constants_1 = __nccwpck_require__(9042);
 var dune_1 = __nccwpck_require__(1903);
@@ -58318,36 +58319,34 @@ function run() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 4, , 5]);
-                    if (!(constants_1.OPAM_DUNE_LINT.toLowerCase() === "true")) return [3 /*break*/, 3];
-                    return [4 /*yield*/, duneLint_1.installDuneLint()];
+                    _a.trys.push([0, 3, , 4]);
+                    if (!(constants_1.OPAM_DUNE_LINT.toLowerCase() === "true")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, duneLint_1.duneLint()];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, duneLint_1.duneLint()];
-                case 2:
-                    _a.sent();
-                    _a.label = 3;
-                case 3: return [3 /*break*/, 5];
-                case 4:
+                    _a.label = 2;
+                case 2: return [3 /*break*/, 4];
+                case 3:
                     error_1 = _a.sent();
                     core.setFailed(error_1.message);
-                    return [3 /*break*/, 5];
-                case 5:
-                    _a.trys.push([5, 9, , 10]);
-                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 7];
+                    process.exit(core.ExitCode.Failure);
+                    return [3 /*break*/, 4];
+                case 4:
+                    _a.trys.push([4, 8, , 9]);
+                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 6];
                     return [4 /*yield*/, dune_1.trimDuneCache()];
-                case 6:
+                case 5:
                     _a.sent();
-                    _a.label = 7;
-                case 7: return [4 /*yield*/, cache_1.saveCache()];
+                    _a.label = 6;
+                case 6: return [4 /*yield*/, cache_1.saveCache()];
+                case 7:
+                    _a.sent();
+                    return [3 /*break*/, 9];
                 case 8:
-                    _a.sent();
-                    return [3 /*break*/, 10];
-                case 9:
                     error_2 = _a.sent();
                     core.warning(error_2.message);
-                    return [3 /*break*/, 10];
-                case 10: return [2 /*return*/];
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/];
             }
         });
     });
