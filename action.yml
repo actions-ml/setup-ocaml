@@ -20,7 +20,8 @@ inputs:
     description:
       Specify whether to use a default configuration with sandboxing disabled
   opam-dune-lint:
-    description: Specify when to run dune-lint
+    description: Specify whether to run dune-lint
+    default: false
   opam-local-packages:
     description: Packages to pass to opam pin and opam depext
     default: "*.opam"

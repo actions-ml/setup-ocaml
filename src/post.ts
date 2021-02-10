@@ -7,7 +7,7 @@ import { duneLint, installDuneLint } from "./duneLint";
 
 async function run() {
   try {
-    if (OPAM_DUNE_LINT.toLowerCase() === "post") {
+    if (OPAM_DUNE_LINT.toLowerCase() === "true") {
       await installDuneLint();
       await duneLint();
     }

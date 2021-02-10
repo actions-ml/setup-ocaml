@@ -58319,7 +58319,7 @@ function run() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 4, , 5]);
-                    if (!(constants_1.OPAM_DUNE_LINT.toLowerCase() === "post")) return [3 /*break*/, 3];
+                    if (!(constants_1.OPAM_DUNE_LINT.toLowerCase() === "true")) return [3 /*break*/, 3];
                     return [4 /*yield*/, duneLint_1.installDuneLint()];
                 case 1:
                     _a.sent();
