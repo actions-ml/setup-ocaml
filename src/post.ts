@@ -20,7 +20,7 @@ async function run() {
     }
     await saveCache();
   } catch (error) {
-    core.error(error.message);
+    core.warning(error.message);
   }
 }
 

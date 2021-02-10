@@ -58272,7 +58272,7 @@ function run() {
                     return [3 /*break*/, 10];
                 case 9:
                     error_2 = _a.sent();
-                    core.error(error_2.message);
+                    core.warning(error_2.message);
                     return [3 /*break*/, 10];
                 case 10: return [2 /*return*/];
             }
