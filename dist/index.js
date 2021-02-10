@@ -81137,6 +81137,8 @@ exports.__esModule = true;
 exports.duneLint = exports.installDuneLint = void 0;
 var core = __nccwpck_require__(2186);
 var exec_1 = __nccwpck_require__(1514);
+var path = __nccwpck_require__(5622);
+var packages_1 = __nccwpck_require__(4583);
 function installDuneLint() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -81159,15 +81161,47 @@ function installDuneLint() {
     });
 }
 exports.installDuneLint = installDuneLint;
+function unique(array) {
+    return Array.from(new Set(array));
+}
+function getOpamDirs() {
+    return __awaiter(this, void 0, void 0, function () {
+        var fpaths, _dnames, dnames;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, packages_1.getOpamLocalPackages()];
+                case 1:
+                    fpaths = _a.sent();
+                    _dnames = fpaths.map(function (fpath) { return path.dirname(fpath); });
+                    dnames = unique(_dnames);
+                    return [2 /*return*/, dnames];
+            }
+        });
+    });
+}
 function duneLint() {
     return __awaiter(this, void 0, void 0, function () {
+        var dnames, _i, dnames_1, dname;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Check each required opam package is listed in the opam file");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "opam-dune-lint"])];
+                    return [4 /*yield*/, getOpamDirs()];
                 case 1:
+                    dnames = _a.sent();
+                    _i = 0, dnames_1 = dnames;
+                    _a.label = 2;
+                case 2:
+                    if (!(_i < dnames_1.length)) return [3 /*break*/, 5];
+                    dname = dnames_1[_i];
+                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "opam-dune-lint"], { cwd: dname })];
+                case 3:
                     _a.sent();
+                    _a.label = 4;
+                case 4:
+                    _i++;
+                    return [3 /*break*/, 2];
+                case 5:
                     core.endGroup();
                     return [2 /*return*/];
             }
