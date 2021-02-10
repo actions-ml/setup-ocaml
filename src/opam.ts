@@ -313,18 +313,16 @@ export async function setupOpam(version: string): Promise<void> {
   }
 }
 
-export async function pin(fnames: string[]): Promise<void> {
+export async function pin(fpaths: string[]): Promise<void> {
   core.startGroup("Pin local packages");
-  for (const fname of fnames) {
-    await exec("opam", [
-      "pin",
-      "add",
-      `${fname}.dev`,
-      ".",
-      "--no-action",
-      "--verbose",
-      "--yes",
-    ]);
+  for (const fpath of fpaths) {
+    const fname = path.basename(fpath, ".opam");
+    const dname = path.dirname(fpath);
+    await exec(
+      "opam",
+      ["pin", "add", `${fname}.dev`, ".", "--no-action", "--verbose", "--yes"],
+      { cwd: dname }
+    );
   }
   core.endGroup();
 }

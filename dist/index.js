@@ -80950,6 +80950,7 @@ exports.__esModule = true;
 exports.installSystemPackages = exports.installDepext = void 0;
 var core = __nccwpck_require__(2186);
 var exec_1 = __nccwpck_require__(1514);
+var path = __nccwpck_require__(5622);
 function installDepext() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -80966,12 +80967,14 @@ function installDepext() {
     });
 }
 exports.installDepext = installDepext;
-function installSystemPackages(fnames) {
+function installSystemPackages(fpaths) {
     return __awaiter(this, void 0, void 0, function () {
+        var fnames;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install system packages required by opam packages");
+                    fnames = fpaths.map(function (fpath) { return path.basename(fpath, ".opam"); });
                     return [4 /*yield*/, exec_1.exec("opam", __spreadArrays(["depext"], fnames, ["--verbose", "--yes"]))];
                 case 1:
                     _a.sent();
@@ -82361,27 +82364,21 @@ function setupOpam(version) {
     });
 }
 exports.setupOpam = setupOpam;
-function pin(fnames) {
+function pin(fpaths) {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, fnames_1, fname;
+        var _i, fpaths_1, fpath, fname, dname;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Pin local packages");
-                    _i = 0, fnames_1 = fnames;
+                    _i = 0, fpaths_1 = fpaths;
                     _a.label = 1;
                 case 1:
-                    if (!(_i < fnames_1.length)) return [3 /*break*/, 4];
-                    fname = fnames_1[_i];
-                    return [4 /*yield*/, exec_1.exec("opam", [
-                            "pin",
-                            "add",
-                            fname + ".dev",
-                            ".",
-                            "--no-action",
-                            "--verbose",
-                            "--yes",
-                        ])];
+                    if (!(_i < fpaths_1.length)) return [3 /*break*/, 4];
+                    fpath = fpaths_1[_i];
+                    fname = path.basename(fpath, ".opam");
+                    dname = path.dirname(fpath);
+                    return [4 /*yield*/, exec_1.exec("opam", ["pin", "add", fname + ".dev", ".", "--no-action", "--verbose", "--yes"], { cwd: dname })];
                 case 2:
                     _a.sent();
                     _a.label = 3;
@@ -82444,11 +82441,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.getOpamLocalPackages = void 0;
 var glob = __nccwpck_require__(8090);
-var path = __nccwpck_require__(5622);
 var constants_1 = __nccwpck_require__(9042);
 function getOpamLocalPackages() {
     return __awaiter(this, void 0, void 0, function () {
-        var globber, opamFiles, fnames;
+        var globber, fpaths;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, glob.create(constants_1.OPAM_LOCAL_PACKAGES)];
@@ -82456,9 +82452,8 @@ function getOpamLocalPackages() {
                     globber = _a.sent();
                     return [4 /*yield*/, globber.glob()];
                 case 2:
-                    opamFiles = _a.sent();
-                    fnames = opamFiles.map(function (opamFile) { return path.basename(opamFile, ".opam"); });
-                    return [2 /*return*/, fnames];
+                    fpaths = _a.sent();
+                    return [2 /*return*/, fpaths];
             }
         });
     });
