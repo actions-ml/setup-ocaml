@@ -35,7 +35,7 @@ export async function getSystemIdentificationData(): Promise<{
   const platform = getPlatform();
   if (platform === "linux") {
     const osRelease = (await fs.readFile("/etc/os-release")).toString();
-    const lines = osRelease.split("\n");
+    const lines = osRelease.split(os.EOL);
     let distro = "";
     let version = "";
     for (const line of lines) {
@@ -56,7 +56,7 @@ export async function getSystemIdentificationData(): Promise<{
       },
     };
     await exec("sw_vers", undefined, options);
-    const lines = output.split("\n");
+    const lines = output.split(os.EOL);
     let version = "";
     for (const line of lines) {
       const kv = line.split(":");

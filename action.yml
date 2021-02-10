@@ -8,6 +8,15 @@ inputs:
   ocaml-version:
     description: The version of the OCaml compiler to initialise
     default: latest
+  lint-doc:
+    description: Specify whether to run dune build @doc
+    default: false
+  lint-fmt:
+    description: Specify whether to run dune build @fmt
+    default: false
+  lint-opam:
+    description: Specify whether to run dune-lint
+    default: false
   dune-cache:
     description: Specify whether to use the dune cache
     default: false
@@ -19,9 +28,6 @@ inputs:
   opam-disable-sandboxing:
     description:
       Specify whether to use a default configuration with sandboxing disabled
-  opam-dune-lint:
-    description: Specify whether to run dune-lint
-    default: false
   opam-local-packages:
     description: Packages to pass to opam pin and opam depext
     default: "*.opam"

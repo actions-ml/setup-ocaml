@@ -2,14 +2,20 @@ import * as core from "@actions/core";
 import * as process from "process";
 
 import { saveCache } from "./cache";
-import { DUNE_CACHE, OPAM_DUNE_LINT } from "./constants";
+import { DUNE_CACHE, LINT_DOC, LINT_FMT, LINT_OPAM } from "./constants";
 import { trimDuneCache } from "./dune";
-import { duneLint } from "./duneLint";
+import { lintDoc, lintFmt, lintOpam } from "./lint";
 
 async function run() {
   try {
-    if (OPAM_DUNE_LINT.toUpperCase() === "TRUE") {
-      await duneLint();
+    if (LINT_DOC.toUpperCase() === "TRUE") {
+      await lintDoc();
+    }
+    if (LINT_FMT.toUpperCase() === "TRUE") {
+      await lintFmt();
+    }
+    if (LINT_OPAM.toUpperCase() === "TRUE") {
+      await lintOpam();
     }
   } catch (error) {
     core.setFailed(error.message);

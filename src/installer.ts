@@ -6,16 +6,18 @@ import * as process from "process";
 import { restoreCache } from "./cache";
 import {
   DUNE_CACHE,
+  LINT_DOC,
+  LINT_FMT,
+  LINT_OPAM,
   OCAML_VERSION,
   OPAM_DEPEXT,
-  OPAM_DUNE_LINT,
   OPAM_PIN,
 } from "./constants";
 import { installDepext, installSystemPackages } from "./depext";
 import { installDune } from "./dune";
-import { installDuneLint } from "./duneLint";
 import { resolveVersion } from "./internal/resolveVersion";
 import { getPlatform } from "./internal/system";
+import { installDuneLint, installOcamlformat, installOdoc } from "./lint";
 import { pin, setupOpam } from "./opam";
 import { getOpamLocalPackages } from "./packages";
 
@@ -44,7 +46,13 @@ export async function installer(): Promise<void> {
     core.exportVariable("DUNE_CACHE", "enabled");
     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
   }
-  if (OPAM_DUNE_LINT.toUpperCase() === "TRUE") {
+  if (LINT_DOC.toUpperCase() === "TRUE") {
+    await installOdoc();
+  }
+  if (LINT_FMT.toUpperCase() === "TRUE") {
+    await installOcamlformat();
+  }
+  if (LINT_OPAM.toUpperCase() === "TRUE") {
     await installDuneLint();
   }
   const fnames = await getOpamLocalPackages();
