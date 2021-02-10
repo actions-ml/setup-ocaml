@@ -11,12 +11,16 @@ async function run() {
       await installDuneLint();
       await duneLint();
     }
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+  try {
     if (DUNE_CACHE.toLowerCase() === "true") {
       await trimDuneCache();
     }
     await saveCache();
   } catch (error) {
-    core.info(error.message);
+    core.error(error.message);
   }
 }
 

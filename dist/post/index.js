@@ -58241,11 +58241,11 @@ var dune_1 = __nccwpck_require__(1903);
 var duneLint_1 = __nccwpck_require__(9108);
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var error_1;
+        var error_1, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 7, , 8]);
+                    _a.trys.push([0, 4, , 5]);
                     if (!(constants_1.OPAM_DUNE_LINT.toLowerCase() === "post")) return [3 /*break*/, 3];
                     return [4 /*yield*/, duneLint_1.installDuneLint()];
                 case 1:
@@ -58254,21 +58254,27 @@ function run() {
                 case 2:
                     _a.sent();
                     _a.label = 3;
-                case 3:
-                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 5];
-                    return [4 /*yield*/, dune_1.trimDuneCache()];
+                case 3: return [3 /*break*/, 5];
                 case 4:
-                    _a.sent();
-                    _a.label = 5;
-                case 5: return [4 /*yield*/, cache_1.saveCache()];
+                    error_1 = _a.sent();
+                    core.setFailed(error_1.message);
+                    return [3 /*break*/, 5];
+                case 5:
+                    _a.trys.push([5, 9, , 10]);
+                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 7];
+                    return [4 /*yield*/, dune_1.trimDuneCache()];
                 case 6:
                     _a.sent();
-                    return [3 /*break*/, 8];
-                case 7:
-                    error_1 = _a.sent();
-                    core.info(error_1.message);
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
+                    _a.label = 7;
+                case 7: return [4 /*yield*/, cache_1.saveCache()];
+                case 8:
+                    _a.sent();
+                    return [3 /*break*/, 10];
+                case 9:
+                    error_2 = _a.sent();
+                    core.error(error_2.message);
+                    return [3 /*break*/, 10];
+                case 10: return [2 /*return*/];
             }
         });
     });
