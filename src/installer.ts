@@ -39,20 +39,20 @@ export async function installer(): Promise<void> {
   await setupOpam(version);
   await restoreCache();
   await installDepext();
-  if (DUNE_CACHE.toLowerCase() === "true") {
+  if (DUNE_CACHE.toUpperCase() === "TRUE") {
     await installDune();
     core.exportVariable("DUNE_CACHE", "enabled");
     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
   }
-  if (OPAM_DUNE_LINT.toLowerCase() === "true") {
+  if (OPAM_DUNE_LINT.toUpperCase() === "TRUE") {
     await installDuneLint();
   }
   const fnames = await getOpamLocalPackages();
   if (fnames.length > 0) {
-    if (OPAM_PIN.toLowerCase() === "true") {
+    if (OPAM_PIN.toUpperCase() === "TRUE") {
       await pin(fnames);
     }
-    if (OPAM_DEPEXT.toLowerCase() === "true") {
+    if (OPAM_DEPEXT.toUpperCase() === "TRUE") {
       await installSystemPackages(fnames);
     }
   }

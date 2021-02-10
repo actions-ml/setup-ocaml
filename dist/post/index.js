@@ -57759,7 +57759,7 @@ function composePaths() {
             opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
             xdgCacheHome = process.env.XDG_CACHE_HOME;
             paths = [opamDownloadCacheDir];
-            if (constants_1.DUNE_CACHE.toLowerCase() === "true") {
+            if (constants_1.DUNE_CACHE.toUpperCase() === "TRUE") {
                 duneCacheDir = system_1.IS_WINDOWS
                     ? path.join(homeDir, "Local Settings", "Cache", "dune")
                     : xdgCacheHome
@@ -58320,7 +58320,7 @@ function run() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    if (!(constants_1.OPAM_DUNE_LINT.toLowerCase() === "true")) return [3 /*break*/, 2];
+                    if (!(constants_1.OPAM_DUNE_LINT.toUpperCase() === "TRUE")) return [3 /*break*/, 2];
                     return [4 /*yield*/, duneLint_1.duneLint()];
                 case 1:
                     _a.sent();
@@ -58333,7 +58333,7 @@ function run() {
                     return [3 /*break*/, 4];
                 case 4:
                     _a.trys.push([4, 8, , 9]);
-                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 6];
+                    if (!(constants_1.DUNE_CACHE.toUpperCase() === "TRUE")) return [3 /*break*/, 6];
                     return [4 /*yield*/, dune_1.trimDuneCache()];
                 case 5:
                     _a.sent();

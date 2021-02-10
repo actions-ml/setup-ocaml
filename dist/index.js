@@ -80809,7 +80809,7 @@ function composePaths() {
             opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
             xdgCacheHome = process.env.XDG_CACHE_HOME;
             paths = [opamDownloadCacheDir];
-            if (constants_1.DUNE_CACHE.toLowerCase() === "true") {
+            if (constants_1.DUNE_CACHE.toUpperCase() === "TRUE") {
                 duneCacheDir = system_1.IS_WINDOWS
                     ? path.join(homeDir, "Local Settings", "Cache", "dune")
                     : xdgCacheHome
@@ -81372,7 +81372,7 @@ function installer() {
                     return [4 /*yield*/, depext_1.installDepext()];
                 case 4:
                     _a.sent();
-                    if (!(constants_1.DUNE_CACHE.toLowerCase() === "true")) return [3 /*break*/, 6];
+                    if (!(constants_1.DUNE_CACHE.toUpperCase() === "TRUE")) return [3 /*break*/, 6];
                     return [4 /*yield*/, dune_1.installDune()];
                 case 5:
                     _a.sent();
@@ -81380,7 +81380,7 @@ function installer() {
                     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
                     _a.label = 6;
                 case 6:
-                    if (!(constants_1.OPAM_DUNE_LINT.toLowerCase() === "true")) return [3 /*break*/, 8];
+                    if (!(constants_1.OPAM_DUNE_LINT.toUpperCase() === "TRUE")) return [3 /*break*/, 8];
                     return [4 /*yield*/, duneLint_1.installDuneLint()];
                 case 7:
                     _a.sent();
@@ -81389,13 +81389,13 @@ function installer() {
                 case 9:
                     fnames = _a.sent();
                     if (!(fnames.length > 0)) return [3 /*break*/, 13];
-                    if (!(constants_1.OPAM_PIN.toLowerCase() === "true")) return [3 /*break*/, 11];
+                    if (!(constants_1.OPAM_PIN.toUpperCase() === "TRUE")) return [3 /*break*/, 11];
                     return [4 /*yield*/, opam_1.pin(fnames)];
                 case 10:
                     _a.sent();
                     _a.label = 11;
                 case 11:
-                    if (!(constants_1.OPAM_DEPEXT.toLowerCase() === "true")) return [3 /*break*/, 13];
+                    if (!(constants_1.OPAM_DEPEXT.toUpperCase() === "TRUE")) return [3 /*break*/, 13];
                     return [4 /*yield*/, depext_1.installSystemPackages(fnames)];
                 case 12:
                     _a.sent();

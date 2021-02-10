@@ -30,7 +30,7 @@ async function composePaths() {
   const opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
   const xdgCacheHome = process.env.XDG_CACHE_HOME;
   const paths = [opamDownloadCacheDir];
-  if (DUNE_CACHE.toLowerCase() === "true") {
+  if (DUNE_CACHE.toUpperCase() === "TRUE") {
     const duneCacheDir = IS_WINDOWS
       ? path.join(homeDir, "Local Settings", "Cache", "dune")
       : xdgCacheHome

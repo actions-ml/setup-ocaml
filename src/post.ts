@@ -8,7 +8,7 @@ import { duneLint } from "./duneLint";
 
 async function run() {
   try {
-    if (OPAM_DUNE_LINT.toLowerCase() === "true") {
+    if (OPAM_DUNE_LINT.toUpperCase() === "TRUE") {
       await duneLint();
     }
   } catch (error) {
@@ -16,7 +16,7 @@ async function run() {
     process.exit(core.ExitCode.Failure);
   }
   try {
-    if (DUNE_CACHE.toLowerCase() === "true") {
+    if (DUNE_CACHE.toUpperCase() === "TRUE") {
       await trimDuneCache();
     }
     await saveCache();
