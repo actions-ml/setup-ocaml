@@ -5,6 +5,8 @@ import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
 import * as cheerio from "cheerio";
 import { promises as fs } from "fs";
+import * as os from "os";
+import * as path from "path";
 import * as process from "process";
 import * as semver from "semver";
 
@@ -21,7 +23,6 @@ import {
 import { composeImageName } from "./internal/imageName";
 import {
   getArchitecture,
-  getOpamRoot,
   getPlatform,
   getSystemIdentificationData,
   IS_WINDOWS,
@@ -144,7 +145,8 @@ async function initializeOpamUnix(version: string) {
     shouldRetry = true;
   }
   if (shouldRetry) {
-    const opamRoot = await getOpamRoot();
+    const homeDir = os.homedir();
+    const opamRoot = path.join(homeDir, ".opam");
     await io.rmRF(opamRoot);
     await exec("opam", [
       "init",

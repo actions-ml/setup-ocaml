@@ -5,12 +5,7 @@ import * as path from "path";
 import * as process from "process";
 
 import { DUNE_CACHE, OCAML_VERSION } from "./constants";
-import {
-  getArchitecture,
-  getOpamRoot,
-  getPlatform,
-  IS_WINDOWS,
-} from "./internal/system";
+import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
 const workflowName = process.env.GITHUB_WORKFLOW?.toLowerCase().replace(
   " ",
@@ -32,9 +27,8 @@ async function composeKeys() {
 }
 
 async function composePaths() {
-  const opamRootDir = await getOpamRoot();
-  const opamDownloadCacheDir = path.join(opamRootDir, "download-cache");
   const homeDir = os.homedir();
+  const opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
   const xdgCacheHome = process.env.XDG_CACHE_HOME;
   const paths = [opamDownloadCacheDir];
   if (DUNE_CACHE.toLowerCase() === "true") {

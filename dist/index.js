@@ -80803,26 +80803,21 @@ function composeKeys() {
 }
 function composePaths() {
     return __awaiter(this, void 0, void 0, function () {
-        var opamRootDir, opamDownloadCacheDir, homeDir, xdgCacheHome, paths, duneCacheDir;
+        var homeDir, opamDownloadCacheDir, xdgCacheHome, paths, duneCacheDir;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, system_1.getOpamRoot()];
-                case 1:
-                    opamRootDir = _a.sent();
-                    opamDownloadCacheDir = path.join(opamRootDir, "download-cache");
-                    homeDir = os.homedir();
-                    xdgCacheHome = process.env.XDG_CACHE_HOME;
-                    paths = [opamDownloadCacheDir];
-                    if (constants_1.DUNE_CACHE.toLowerCase() === "true") {
-                        duneCacheDir = system_1.IS_WINDOWS
-                            ? path.join(homeDir, "Local Settings", "Cache", "dune")
-                            : xdgCacheHome
-                                ? path.join(xdgCacheHome, "dune")
-                                : path.join(homeDir, ".cache", "dune");
-                        paths.push(duneCacheDir);
-                    }
-                    return [2 /*return*/, paths];
+            homeDir = os.homedir();
+            opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
+            xdgCacheHome = process.env.XDG_CACHE_HOME;
+            paths = [opamDownloadCacheDir];
+            if (constants_1.DUNE_CACHE.toLowerCase() === "true") {
+                duneCacheDir = system_1.IS_WINDOWS
+                    ? path.join(homeDir, "Local Settings", "Cache", "dune")
+                    : xdgCacheHome
+                        ? path.join(xdgCacheHome, "dune")
+                        : path.join(homeDir, ".cache", "dune");
+                paths.push(duneCacheDir);
             }
+            return [2 /*return*/, paths];
         });
     });
 }
@@ -81777,7 +81772,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getOpamRoot = exports.getSystemIdentificationData = exports.getPlatform = exports.getArchitecture = exports.IS_WINDOWS = void 0;
+exports.getSystemIdentificationData = exports.getPlatform = exports.getArchitecture = exports.IS_WINDOWS = void 0;
 var exec_1 = __nccwpck_require__(1514);
 var fs_1 = __nccwpck_require__(5747);
 var os = __nccwpck_require__(2087);
@@ -81858,28 +81853,6 @@ function getSystemIdentificationData() {
     });
 }
 exports.getSystemIdentificationData = getSystemIdentificationData;
-function getOpamRoot() {
-    return __awaiter(this, void 0, void 0, function () {
-        var output, options;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    output = "";
-                    options = { silent: true };
-                    options.listeners = {
-                        stdout: function (data) {
-                            output += data.toString().trim();
-                        },
-                    };
-                    return [4 /*yield*/, exec_1.exec("opam", ["config", "var", "root"], options)];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/, output];
-            }
-        });
-    });
-}
-exports.getOpamRoot = getOpamRoot;
 
 
 /***/ }),
@@ -81941,6 +81914,8 @@ var io = __nccwpck_require__(7436);
 var tc = __nccwpck_require__(7784);
 var cheerio = __nccwpck_require__(3094);
 var fs_1 = __nccwpck_require__(5747);
+var os = __nccwpck_require__(2087);
+var path = __nccwpck_require__(5622);
 var process = __nccwpck_require__(1765);
 var semver = __nccwpck_require__(1383);
 var constants_1 = __nccwpck_require__(9042);
@@ -82006,7 +81981,7 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var platform, isGitHubRunner, systemVersion, bubblewrap, disableSandboxing, repository, baseUrl, imageName, url, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, opamRoot;
+        var platform, isGitHubRunner, systemVersion, bubblewrap, disableSandboxing, repository, baseUrl, imageName, url, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, homeDir, opamRoot;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -82111,12 +82086,11 @@ function initializeOpamUnix(version) {
                     shouldRetry = true;
                     return [3 /*break*/, 17];
                 case 17:
-                    if (!shouldRetry) return [3 /*break*/, 21];
-                    return [4 /*yield*/, system_1.getOpamRoot()];
-                case 18:
-                    opamRoot = _a.sent();
+                    if (!shouldRetry) return [3 /*break*/, 20];
+                    homeDir = os.homedir();
+                    opamRoot = path.join(homeDir, ".opam");
                     return [4 /*yield*/, io.rmRF(opamRoot)];
-                case 19:
+                case 18:
                     _a.sent();
                     return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
                             "init",
@@ -82131,10 +82105,10 @@ function initializeOpamUnix(version) {
                             "--verbose",
                             "--yes",
                         ]))];
-                case 20:
+                case 19:
                     _a.sent();
-                    _a.label = 21;
-                case 21: return [2 /*return*/];
+                    _a.label = 20;
+                case 20: return [2 /*return*/];
             }
         });
     });

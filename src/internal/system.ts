@@ -69,15 +69,3 @@ export async function getSystemIdentificationData(): Promise<{
     throw new Error("The system is not supported.");
   }
 }
-
-export async function getOpamRoot(): Promise<string> {
-  let output = "";
-  const options: ExecOptions = { silent: true };
-  options.listeners = {
-    stdout: (data) => {
-      output += data.toString().trim();
-    },
-  };
-  await exec("opam", ["config", "var", "root"], options);
-  return output;
-}
