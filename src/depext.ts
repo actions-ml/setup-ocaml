@@ -9,13 +9,6 @@ export async function installDepext(): Promise<void> {
 
 export async function installSystemPackages(fnames: string[]): Promise<void> {
   core.startGroup("Install system packages required by opam packages");
-  await exec("opam", [
-    "depext",
-    ...fnames,
-    "--verbose",
-    "--with-doc",
-    "--with-test",
-    "--yes",
-  ]);
+  await exec("opam", ["depext", ...fnames, "--verbose", "--yes"]);
   core.endGroup();
 }

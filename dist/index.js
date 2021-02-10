@@ -80977,14 +80977,7 @@ function installSystemPackages(fnames) {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install system packages required by opam packages");
-                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
-                            "depext"
-                        ], fnames, [
-                            "--verbose",
-                            "--with-doc",
-                            "--with-test",
-                            "--yes",
-                        ]))];
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays(["depext"], fnames, ["--verbose", "--yes"]))];
                 case 1:
                     _a.sent();
                     core.endGroup();
