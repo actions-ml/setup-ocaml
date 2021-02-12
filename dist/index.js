@@ -82370,7 +82370,7 @@ function setupCygwin() {
                     _a.label = 5;
                 case 5:
                     root = "c:\\cygwin";
-                    site = "http://cygwin.mirror.constant.com";
+                    site = "https://mirrors.kernel.org/sourceware/cygwin";
                     packages = [
                         "curl",
                         "diff",

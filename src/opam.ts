@@ -207,7 +207,7 @@ async function setupCygwin() {
     core.addPath(cachedPath);
   }
   const root = "c:\\cygwin";
-  const site = "http://cygwin.mirror.constant.com";
+  const site = "https://mirrors.kernel.org/sourceware/cygwin";
   const packages = [
     "curl",
     "diff",
