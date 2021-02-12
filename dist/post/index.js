@@ -57759,7 +57759,7 @@ function composePaths() {
             opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
             xdgCacheHome = process.env.XDG_CACHE_HOME;
             paths = [opamDownloadCacheDir];
-            if (constants_1.DUNE_CACHE.toUpperCase() === "TRUE") {
+            if (constants_1.DUNE_CACHE) {
                 duneCacheDir = system_1.IS_WINDOWS
                     ? path.join(homeDir, "Local Settings", "Cache", "dune")
                     : xdgCacheHome
@@ -57836,15 +57836,15 @@ exports.__esModule = true;
 exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_LOCAL_PACKAGES = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.DUNE_CACHE = exports.LINT_OPAM = exports.LINT_FMT = exports.LINT_DOC = exports.GITHUB_TOKEN = void 0;
 var core = __nccwpck_require__(2186);
 exports.GITHUB_TOKEN = core.getInput("github-token");
-exports.LINT_DOC = core.getInput("lint-doc");
-exports.LINT_FMT = core.getInput("lint-fmt");
-exports.LINT_OPAM = core.getInput("lint-opam");
-exports.DUNE_CACHE = core.getInput("dune-cache");
+exports.LINT_DOC = core.getInput("lint-doc").toUpperCase() === "TRUE";
+exports.LINT_FMT = core.getInput("lint-fmt").toUpperCase() === "TRUE";
+exports.LINT_OPAM = core.getInput("lint-opam").toUpperCase() === "TRUE";
+exports.DUNE_CACHE = core.getInput("dune-cache").toUpperCase() === "TRUE";
 exports.OCAML_VERSION = core.getInput("ocaml-version");
-exports.OPAM_DEPEXT = core.getInput("opam-depext");
-exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing");
+exports.OPAM_DEPEXT = core.getInput("opam-depext").toUpperCase() === "TRUE";
+exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing").toUpperCase() === "TRUE";
 exports.OPAM_LOCAL_PACKAGES = core.getInput("opam-local-packages");
-exports.OPAM_PIN = core.getInput("opam-pin");
+exports.OPAM_PIN = core.getInput("opam-pin").toUpperCase() === "TRUE";
 exports.OPAM_REPOSITORY = core.getInput("opam-repository");
 
 
@@ -58154,7 +58154,6 @@ function installOdoc() {
                     return [4 /*yield*/, exec_1.exec("opam", [
                             "depext",
                             "conf-m4",
-                            "dune",
                             "odoc>=1.5.0",
                             "--install",
                             "--yes",
@@ -58223,7 +58222,6 @@ function installOcamlformat() {
                     _a.label = 9;
                 case 9: return [4 /*yield*/, exec_1.exec("opam", [
                         "depext",
-                        "dune",
                         version ? "ocamlformat=" + version : "ocamlformat",
                         "--install",
                         "--yes",
@@ -58449,19 +58447,19 @@ function run() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 7, , 8]);
-                    if (!(constants_1.LINT_DOC.toUpperCase() === "TRUE")) return [3 /*break*/, 2];
+                    if (!constants_1.LINT_DOC) return [3 /*break*/, 2];
                     return [4 /*yield*/, lint_1.lintDoc()];
                 case 1:
                     _a.sent();
                     _a.label = 2;
                 case 2:
-                    if (!(constants_1.LINT_FMT.toUpperCase() === "TRUE")) return [3 /*break*/, 4];
+                    if (!constants_1.LINT_FMT) return [3 /*break*/, 4];
                     return [4 /*yield*/, lint_1.lintFmt()];
                 case 3:
                     _a.sent();
                     _a.label = 4;
                 case 4:
-                    if (!(constants_1.LINT_OPAM.toUpperCase() === "TRUE")) return [3 /*break*/, 6];
+                    if (!constants_1.LINT_OPAM) return [3 /*break*/, 6];
                     return [4 /*yield*/, lint_1.lintOpam()];
                 case 5:
                     _a.sent();
@@ -58474,7 +58472,7 @@ function run() {
                     return [3 /*break*/, 8];
                 case 8:
                     _a.trys.push([8, 12, , 13]);
-                    if (!(constants_1.DUNE_CACHE.toUpperCase() === "TRUE")) return [3 /*break*/, 10];
+                    if (!constants_1.DUNE_CACHE) return [3 /*break*/, 10];
                     return [4 /*yield*/, dune_1.trimDuneCache()];
                 case 9:
                     _a.sent();

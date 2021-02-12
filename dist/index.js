@@ -80809,7 +80809,7 @@ function composePaths() {
             opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
             xdgCacheHome = process.env.XDG_CACHE_HOME;
             paths = [opamDownloadCacheDir];
-            if (constants_1.DUNE_CACHE.toUpperCase() === "TRUE") {
+            if (constants_1.DUNE_CACHE) {
                 duneCacheDir = system_1.IS_WINDOWS
                     ? path.join(homeDir, "Local Settings", "Cache", "dune")
                     : xdgCacheHome
@@ -80886,15 +80886,15 @@ exports.__esModule = true;
 exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_LOCAL_PACKAGES = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.DUNE_CACHE = exports.LINT_OPAM = exports.LINT_FMT = exports.LINT_DOC = exports.GITHUB_TOKEN = void 0;
 var core = __nccwpck_require__(2186);
 exports.GITHUB_TOKEN = core.getInput("github-token");
-exports.LINT_DOC = core.getInput("lint-doc");
-exports.LINT_FMT = core.getInput("lint-fmt");
-exports.LINT_OPAM = core.getInput("lint-opam");
-exports.DUNE_CACHE = core.getInput("dune-cache");
+exports.LINT_DOC = core.getInput("lint-doc").toUpperCase() === "TRUE";
+exports.LINT_FMT = core.getInput("lint-fmt").toUpperCase() === "TRUE";
+exports.LINT_OPAM = core.getInput("lint-opam").toUpperCase() === "TRUE";
+exports.DUNE_CACHE = core.getInput("dune-cache").toUpperCase() === "TRUE";
 exports.OCAML_VERSION = core.getInput("ocaml-version");
-exports.OPAM_DEPEXT = core.getInput("opam-depext");
-exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing");
+exports.OPAM_DEPEXT = core.getInput("opam-depext").toUpperCase() === "TRUE";
+exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing").toUpperCase() === "TRUE";
 exports.OPAM_LOCAL_PACKAGES = core.getInput("opam-local-packages");
-exports.OPAM_PIN = core.getInput("opam-pin");
+exports.OPAM_PIN = core.getInput("opam-pin").toUpperCase() === "TRUE";
 exports.OPAM_REPOSITORY = core.getInput("opam-repository");
 
 
@@ -81253,7 +81253,7 @@ function installer() {
                     return [4 /*yield*/, depext_1.installDepext()];
                 case 4:
                     _a.sent();
-                    if (!(constants_1.DUNE_CACHE.toUpperCase() === "TRUE")) return [3 /*break*/, 6];
+                    if (!(constants_1.DUNE_CACHE || constants_1.LINT_DOC || constants_1.LINT_FMT || constants_1.LINT_OPAM)) return [3 /*break*/, 6];
                     return [4 /*yield*/, dune_1.installDune()];
                 case 5:
                     _a.sent();
@@ -81261,34 +81261,36 @@ function installer() {
                     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
                     _a.label = 6;
                 case 6:
-                    if (!(constants_1.LINT_DOC.toUpperCase() === "TRUE")) return [3 /*break*/, 8];
+                    if (!constants_1.LINT_DOC) return [3 /*break*/, 8];
                     return [4 /*yield*/, lint_1.installOdoc()];
                 case 7:
                     _a.sent();
                     _a.label = 8;
                 case 8:
-                    if (!(constants_1.LINT_FMT.toUpperCase() === "TRUE")) return [3 /*break*/, 10];
+                    if (!constants_1.LINT_FMT) return [3 /*break*/, 10];
                     return [4 /*yield*/, lint_1.installOcamlformat()];
                 case 9:
                     _a.sent();
                     _a.label = 10;
                 case 10:
-                    if (!(constants_1.LINT_OPAM.toUpperCase() === "TRUE")) return [3 /*break*/, 12];
+                    if (!constants_1.LINT_OPAM) return [3 /*break*/, 12];
                     return [4 /*yield*/, lint_1.installDuneLint()];
                 case 11:
                     _a.sent();
                     _a.label = 12;
-                case 12: return [4 /*yield*/, packages_1.getOpamLocalPackages()];
+                case 12:
+                    if (!(constants_1.OPAM_PIN || constants_1.OPAM_DEPEXT)) return [3 /*break*/, 17];
+                    return [4 /*yield*/, packages_1.getOpamLocalPackages()];
                 case 13:
                     fnames = _a.sent();
                     if (!(fnames.length > 0)) return [3 /*break*/, 17];
-                    if (!(constants_1.OPAM_PIN.toUpperCase() === "TRUE")) return [3 /*break*/, 15];
+                    if (!constants_1.OPAM_PIN) return [3 /*break*/, 15];
                     return [4 /*yield*/, opam_1.pin(fnames)];
                 case 14:
                     _a.sent();
                     _a.label = 15;
                 case 15:
-                    if (!(constants_1.OPAM_DEPEXT.toUpperCase() === "TRUE")) return [3 /*break*/, 17];
+                    if (!constants_1.OPAM_DEPEXT) return [3 /*break*/, 17];
                     return [4 /*yield*/, depext_1.installSystemPackages(fnames)];
                 case 16:
                     _a.sent();
@@ -81858,7 +81860,6 @@ function installOdoc() {
                     return [4 /*yield*/, exec_1.exec("opam", [
                             "depext",
                             "conf-m4",
-                            "dune",
                             "odoc>=1.5.0",
                             "--install",
                             "--yes",
@@ -81927,7 +81928,6 @@ function installOcamlformat() {
                     _a.label = 9;
                 case 9: return [4 /*yield*/, exec_1.exec("opam", [
                         "depext",
-                        "dune",
                         version ? "ocamlformat=" + version : "ocamlformat",
                         "--install",
                         "--yes",
@@ -82201,7 +82201,7 @@ function initializeOpamUnix(version) {
                     _a.label = 7;
                 case 7:
                     disableSandboxing = [];
-                    if (constants_1.OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true") {
+                    if (constants_1.OPAM_DISABLE_SANDBOXING) {
                         disableSandboxing.push("--disable-sandboxing");
                     }
                     repository = constants_1.OPAM_REPOSITORY || "https://github.com/ocaml/opam-repository.git";
@@ -82453,8 +82453,7 @@ function initializeOpamWindows(version) {
                     repository = constants_1.OPAM_REPOSITORY ||
                         "https://github.com/fdopen/opam-repository-mingw.git#opam2";
                     disableSandboxing = [];
-                    if (constants_1.OPAM_DISABLE_SANDBOXING === "" ||
-                        constants_1.OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true") {
+                    if (constants_1.OPAM_DISABLE_SANDBOXING) {
                         disableSandboxing.push("--disable-sandboxing");
                     }
                     return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([

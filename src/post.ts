@@ -8,13 +8,13 @@ import { lintDoc, lintFmt, lintOpam } from "./lint";
 
 async function run() {
   try {
-    if (LINT_DOC.toUpperCase() === "TRUE") {
+    if (LINT_DOC) {
       await lintDoc();
     }
-    if (LINT_FMT.toUpperCase() === "TRUE") {
+    if (LINT_FMT) {
       await lintFmt();
     }
-    if (LINT_OPAM.toUpperCase() === "TRUE") {
+    if (LINT_OPAM) {
       await lintOpam();
     }
   } catch (error) {
@@ -22,7 +22,7 @@ async function run() {
     process.exit(core.ExitCode.Failure);
   }
   try {
-    if (DUNE_CACHE.toUpperCase() === "TRUE") {
+    if (DUNE_CACHE) {
       await trimDuneCache();
     }
     await saveCache();

@@ -100,7 +100,7 @@ async function initializeOpamUnix(version: string) {
     }
   }
   const disableSandboxing = [];
-  if (OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true") {
+  if (OPAM_DISABLE_SANDBOXING) {
     disableSandboxing.push("--disable-sandboxing");
   }
   const repository =
@@ -261,10 +261,7 @@ async function initializeOpamWindows(version: string) {
     OPAM_REPOSITORY ||
     "https://github.com/fdopen/opam-repository-mingw.git#opam2";
   const disableSandboxing = [];
-  if (
-    OPAM_DISABLE_SANDBOXING === "" ||
-    OPAM_DISABLE_SANDBOXING.toLocaleLowerCase() === "true"
-  ) {
+  if (OPAM_DISABLE_SANDBOXING) {
     disableSandboxing.push("--disable-sandboxing");
   }
   await exec("opam", [

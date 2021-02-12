@@ -41,27 +41,29 @@ export async function installer(): Promise<void> {
   await setupOpam(version);
   await restoreCache();
   await installDepext();
-  if (DUNE_CACHE.toUpperCase() === "TRUE") {
+  if (DUNE_CACHE || LINT_DOC || LINT_FMT || LINT_OPAM) {
     await installDune();
     core.exportVariable("DUNE_CACHE", "enabled");
     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
   }
-  if (LINT_DOC.toUpperCase() === "TRUE") {
+  if (LINT_DOC) {
     await installOdoc();
   }
-  if (LINT_FMT.toUpperCase() === "TRUE") {
+  if (LINT_FMT) {
     await installOcamlformat();
   }
-  if (LINT_OPAM.toUpperCase() === "TRUE") {
+  if (LINT_OPAM) {
     await installDuneLint();
   }
-  const fnames = await getOpamLocalPackages();
-  if (fnames.length > 0) {
-    if (OPAM_PIN.toUpperCase() === "TRUE") {
-      await pin(fnames);
-    }
-    if (OPAM_DEPEXT.toUpperCase() === "TRUE") {
-      await installSystemPackages(fnames);
+  if (OPAM_PIN || OPAM_DEPEXT) {
+    const fnames = await getOpamLocalPackages();
+    if (fnames.length > 0) {
+      if (OPAM_PIN) {
+        await pin(fnames);
+      }
+      if (OPAM_DEPEXT) {
+        await installSystemPackages(fnames);
+      }
     }
   }
   await exec("opam", ["--version"]);

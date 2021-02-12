@@ -8,6 +8,9 @@ inputs:
   ocaml-version:
     description: The version of the OCaml compiler to initialise
     default: latest
+  deploy-doc:
+    description: Specify whether to deploy documentation to GitHub Pages
+    default: false
   lint-doc:
     description: Specify whether to run dune build @doc
     default: false

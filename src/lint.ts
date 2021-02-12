@@ -16,7 +16,6 @@ export async function installOdoc(): Promise<void> {
   await exec("opam", [
     "depext",
     "conf-m4",
-    "dune",
     "odoc>=1.5.0",
     "--install",
     "--yes",
@@ -56,7 +55,6 @@ export async function installOcamlformat(): Promise<void> {
     }
     await exec("opam", [
       "depext",
-      "dune",
       version ? `ocamlformat=${version}` : "ocamlformat",
       "--install",
       "--yes",
