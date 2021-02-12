@@ -58173,7 +58173,7 @@ function installOdoc() {
 exports.installOdoc = installOdoc;
 function installOcamlformat() {
     return __awaiter(this, void 0, void 0, function () {
-        var globber, ocamlformatOpamFile, isVendored, globber_1, _ocamlformatFile, ocamlformatFile, lines, version, _i, lines_1, line, kv, hasVersionField;
+        var globber, ocamlformatOpamFile, isVendored, globber_1, _ocamlformatFile, version, ocamlformatFile, lines, _i, lines_1, line, kv;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -58200,18 +58200,19 @@ function installOcamlformat() {
                     return [4 /*yield*/, exec_1.exec("opam", ["depext", "ocamlformat", "--install", "--yes"])];
                 case 4:
                     _a.sent();
-                    return [3 /*break*/, 10];
+                    return [3 /*break*/, 11];
                 case 5: return [4 /*yield*/, glob.create("**/.ocamlformat")];
                 case 6:
                     globber_1 = _a.sent();
                     return [4 /*yield*/, globber_1.glob()];
                 case 7:
                     _ocamlformatFile = (_a.sent())[0];
+                    version = "";
+                    if (!_ocamlformatFile) return [3 /*break*/, 9];
                     return [4 /*yield*/, fs_1.promises.readFile(_ocamlformatFile)];
                 case 8:
                     ocamlformatFile = (_a.sent()).toString();
                     lines = ocamlformatFile.split(os.EOL);
-                    version = "";
                     for (_i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
                         line = lines_1[_i];
                         kv = line.split("=");
@@ -58219,18 +58220,18 @@ function installOcamlformat() {
                             version = kv[1].trim();
                         }
                     }
-                    hasVersionField = version.length > 0;
-                    return [4 /*yield*/, exec_1.exec("opam", [
-                            "depext",
-                            "dune",
-                            hasVersionField ? "ocamlformat=" + version : "ocamlformat",
-                            "--install",
-                            "--yes",
-                        ])];
-                case 9:
-                    _a.sent();
-                    _a.label = 10;
+                    _a.label = 9;
+                case 9: return [4 /*yield*/, exec_1.exec("opam", [
+                        "depext",
+                        "dune",
+                        version ? "ocamlformat=" + version : "ocamlformat",
+                        "--install",
+                        "--yes",
+                    ])];
                 case 10:
+                    _a.sent();
+                    _a.label = 11;
+                case 11:
                     core.endGroup();
                     return [2 /*return*/];
             }

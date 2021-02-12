@@ -43,20 +43,21 @@ export async function installOcamlformat(): Promise<void> {
   } else {
     const globber = await glob.create("**/.ocamlformat");
     const [_ocamlformatFile] = await globber.glob();
-    const ocamlformatFile = (await fs.readFile(_ocamlformatFile)).toString();
-    const lines = ocamlformatFile.split(os.EOL);
     let version = "";
-    for (const line of lines) {
-      const kv = line.split("=");
-      if (kv[0].trim() === "version") {
-        version = kv[1].trim();
+    if (_ocamlformatFile) {
+      const ocamlformatFile = (await fs.readFile(_ocamlformatFile)).toString();
+      const lines = ocamlformatFile.split(os.EOL);
+      for (const line of lines) {
+        const kv = line.split("=");
+        if (kv[0].trim() === "version") {
+          version = kv[1].trim();
+        }
       }
     }
-    const hasVersionField = version.length > 0;
     await exec("opam", [
       "depext",
       "dune",
-      hasVersionField ? `ocamlformat=${version}` : "ocamlformat",
+      version ? `ocamlformat=${version}` : "ocamlformat",
       "--install",
       "--yes",
     ]);
