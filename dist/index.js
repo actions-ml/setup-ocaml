@@ -80959,7 +80959,7 @@ function installDepext() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install depext");
-                    return [4 /*yield*/, exec_1.exec("opam", ["install", "depext", "--verbose", "--yes"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["install", "depext", "--yes"])];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -80977,7 +80977,7 @@ function installSystemPackages(fpaths) {
                 case 0:
                     core.startGroup("Install system packages required by opam packages");
                     fnames = fpaths.map(function (fpath) { return path.basename(fpath, ".opam"); });
-                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays(["depext"], fnames, ["--verbose", "--yes"]))];
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays(["depext"], fnames, ["--yes"]))];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -81045,7 +81045,7 @@ function installDune() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install dune");
-                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "dune", "--install", "--verbose", "--yes"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "dune", "--install", "--yes"])];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -81861,7 +81861,6 @@ function installOdoc() {
                             "dune",
                             "odoc>=1.5.0",
                             "--install",
-                            "--verbose",
                             "--yes",
                         ])];
                 case 1:
@@ -81902,13 +81901,7 @@ function installOcamlformat() {
                         ])];
                 case 3:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", [
-                            "depext",
-                            "ocamlformat",
-                            "--install",
-                            "--verbose",
-                            "--yes",
-                        ])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "ocamlformat", "--install", "--yes"])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 10];
@@ -81936,7 +81929,6 @@ function installOcamlformat() {
                             "dune",
                             hasVersionField ? "ocamlformat=" + version : "ocamlformat",
                             "--install",
-                            "--verbose",
                             "--yes",
                         ])];
                 case 9:
@@ -81956,13 +81948,7 @@ function installDuneLint() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install dune-lint");
-                    return [4 /*yield*/, exec_1.exec("opam", [
-                            "depext",
-                            "opam-dune-lint",
-                            "--install",
-                            "--verbose",
-                            "--yes",
-                        ])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "opam-dune-lint", "--install", "--yes"])];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -82201,7 +82187,6 @@ function initializeOpamUnix(version) {
                             "darcs",
                             "musl-tools"
                         ], bubblewrap, [
-                            "--verbose-versions",
                             "--yes",
                         ]))];
                 case 4:
@@ -82262,7 +82247,6 @@ function initializeOpamUnix(version) {
                                     : "ocaml-base-compiler." + version,
                             "--auto-setup"
                         ], disableSandboxing, [
-                            "--verbose",
                             "--yes",
                         ]))];
                 case 15:
@@ -82290,7 +82274,6 @@ function initializeOpamUnix(version) {
                                 : "ocaml-base-compiler." + version,
                             "--auto-setup"
                         ], disableSandboxing, [
-                            "--verbose",
                             "--yes",
                         ]))];
                 case 19:
@@ -82483,7 +82466,6 @@ function initializeOpamWindows(version) {
                                 : "ocaml-variants." + version + "+mingw64c",
                             "--auto-setup"
                         ], disableSandboxing, [
-                            "--verbose",
                             "--yes",
                         ]))];
                 case 1:
@@ -82563,7 +82545,7 @@ function pin(fpaths) {
                     fpath = fpaths_1[_i];
                     fname = path.basename(fpath, ".opam");
                     dname = path.dirname(fpath);
-                    return [4 /*yield*/, exec_1.exec("opam", ["pin", "add", fname + ".dev", ".", "--no-action", "--verbose", "--yes"], { cwd: dname })];
+                    return [4 /*yield*/, exec_1.exec("opam", ["pin", "add", fname + ".dev", ".", "--no-action", "--yes"], { cwd: dname })];
                 case 2:
                     _a.sent();
                     _a.label = 3;

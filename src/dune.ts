@@ -8,7 +8,7 @@ const octokit = github.getOctokit(GITHUB_TOKEN);
 
 export async function installDune(): Promise<void> {
   core.startGroup("Install dune");
-  await exec("opam", ["depext", "dune", "--install", "--verbose", "--yes"]);
+  await exec("opam", ["depext", "dune", "--install", "--yes"]);
   core.endGroup();
 }
 

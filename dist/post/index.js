@@ -57904,7 +57904,7 @@ function installDune() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install dune");
-                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "dune", "--install", "--verbose", "--yes"])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "dune", "--install", "--yes"])];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -58157,7 +58157,6 @@ function installOdoc() {
                             "dune",
                             "odoc>=1.5.0",
                             "--install",
-                            "--verbose",
                             "--yes",
                         ])];
                 case 1:
@@ -58198,13 +58197,7 @@ function installOcamlformat() {
                         ])];
                 case 3:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", [
-                            "depext",
-                            "ocamlformat",
-                            "--install",
-                            "--verbose",
-                            "--yes",
-                        ])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "ocamlformat", "--install", "--yes"])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 10];
@@ -58232,7 +58225,6 @@ function installOcamlformat() {
                             "dune",
                             hasVersionField ? "ocamlformat=" + version : "ocamlformat",
                             "--install",
-                            "--verbose",
                             "--yes",
                         ])];
                 case 9:
@@ -58252,13 +58244,7 @@ function installDuneLint() {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install dune-lint");
-                    return [4 /*yield*/, exec_1.exec("opam", [
-                            "depext",
-                            "opam-dune-lint",
-                            "--install",
-                            "--verbose",
-                            "--yes",
-                        ])];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "opam-dune-lint", "--install", "--yes"])];
                 case 1:
                     _a.sent();
                     core.endGroup();

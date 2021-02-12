@@ -19,7 +19,6 @@ export async function installOdoc(): Promise<void> {
     "dune",
     "odoc>=1.5.0",
     "--install",
-    "--verbose",
     "--yes",
   ]);
   core.endGroup();
@@ -40,13 +39,7 @@ export async function installOcamlformat(): Promise<void> {
       ocamlformatOpamFile[0],
       "--no-action",
     ]);
-    await exec("opam", [
-      "depext",
-      "ocamlformat",
-      "--install",
-      "--verbose",
-      "--yes",
-    ]);
+    await exec("opam", ["depext", "ocamlformat", "--install", "--yes"]);
   } else {
     const globber = await glob.create("**/.ocamlformat");
     const [_ocamlformatFile] = await globber.glob();
@@ -65,7 +58,6 @@ export async function installOcamlformat(): Promise<void> {
       "dune",
       hasVersionField ? `ocamlformat=${version}` : "ocamlformat",
       "--install",
-      "--verbose",
       "--yes",
     ]);
   }
@@ -74,13 +66,7 @@ export async function installOcamlformat(): Promise<void> {
 
 export async function installDuneLint(): Promise<void> {
   core.startGroup("Install dune-lint");
-  await exec("opam", [
-    "depext",
-    "opam-dune-lint",
-    "--install",
-    "--verbose",
-    "--yes",
-  ]);
+  await exec("opam", ["depext", "opam-dune-lint", "--install", "--yes"]);
   core.endGroup();
 }
 

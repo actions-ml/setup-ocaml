@@ -93,7 +93,6 @@ async function initializeOpamUnix(version: string) {
         "darcs",
         "musl-tools",
         ...bubblewrap,
-        "--verbose-versions",
         "--yes",
       ]);
     } else if (platform === "macos") {
@@ -137,7 +136,6 @@ async function initializeOpamUnix(version: string) {
         : `ocaml-base-compiler.${version}`,
       "--auto-setup",
       ...disableSandboxing,
-      "--verbose",
       "--yes",
     ]);
   } catch (error) {
@@ -158,7 +156,6 @@ async function initializeOpamUnix(version: string) {
         : `ocaml-base-compiler.${version}`,
       "--auto-setup",
       ...disableSandboxing,
-      "--verbose",
       "--yes",
     ]);
   }
@@ -280,7 +277,6 @@ async function initializeOpamWindows(version: string) {
       : `ocaml-variants.${version}+mingw64c`,
     "--auto-setup",
     ...disableSandboxing,
-    "--verbose",
     "--yes",
   ]);
   const wrapperbin = `c:\\cygwin\\wrapperbin`;
@@ -320,7 +316,7 @@ export async function pin(fpaths: string[]): Promise<void> {
     const dname = path.dirname(fpath);
     await exec(
       "opam",
-      ["pin", "add", `${fname}.dev`, ".", "--no-action", "--verbose", "--yes"],
+      ["pin", "add", `${fname}.dev`, ".", "--no-action", "--yes"],
       { cwd: dname }
     );
   }
