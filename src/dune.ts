@@ -25,7 +25,7 @@ export async function trimDuneCache(): Promise<void> {
     repo,
     run_id,
   });
-  const cacheSize = Math.floor(5000 / totalCount / 2);
+  const cacheSize = Math.floor(5000 / totalCount);
   await exec("opam", [
     "exec",
     "--",

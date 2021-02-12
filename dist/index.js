@@ -81071,7 +81071,7 @@ function trimDuneCache() {
                         })];
                 case 1:
                     totalCount = (_b.sent()).data.total_count;
-                    cacheSize = Math.floor(5000 / totalCount / 2);
+                    cacheSize = Math.floor(5000 / totalCount);
                     return [4 /*yield*/, exec_1.exec("opam", [
                             "exec",
                             "--",
