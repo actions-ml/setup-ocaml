@@ -10,7 +10,7 @@ import { getArchitecture, getPlatform, IS_WINDOWS } from "./internal/system";
 
 const { workflow: _workflow, job, runId, runNumber } = github.context;
 
-const workflow = _workflow.toLowerCase().replace(" ", "_");
+const workflow = _workflow.toLowerCase().replace(/\s+/g, "_");
 
 async function composeKeys() {
   const platform = await getPlatform();

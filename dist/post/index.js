@@ -57727,7 +57727,7 @@ var process = __nccwpck_require__(1765);
 var constants_1 = __nccwpck_require__(9042);
 var system_1 = __nccwpck_require__(2704);
 var _a = github.context, _workflow = _a.workflow, job = _a.job, runId = _a.runId, runNumber = _a.runNumber;
-var workflow = _workflow.toLowerCase().replace(" ", "_");
+var workflow = _workflow.toLowerCase().replace(/\s+/g, "_");
 function composeKeys() {
     return __awaiter(this, void 0, void 0, function () {
         var platform, architecture, key, restoreKeys;
