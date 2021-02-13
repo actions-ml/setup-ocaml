@@ -306,28 +306,6 @@ export async function setupOpam(version: string): Promise<void> {
   }
 }
 
-export async function installDuneLint(): Promise<void> {
-  core.startGroup("Install dune-lint");
-  await exec("opam", ["depext", "opam-dune-lint", "--install", "--yes"]);
-  core.endGroup();
-}
-
-function unique(array: string[]) {
-  return Array.from(new Set(array));
-}
-
-export async function lint(fpaths: string[]): Promise<void> {
-  core.startGroup(
-    "Check each required opam package is listed in the opam file"
-  );
-  const _dnames = fpaths.map((fpath) => path.dirname(fpath));
-  const dnames = unique(_dnames);
-  for (const dname of dnames) {
-    await exec("opam", ["exec", "--", "opam-dune-lint"], { cwd: dname });
-  }
-  core.endGroup();
-}
-
 export async function pin(fpaths: string[]): Promise<void> {
   core.startGroup("Pin local packages");
   for (const fpath of fpaths) {

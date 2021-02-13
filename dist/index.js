@@ -80883,14 +80883,13 @@ exports.saveCache = saveCache;
 "use strict";
 
 exports.__esModule = true;
-exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_LOCAL_PACKAGES = exports.OPAM_LINT = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.DUNE_CACHE = exports.GITHUB_TOKEN = void 0;
+exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_LOCAL_PACKAGES = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.DUNE_CACHE = exports.GITHUB_TOKEN = void 0;
 var core = __nccwpck_require__(2186);
 exports.GITHUB_TOKEN = core.getInput("github-token");
 exports.DUNE_CACHE = core.getInput("dune-cache").toUpperCase() === "TRUE";
 exports.OCAML_VERSION = core.getInput("ocaml-version");
 exports.OPAM_DEPEXT = core.getInput("opam-depext").toUpperCase() === "TRUE";
 exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing").toUpperCase() === "TRUE";
-exports.OPAM_LINT = core.getInput("opam-lint").toUpperCase() === "TRUE";
 exports.OPAM_LOCAL_PACKAGES = core.getInput("opam-local-packages");
 exports.OPAM_PIN = core.getInput("opam-pin").toUpperCase() === "TRUE";
 exports.OPAM_REPOSITORY = core.getInput("opam-repository");
@@ -81272,23 +81271,14 @@ function installer() {
                 case 10:
                     _a.sent();
                     _a.label = 11;
-                case 11:
-                    if (!constants_1.OPAM_LINT) return [3 /*break*/, 14];
-                    return [4 /*yield*/, opam_1.installDuneLint()];
+                case 11: return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
                 case 12:
                     _a.sent();
-                    return [4 /*yield*/, opam_1.lint(fnames)];
+                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
                 case 13:
                     _a.sent();
-                    _a.label = 14;
-                case 14: return [4 /*yield*/, exec_1.exec("opam", ["--version"])];
-                case 15:
-                    _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "--version"])];
-                case 16:
-                    _a.sent();
                     return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "ocaml", "-version"])];
-                case 17:
+                case 14:
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -81821,7 +81811,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-exports.pin = exports.lint = exports.installDuneLint = exports.setupOpam = void 0;
+exports.pin = exports.setupOpam = void 0;
 var core = __nccwpck_require__(2186);
 var exec_1 = __nccwpck_require__(1514);
 var github = __nccwpck_require__(5438);
@@ -82271,54 +82261,6 @@ function setupOpam(version) {
     });
 }
 exports.setupOpam = setupOpam;
-function installDuneLint() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Install dune-lint");
-                    return [4 /*yield*/, exec_1.exec("opam", ["depext", "opam-dune-lint", "--install", "--yes"])];
-                case 1:
-                    _a.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.installDuneLint = installDuneLint;
-function unique(array) {
-    return Array.from(new Set(array));
-}
-function lint(fpaths) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _dnames, dnames, _i, dnames_1, dname;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Check each required opam package is listed in the opam file");
-                    _dnames = fpaths.map(function (fpath) { return path.dirname(fpath); });
-                    dnames = unique(_dnames);
-                    _i = 0, dnames_1 = dnames;
-                    _a.label = 1;
-                case 1:
-                    if (!(_i < dnames_1.length)) return [3 /*break*/, 4];
-                    dname = dnames_1[_i];
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "opam-dune-lint"], { cwd: dname })];
-                case 2:
-                    _a.sent();
-                    _a.label = 3;
-                case 3:
-                    _i++;
-                    return [3 /*break*/, 1];
-                case 4:
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.lint = lint;
 function pin(fpaths) {
     return __awaiter(this, void 0, void 0, function () {
         var _i, fpaths_1, fpath, fname, dname;

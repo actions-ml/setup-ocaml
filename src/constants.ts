@@ -12,8 +12,6 @@ export const OPAM_DEPEXT =
 export const OPAM_DISABLE_SANDBOXING =
   core.getInput("opam-disable-sandboxing").toUpperCase() === "TRUE";
 
-export const OPAM_LINT = core.getInput("opam-lint").toUpperCase() === "TRUE";
-
 export const OPAM_LOCAL_PACKAGES = core.getInput("opam-local-packages");
 
 export const OPAM_PIN = core.getInput("opam-pin").toUpperCase() === "TRUE";
