@@ -4,8 +4,6 @@ export const GITHUB_TOKEN = core.getInput("github-token");
 
 export const DUNE_CACHE = core.getInput("dune-cache").toUpperCase() === "TRUE";
 
-export const MODE = core.getInput("mode");
-
 export const OCAML_VERSION = core.getInput("ocaml-version");
 
 export const OPAM_DEPEXT =
@@ -13,6 +11,8 @@ export const OPAM_DEPEXT =
 
 export const OPAM_DISABLE_SANDBOXING =
   core.getInput("opam-disable-sandboxing").toUpperCase() === "TRUE";
+
+export const OPAM_LINT = core.getInput("opam-lint").toUpperCase() === "TRUE";
 
 export const OPAM_LOCAL_PACKAGES = core.getInput("opam-local-packages");
 
