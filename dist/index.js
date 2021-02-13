@@ -82164,9 +82164,9 @@ function initializeOpamUnix(version) {
                                     : "ocaml-system." + version
                                 : isVariant
                                     ? "ocaml-variants." + version
-                                    : "ocaml-base-compiler." + version,
-                            "--auto-setup"
+                                    : "ocaml-base-compiler." + version
                         ], disableSandboxing, [
+                            "--no-setup",
                             "--yes",
                         ]))];
                 case 15:
@@ -82191,9 +82191,9 @@ function initializeOpamUnix(version) {
                             "--compiler",
                             isVariant
                                 ? "ocaml-variants." + version
-                                : "ocaml-base-compiler." + version,
-                            "--auto-setup"
+                                : "ocaml-base-compiler." + version
                         ], disableSandboxing, [
+                            "--no-setup",
                             "--yes",
                         ]))];
                 case 19:
@@ -82382,9 +82382,9 @@ function initializeOpamWindows(version) {
                             "--compiler",
                             isVariant
                                 ? "ocaml-variants." + version
-                                : "ocaml-variants." + version + "+mingw64c",
-                            "--auto-setup"
+                                : "ocaml-variants." + version + "+mingw64c"
                         ], disableSandboxing, [
+                            "--no-setup",
                             "--yes",
                         ]))];
                 case 1:

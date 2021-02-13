@@ -134,8 +134,8 @@ async function initializeOpamUnix(version: string) {
         : isVariant
         ? `ocaml-variants.${version}`
         : `ocaml-base-compiler.${version}`,
-      "--auto-setup",
       ...disableSandboxing,
+      "--no-setup",
       "--yes",
     ]);
   } catch (error) {
@@ -154,8 +154,8 @@ async function initializeOpamUnix(version: string) {
       isVariant
         ? `ocaml-variants.${version}`
         : `ocaml-base-compiler.${version}`,
-      "--auto-setup",
       ...disableSandboxing,
+      "--no-setup",
       "--yes",
     ]);
   }
@@ -272,8 +272,8 @@ async function initializeOpamWindows(version: string) {
     isVariant
       ? `ocaml-variants.${version}`
       : `ocaml-variants.${version}+mingw64c`,
-    "--auto-setup",
     ...disableSandboxing,
+    "--no-setup",
     "--yes",
   ]);
   const wrapperbin = `c:\\cygwin\\wrapperbin`;
