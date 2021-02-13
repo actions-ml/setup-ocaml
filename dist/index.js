@@ -81830,8 +81830,11 @@ exports.installDuneLint = exports.installOcamlformat = exports.installOdoc = voi
 var core = __nccwpck_require__(2186);
 var exec_1 = __nccwpck_require__(1514);
 var glob = __nccwpck_require__(8090);
-var fs_1 = __nccwpck_require__(5747);
+var _fs = __nccwpck_require__(5747);
 var os = __nccwpck_require__(2087);
+var path = __nccwpck_require__(5622);
+var process = __nccwpck_require__(1765);
+var fs = _fs.promises;
 function installOdoc() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -81862,7 +81865,7 @@ function installOdoc() {
 exports.installOdoc = installOdoc;
 function installOcamlformat() {
     return __awaiter(this, void 0, void 0, function () {
-        var globber, ocamlformatOpamFile, isVendored, globber_1, _ocamlformatFile, version, ocamlformatFile, lines, _i, lines_1, line, kv;
+        var globber, ocamlformatOpamFile, isVendored, version, config, isConfigExists, ocamlformatFile, lines, _i, lines_1, line, kv;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -81889,17 +81892,18 @@ function installOcamlformat() {
                     return [4 /*yield*/, exec_1.exec("opam", ["depext", "ocamlformat", "--install", "--yes"])];
                 case 4:
                     _a.sent();
-                    return [3 /*break*/, 11];
-                case 5: return [4 /*yield*/, glob.create("**/.ocamlformat")];
-                case 6:
-                    globber_1 = _a.sent();
-                    return [4 /*yield*/, globber_1.glob()];
-                case 7:
-                    _ocamlformatFile = (_a.sent())[0];
+                    return [3 /*break*/, 10];
+                case 5:
                     version = "";
-                    if (!_ocamlformatFile) return [3 /*break*/, 9];
-                    return [4 /*yield*/, fs_1.promises.readFile(_ocamlformatFile)];
-                case 8:
+                    config = path.join(process.cwd(), ".ocamlformat");
+                    return [4 /*yield*/, fs
+                            .access(config, _fs.constants.F_OK)
+                            .then(function () { return true; })["catch"](function () { return false; })];
+                case 6:
+                    isConfigExists = _a.sent();
+                    if (!isConfigExists) return [3 /*break*/, 8];
+                    return [4 /*yield*/, fs.readFile(config)];
+                case 7:
                     ocamlformatFile = (_a.sent()).toString();
                     lines = ocamlformatFile.split(os.EOL);
                     for (_i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
@@ -81909,17 +81913,17 @@ function installOcamlformat() {
                             version = kv[1].trim();
                         }
                     }
-                    _a.label = 9;
-                case 9: return [4 /*yield*/, exec_1.exec("opam", [
+                    _a.label = 8;
+                case 8: return [4 /*yield*/, exec_1.exec("opam", [
                         "depext",
                         version ? "ocamlformat=" + version : "ocamlformat",
                         "--install",
                         "--yes",
                     ])];
-                case 10:
+                case 9:
                     _a.sent();
-                    _a.label = 11;
-                case 11:
+                    _a.label = 10;
+                case 10:
                     core.endGroup();
                     return [2 /*return*/];
             }

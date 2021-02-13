@@ -1,8 +1,12 @@
 import * as core from "@actions/core";
 import { exec } from "@actions/exec";
 import * as glob from "@actions/glob";
-import { promises as fs } from "fs";
+import * as _fs from "fs";
 import * as os from "os";
+import * as path from "path";
+import * as process from "process";
+
+const { promises: fs } = _fs;
 
 export async function installOdoc(): Promise<void> {
   core.startGroup("Install odoc");
@@ -36,11 +40,14 @@ export async function installOcamlformat(): Promise<void> {
     ]);
     await exec("opam", ["depext", "ocamlformat", "--install", "--yes"]);
   } else {
-    const globber = await glob.create("**/.ocamlformat");
-    const [_ocamlformatFile] = await globber.glob();
     let version = "";
-    if (_ocamlformatFile) {
-      const ocamlformatFile = (await fs.readFile(_ocamlformatFile)).toString();
+    const config = path.join(process.cwd(), ".ocamlformat");
+    const isConfigExists = await fs
+      .access(config, _fs.constants.F_OK)
+      .then(() => true)
+      .catch(() => false);
+    if (isConfigExists) {
+      const ocamlformatFile = (await fs.readFile(config)).toString();
       const lines = ocamlformatFile.split(os.EOL);
       for (const line of lines) {
         const kv = line.split("=");
