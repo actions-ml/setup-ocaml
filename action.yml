@@ -8,21 +8,12 @@ inputs:
   ocaml-version:
     description: The version of the OCaml compiler to initialise
     default: latest
-  deploy-doc:
-    description: Specify whether to deploy documentation to GitHub Pages
-    default: false
-  lint-doc:
-    description: Specify whether to run dune build @doc
-    default: false
-  lint-fmt:
-    description: Specify whether to run dune build @fmt
-    default: false
-  lint-opam:
-    description: Specify whether to run dune-lint
-    default: false
   dune-cache:
     description: Specify whether to use the dune cache
     default: false
+  mode:
+    description: Specify which mode to use
+    default: default
   opam-depext:
     description:
       Specify whether to query and install external dependencies of opam

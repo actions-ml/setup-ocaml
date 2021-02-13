@@ -2,13 +2,9 @@ import * as core from "@actions/core";
 
 export const GITHUB_TOKEN = core.getInput("github-token");
 
-export const LINT_DOC = core.getInput("lint-doc").toUpperCase() === "TRUE";
-
-export const LINT_FMT = core.getInput("lint-fmt").toUpperCase() === "TRUE";
-
-export const LINT_OPAM = core.getInput("lint-opam").toUpperCase() === "TRUE";
-
 export const DUNE_CACHE = core.getInput("dune-cache").toUpperCase() === "TRUE";
+
+export const MODE = core.getInput("mode");
 
 export const OCAML_VERSION = core.getInput("ocaml-version");
 

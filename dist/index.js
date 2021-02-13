@@ -80883,13 +80883,11 @@ exports.saveCache = saveCache;
 "use strict";
 
 exports.__esModule = true;
-exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_LOCAL_PACKAGES = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.DUNE_CACHE = exports.LINT_OPAM = exports.LINT_FMT = exports.LINT_DOC = exports.GITHUB_TOKEN = void 0;
+exports.OPAM_REPOSITORY = exports.OPAM_PIN = exports.OPAM_LOCAL_PACKAGES = exports.OPAM_DISABLE_SANDBOXING = exports.OPAM_DEPEXT = exports.OCAML_VERSION = exports.MODE = exports.DUNE_CACHE = exports.GITHUB_TOKEN = void 0;
 var core = __nccwpck_require__(2186);
 exports.GITHUB_TOKEN = core.getInput("github-token");
-exports.LINT_DOC = core.getInput("lint-doc").toUpperCase() === "TRUE";
-exports.LINT_FMT = core.getInput("lint-fmt").toUpperCase() === "TRUE";
-exports.LINT_OPAM = core.getInput("lint-opam").toUpperCase() === "TRUE";
 exports.DUNE_CACHE = core.getInput("dune-cache").toUpperCase() === "TRUE";
+exports.MODE = core.getInput("mode");
 exports.OCAML_VERSION = core.getInput("ocaml-version");
 exports.OPAM_DEPEXT = core.getInput("opam-depext").toUpperCase() === "TRUE";
 exports.OPAM_DISABLE_SANDBOXING = core.getInput("opam-disable-sandboxing").toUpperCase() === "TRUE";
@@ -81253,7 +81251,7 @@ function installer() {
                     return [4 /*yield*/, depext_1.installDepext()];
                 case 4:
                     _a.sent();
-                    if (!(constants_1.DUNE_CACHE || constants_1.LINT_DOC || constants_1.LINT_FMT || constants_1.LINT_OPAM)) return [3 /*break*/, 6];
+                    if (!(constants_1.DUNE_CACHE || constants_1.MODE === "lint-doc" || constants_1.MODE === "lint-fmt")) return [3 /*break*/, 6];
                     return [4 /*yield*/, dune_1.installDune()];
                 case 5:
                     _a.sent();
@@ -81261,19 +81259,19 @@ function installer() {
                     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
                     _a.label = 6;
                 case 6:
-                    if (!constants_1.LINT_DOC) return [3 /*break*/, 8];
+                    if (!(constants_1.MODE === "lint-doc")) return [3 /*break*/, 8];
                     return [4 /*yield*/, lint_1.installOdoc()];
                 case 7:
                     _a.sent();
                     _a.label = 8;
                 case 8:
-                    if (!constants_1.LINT_FMT) return [3 /*break*/, 10];
+                    if (!(constants_1.MODE === "lint-fmt")) return [3 /*break*/, 10];
                     return [4 /*yield*/, lint_1.installOcamlformat()];
                 case 9:
                     _a.sent();
                     _a.label = 10;
                 case 10:
-                    if (!constants_1.LINT_OPAM) return [3 /*break*/, 12];
+                    if (!(constants_1.MODE === "lint-opam")) return [3 /*break*/, 12];
                     return [4 /*yield*/, lint_1.installDuneLint()];
                 case 11:
                     _a.sent();
@@ -81791,17 +81789,6 @@ exports.getSystemIdentificationData = getSystemIdentificationData;
 
 "use strict";
 
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -81839,15 +81826,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.lintOpam = exports.lintFmt = exports.lintDoc = exports.installDuneLint = exports.installOcamlformat = exports.installOdoc = void 0;
+exports.installDuneLint = exports.installOcamlformat = exports.installOdoc = void 0;
 var core = __nccwpck_require__(2186);
 var exec_1 = __nccwpck_require__(1514);
 var glob = __nccwpck_require__(8090);
 var fs_1 = __nccwpck_require__(5747);
 var os = __nccwpck_require__(2087);
-var path = __nccwpck_require__(5622);
-var process = __nccwpck_require__(1765);
-var packages_1 = __nccwpck_require__(4583);
 function installOdoc() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -81959,75 +81943,6 @@ function installDuneLint() {
     });
 }
 exports.installDuneLint = installDuneLint;
-function lintDoc() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Check if documentation builds without errors");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "build", "@doc"], {
-                            env: __assign(__assign({}, process.env), { ODOC_WARN_ERROR: "true" }),
-                        })];
-                case 1:
-                    _a.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.lintDoc = lintDoc;
-function lintFmt() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Check if the codebase is formatted");
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "dune", "build", "@fmt"])];
-                case 1:
-                    _a.sent();
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.lintFmt = lintFmt;
-function unique(array) {
-    return Array.from(new Set(array));
-}
-function lintOpam() {
-    return __awaiter(this, void 0, void 0, function () {
-        var fpaths, _dnames, dnames, _i, dnames_1, dname;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    core.startGroup("Check each required opam package is listed in the opam file");
-                    return [4 /*yield*/, packages_1.getOpamLocalPackages()];
-                case 1:
-                    fpaths = _a.sent();
-                    _dnames = fpaths.map(function (fpath) { return path.dirname(fpath); });
-                    dnames = unique(_dnames);
-                    _i = 0, dnames_1 = dnames;
-                    _a.label = 2;
-                case 2:
-                    if (!(_i < dnames_1.length)) return [3 /*break*/, 5];
-                    dname = dnames_1[_i];
-                    return [4 /*yield*/, exec_1.exec("opam", ["exec", "--", "opam-dune-lint"], { cwd: dname })];
-                case 3:
-                    _a.sent();
-                    _a.label = 4;
-                case 4:
-                    _i++;
-                    return [3 /*break*/, 2];
-                case 5:
-                    core.endGroup();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.lintOpam = lintOpam;
 
 
 /***/ }),

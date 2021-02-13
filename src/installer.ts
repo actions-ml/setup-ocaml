@@ -6,9 +6,7 @@ import * as process from "process";
 import { restoreCache } from "./cache";
 import {
   DUNE_CACHE,
-  LINT_DOC,
-  LINT_FMT,
-  LINT_OPAM,
+  MODE,
   OCAML_VERSION,
   OPAM_DEPEXT,
   OPAM_PIN,
@@ -41,18 +39,18 @@ export async function installer(): Promise<void> {
   await setupOpam(version);
   await restoreCache();
   await installDepext();
-  if (DUNE_CACHE || LINT_DOC || LINT_FMT || LINT_OPAM) {
+  if (DUNE_CACHE || MODE === "lint-doc" || MODE === "lint-fmt") {
     await installDune();
     core.exportVariable("DUNE_CACHE", "enabled");
     core.exportVariable("DUNE_CACHE_TRANSPORT", "direct");
   }
-  if (LINT_DOC) {
+  if (MODE === "lint-doc") {
     await installOdoc();
   }
-  if (LINT_FMT) {
+  if (MODE === "lint-fmt") {
     await installOcamlformat();
   }
-  if (LINT_OPAM) {
+  if (MODE === "lint-opam") {
     await installDuneLint();
   }
   if (OPAM_PIN || OPAM_DEPEXT) {
