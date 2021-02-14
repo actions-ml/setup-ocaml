@@ -81216,15 +81216,17 @@ var opam_1 = __nccwpck_require__(1078);
 var packages_1 = __nccwpck_require__(4583);
 function installer() {
     return __awaiter(this, void 0, void 0, function () {
-        var numberOfProcessors, platform, version, fnames;
+        var numberOfProcessors, isDebug, platform, version, fnames;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     numberOfProcessors = os.cpus().length;
-                    core.exportVariable("OPAMJOBS", numberOfProcessors + 2);
+                    isDebug = core.isDebug();
                     core.exportVariable("OPAMERRLOGLEN", 0);
+                    core.exportVariable("OPAMJOBS", numberOfProcessors);
                     core.exportVariable("OPAMPRECISETRACKING", 1);
                     core.exportVariable("OPAMSOLVERTIMEOUT", 500);
+                    core.exportVariable("OPAMVERBOSE", isDebug);
                     core.exportVariable("OPAMYES", 1);
                     platform = system_1.getPlatform();
                     if (platform === "windows") {

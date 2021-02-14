@@ -14,10 +14,12 @@ import { getOpamLocalPackages } from "./packages";
 
 export async function installer(): Promise<void> {
   const numberOfProcessors = os.cpus().length;
-  core.exportVariable("OPAMJOBS", numberOfProcessors + 2);
+  const isDebug = core.isDebug();
   core.exportVariable("OPAMERRLOGLEN", 0);
+  core.exportVariable("OPAMJOBS", numberOfProcessors);
   core.exportVariable("OPAMPRECISETRACKING", 1);
   core.exportVariable("OPAMSOLVERTIMEOUT", 500);
+  core.exportVariable("OPAMVERBOSE", isDebug);
   core.exportVariable("OPAMYES", 1);
   const platform = getPlatform();
   if (platform === "windows") {
