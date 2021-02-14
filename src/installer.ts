@@ -28,8 +28,8 @@ export async function installer(): Promise<void> {
     core.exportVariable("HOMEBREW_NO_INSTALL_CLEANUP", 1);
   }
   const version = await resolveVersion(OCAML_VERSION);
-  await setupOpam(version);
   await restoreCache();
+  await setupOpam(version);
   await installDepext();
   if (DUNE_CACHE) {
     await installDune();

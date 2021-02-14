@@ -57753,12 +57753,13 @@ function composeKeys() {
 }
 function composePaths() {
     return __awaiter(this, void 0, void 0, function () {
-        var homeDir, opamDownloadCacheDir, xdgCacheHome, paths, duneCacheDir;
+        var homeDir, opamDownloadCacheDir, opamRepoDir, xdgCacheHome, paths, duneCacheDir;
         return __generator(this, function (_a) {
             homeDir = os.homedir();
             opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
+            opamRepoDir = path.join(homeDir, ".opam", "repo");
             xdgCacheHome = process.env.XDG_CACHE_HOME;
-            paths = [opamDownloadCacheDir];
+            paths = [opamDownloadCacheDir, opamRepoDir];
             if (constants_1.DUNE_CACHE) {
                 duneCacheDir = system_1.IS_WINDOWS
                     ? path.join(homeDir, "Local Settings", "Cache", "dune")
