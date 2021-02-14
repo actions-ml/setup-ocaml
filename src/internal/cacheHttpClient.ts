@@ -1,13 +1,16 @@
 import * as core from "@actions/core";
+import * as github from "@actions/github";
 import { HttpClient } from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
-import * as process from "process";
 
 import { composeImageName } from "./imageName";
 
+const {
+  repo: { owner, repo },
+} = github.context;
+
 export function makeHttpClient(): HttpClient {
-  const repositoryName = process.env.GITHUB_REPOSITORY;
-  return new HttpClient(`ocaml/setup-ocaml (${repositoryName})`, [], {
+  return new HttpClient(`ocaml/setup-ocaml (${owner}/${repo})`, [], {
     allowRetries: true,
     maxRetries: 5,
   });

@@ -6,6 +6,11 @@ import { GITHUB_TOKEN } from "./constants";
 
 const octokit = github.getOctokit(GITHUB_TOKEN);
 
+const {
+  repo: { owner, repo },
+  runId: run_id,
+} = github.context;
+
 export async function installDune(): Promise<void> {
   core.startGroup("Install dune");
   await exec("opam", ["depext", "dune", "--install", "--yes"]);
@@ -14,10 +19,6 @@ export async function installDune(): Promise<void> {
 
 export async function trimDuneCache(): Promise<void> {
   core.startGroup("Remove oldest files from the dune cache to free space");
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const [owner, repo] = process.env.GITHUB_REPOSITORY!.split("/");
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const run_id = parseInt(process.env.GITHUB_RUN_ID!);
   const {
     data: { total_count: totalCount },
   } = await octokit.actions.listJobsForWorkflowRun({
