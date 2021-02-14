@@ -81222,6 +81222,7 @@ function installer() {
                 case 0:
                     numberOfProcessors = os.cpus().length;
                     isDebug = core.isDebug();
+                    core.exportVariable("OPAMCOLOR", "always");
                     core.exportVariable("OPAMERRLOGLEN", 0);
                     core.exportVariable("OPAMJOBS", numberOfProcessors);
                     core.exportVariable("OPAMPRECISETRACKING", 1);

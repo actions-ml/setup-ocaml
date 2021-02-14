@@ -15,6 +15,7 @@ import { getOpamLocalPackages } from "./packages";
 export async function installer(): Promise<void> {
   const numberOfProcessors = os.cpus().length;
   const isDebug = core.isDebug();
+  core.exportVariable("OPAMCOLOR", "always");
   core.exportVariable("OPAMERRLOGLEN", 0);
   core.exportVariable("OPAMJOBS", numberOfProcessors);
   core.exportVariable("OPAMPRECISETRACKING", 1);
