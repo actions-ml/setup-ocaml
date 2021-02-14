@@ -203,7 +203,7 @@ async function setupCygwin() {
   } else {
     core.addPath(cachedPath);
   }
-  const root = "c:\\cygwin";
+  const root = "D:\\cygwin";
   const site = "https://mirrors.kernel.org/sourceware/cygwin";
   const packages = [
     "curl",
@@ -276,7 +276,7 @@ async function initializeOpamWindows(version: string) {
     "--no-setup",
     "--yes",
   ]);
-  const wrapperbin = `c:\\cygwin\\wrapperbin`;
+  const wrapperbin = `D:\\cygwin\\wrapperbin`;
   await io.mkdirP(wrapperbin);
   const opamBat = `${wrapperbin}\\opam.bat`;
 

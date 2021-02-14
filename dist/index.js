@@ -82083,7 +82083,7 @@ function setupCygwin() {
                     core.addPath(cachedPath);
                     _a.label = 5;
                 case 5:
-                    root = "c:\\cygwin";
+                    root = "D:\\cygwin";
                     site = "https://mirrors.kernel.org/sourceware/cygwin";
                     packages = [
                         "curl",
@@ -82200,7 +82200,7 @@ function initializeOpamWindows(version) {
                         ]))];
                 case 1:
                     _a.sent();
-                    wrapperbin = "c:\\cygwin\\wrapperbin";
+                    wrapperbin = "D:\\cygwin\\wrapperbin";
                     return [4 /*yield*/, io.mkdirP(wrapperbin)];
                 case 2:
                     _a.sent();
