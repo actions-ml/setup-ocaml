@@ -80803,13 +80803,12 @@ function composeKeys() {
 }
 function composePaths() {
     return __awaiter(this, void 0, void 0, function () {
-        var homeDir, opamDownloadCacheDir, opamRepoDir, xdgCacheHome, paths, duneCacheDir;
+        var homeDir, opamDownloadCacheDir, xdgCacheHome, paths, duneCacheDir;
         return __generator(this, function (_a) {
             homeDir = os.homedir();
             opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
-            opamRepoDir = path.join(homeDir, ".opam", "repo");
             xdgCacheHome = process.env.XDG_CACHE_HOME;
-            paths = [opamDownloadCacheDir, opamRepoDir];
+            paths = [opamDownloadCacheDir];
             if (constants_1.DUNE_CACHE) {
                 duneCacheDir = system_1.IS_WINDOWS
                     ? path.join(homeDir, "Local Settings", "Cache", "dune")
@@ -81239,10 +81238,10 @@ function installer() {
                     return [4 /*yield*/, resolveVersion_1.resolveVersion(constants_1.OCAML_VERSION)];
                 case 1:
                     version = _a.sent();
-                    return [4 /*yield*/, cache_1.restoreCache()];
+                    return [4 /*yield*/, opam_1.setupOpam(version)];
                 case 2:
                     _a.sent();
-                    return [4 /*yield*/, opam_1.setupOpam(version)];
+                    return [4 /*yield*/, cache_1.restoreCache()];
                 case 3:
                     _a.sent();
                     return [4 /*yield*/, depext_1.installDepext()];
