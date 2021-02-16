@@ -42,7 +42,7 @@ async function composePaths() {
 }
 
 export async function restoreCache(): Promise<void> {
-  core.startGroup("Restore cache files of opam and dune");
+  core.startGroup("Restore cache files");
   const paths = await composePaths();
   const { key, restoreKeys } = await composeKeys();
   const cacheKey = await cache.restoreCache(paths, key, restoreKeys);
@@ -57,7 +57,7 @@ export async function restoreCache(): Promise<void> {
 }
 
 export async function saveCache(): Promise<void> {
-  core.startGroup("Save cache files of opam and dune");
+  core.startGroup("Save cache files");
   const paths = await composePaths();
   const { key } = await composeKeys();
   await cache.saveCache(paths, key);

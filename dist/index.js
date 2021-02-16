@@ -80827,7 +80827,7 @@ function restoreCache() {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    core.startGroup("Restore cache files of opam and dune");
+                    core.startGroup("Restore cache files");
                     return [4 /*yield*/, composePaths()];
                 case 1:
                     paths = _b.sent();
@@ -80856,7 +80856,7 @@ function saveCache() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    core.startGroup("Save cache files of opam and dune");
+                    core.startGroup("Save cache files");
                     return [4 /*yield*/, composePaths()];
                 case 1:
                     paths = _a.sent();
