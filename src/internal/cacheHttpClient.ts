@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { HttpClient } from "@actions/http-client";
 import * as tc from "@actions/tool-cache";
+import * as path from "path";
 
 import { composeImageName } from "./imageName";
 
@@ -45,8 +46,8 @@ export async function retrieveCache(
       version,
       imageName
     );
-    core.addPath(`${cachedPath}/bin`);
+    core.addPath(path.join(cachedPath, "bin"));
   } else {
-    core.addPath(`${cachedPath}/bin`);
+    core.addPath(path.join(cachedPath, "bin"));
   }
 }

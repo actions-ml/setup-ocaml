@@ -203,7 +203,8 @@ async function setupCygwin() {
   } else {
     core.addPath(cachedPath);
   }
-  const root = "D:\\cygwin";
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const CYGWIN_ROOT = process.env.CYGWIN_ROOT!;
   const site = "https://mirrors.kernel.org/sourceware/cygwin";
   const packages = [
     "curl",
@@ -222,23 +223,17 @@ async function setupCygwin() {
   await exec("setup-x86_64.exe", [
     "--quiet-mode",
     "--root",
-    root,
+    CYGWIN_ROOT,
     "--site",
     site,
     "--packages",
     packages,
   ]);
   const setupExePath = await io.which("setup-x86_64.exe");
-  await io.cp(setupExePath, root);
-  core.addPath(`${root}\\bin`);
+  await io.cp(setupExePath, CYGWIN_ROOT);
 }
 
 async function acquireOpamWindows() {
-  async function install(path: string) {
-    const installSh = `${path}\\opam64\\install.sh`;
-    await fs.chmod(installSh, 0o755);
-    await exec("bash", [installSh, "--prefix", "/usr"]);
-  }
   const version = "0.0.0.2";
   const cachedPath = tc.find("opam", version);
   if (cachedPath === "") {
@@ -249,9 +244,13 @@ async function acquireOpamWindows() {
       "xv",
     ]);
     const cachedPath = await tc.cacheDir(extractedPath, "opam", version);
-    await install(cachedPath);
+    const installSh = path.join(cachedPath, "opam64", "install.sh");
+    await fs.chmod(installSh, 0o755);
+    await exec("bash", [installSh, "--prefix", "/usr"]);
   } else {
-    await install(cachedPath);
+    const installSh = path.join(cachedPath, "opam64", "install.sh");
+    await fs.chmod(installSh, 0o755);
+    await exec("bash", [installSh, "--prefix", "/usr"]);
   }
 }
 
@@ -276,26 +275,40 @@ async function initializeOpamWindows(version: string) {
     "--no-setup",
     "--yes",
   ]);
-  const wrapperbin = `D:\\cygwin\\wrapperbin`;
-  await io.mkdirP(wrapperbin);
-  const opamBat = `${wrapperbin}\\opam.bat`;
-
-  await fs.writeFile(opamBat, "@echo off\r\nocaml-env exec -- opam.exe %*", {
-    mode: 0o755,
-  });
-  core.addPath(wrapperbin);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const CYGWIN_ROOT_WRAPPERBIN = process.env.CYGWIN_ROOT_WRAPPERBIN!;
+  await io.mkdirP(CYGWIN_ROOT_WRAPPERBIN);
+  const opamCmd = path.join(CYGWIN_ROOT_WRAPPERBIN, "opam.cmd");
+  const data = [
+    "@setlocal",
+    "@echo off",
+    "set PATH=%CYGWIN_ROOT%\\bin;%PATH%",
+    "ocaml-env exec -- opam.exe %*",
+  ].join("\r\n");
+  await fs.writeFile(opamCmd, data, { mode: 0o755 });
 }
 
 async function setupOpamWindows(version: string) {
+  const CYGWIN_ROOT = "D:\\cygwin";
+  const CYGWIN_ROOT_WRAPPERBIN = path.join(CYGWIN_ROOT, "wrapperbin");
+  core.exportVariable("CYGWIN_ROOT", CYGWIN_ROOT);
+  core.exportVariable("CYGWIN_ROOT_WRAPPERBIN", CYGWIN_ROOT_WRAPPERBIN);
+  core.addPath(CYGWIN_ROOT_WRAPPERBIN);
   core.startGroup("Prepare Cygwin environment");
   await setupCygwin();
   core.endGroup();
+  const CYGWIN_ROOT_BIN = path.join(CYGWIN_ROOT, "bin");
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const originalPath = process.env.PATH!.split(path.delimiter);
+  const patchedPath = [CYGWIN_ROOT_BIN, ...originalPath];
+  process.env.PATH = patchedPath.join(path.delimiter);
   core.startGroup("Install opam");
   await acquireOpamWindows();
   core.endGroup();
   core.startGroup("Initialise the opam state");
   await initializeOpamWindows(version);
   core.endGroup();
+  process.env.PATH = originalPath.join(path.delimiter);
 }
 
 export async function setupOpam(version: string): Promise<void> {

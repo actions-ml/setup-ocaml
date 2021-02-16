@@ -81338,6 +81338,7 @@ var core = __nccwpck_require__(2186);
 var github = __nccwpck_require__(5438);
 var http_client_1 = __nccwpck_require__(9925);
 var tc = __nccwpck_require__(7784);
+var path = __nccwpck_require__(5622);
 var imageName_1 = __nccwpck_require__(8059);
 var _a = github.context.repo, owner = _a.owner, repo = _a.repo;
 function makeHttpClient() {
@@ -81394,10 +81395,10 @@ function retrieveCache(url, version) {
                     return [4 /*yield*/, tc.cacheDir(extractedPath, "ocaml", version, imageName)];
                 case 5:
                     cachedPath_1 = _a.sent();
-                    core.addPath(cachedPath_1 + "/bin");
+                    core.addPath(path.join(cachedPath_1, "bin"));
                     return [3 /*break*/, 7];
                 case 6:
-                    core.addPath(cachedPath + "/bin");
+                    core.addPath(path.join(cachedPath, "bin"));
                     _a.label = 7;
                 case 7: return [2 /*return*/];
             }
@@ -82064,7 +82065,7 @@ function getCygwinVersion() {
 }
 function setupCygwin() {
     return __awaiter(this, void 0, void 0, function () {
-        var version, cachedPath, downloadedPath, cachedPath_2, root, site, packages, setupExePath;
+        var version, cachedPath, downloadedPath, cachedPath_2, CYGWIN_ROOT, site, packages, setupExePath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, getCygwinVersion()];
@@ -82084,7 +82085,7 @@ function setupCygwin() {
                     core.addPath(cachedPath);
                     _a.label = 5;
                 case 5:
-                    root = "D:\\cygwin";
+                    CYGWIN_ROOT = process.env.CYGWIN_ROOT;
                     site = "https://mirrors.kernel.org/sourceware/cygwin";
                     packages = [
                         "curl",
@@ -82103,7 +82104,7 @@ function setupCygwin() {
                     return [4 /*yield*/, exec_1.exec("setup-x86_64.exe", [
                             "--quiet-mode",
                             "--root",
-                            root,
+                            CYGWIN_ROOT,
                             "--site",
                             site,
                             "--packages",
@@ -82114,10 +82115,9 @@ function setupCygwin() {
                     return [4 /*yield*/, io.which("setup-x86_64.exe")];
                 case 7:
                     setupExePath = _a.sent();
-                    return [4 /*yield*/, io.cp(setupExePath, root)];
+                    return [4 /*yield*/, io.cp(setupExePath, CYGWIN_ROOT)];
                 case 8:
                     _a.sent();
-                    core.addPath(root + "\\bin");
                     return [2 /*return*/];
             }
         });
@@ -82125,31 +82125,13 @@ function setupCygwin() {
 }
 function acquireOpamWindows() {
     return __awaiter(this, void 0, void 0, function () {
-        function install(path) {
-            return __awaiter(this, void 0, void 0, function () {
-                var installSh;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            installSh = path + "\\opam64\\install.sh";
-                            return [4 /*yield*/, fs_1.promises.chmod(installSh, 493)];
-                        case 1:
-                            _a.sent();
-                            return [4 /*yield*/, exec_1.exec("bash", [installSh, "--prefix", "/usr"])];
-                        case 2:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }
-        var version, cachedPath, downloadedPath, extractedPath, cachedPath_3;
+        var version, cachedPath, downloadedPath, extractedPath, cachedPath_3, installSh, installSh;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     version = "0.0.0.2";
                     cachedPath = tc.find("opam", version);
-                    if (!(cachedPath === "")) return [3 /*break*/, 5];
+                    if (!(cachedPath === "")) return [3 /*break*/, 6];
                     return [4 /*yield*/, tc.downloadTool("https://github.com/fdopen/opam-repository-mingw/releases/download/" + version + "/opam64.tar.xz")];
                 case 1:
                     downloadedPath = _a.sent();
@@ -82161,22 +82143,31 @@ function acquireOpamWindows() {
                     return [4 /*yield*/, tc.cacheDir(extractedPath, "opam", version)];
                 case 3:
                     cachedPath_3 = _a.sent();
-                    return [4 /*yield*/, install(cachedPath_3)];
+                    installSh = path.join(cachedPath_3, "opam64", "install.sh");
+                    return [4 /*yield*/, fs_1.promises.chmod(installSh, 493)];
                 case 4:
                     _a.sent();
-                    return [3 /*break*/, 7];
-                case 5: return [4 /*yield*/, install(cachedPath)];
-                case 6:
+                    return [4 /*yield*/, exec_1.exec("bash", [installSh, "--prefix", "/usr"])];
+                case 5:
                     _a.sent();
-                    _a.label = 7;
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 9];
+                case 6:
+                    installSh = path.join(cachedPath, "opam64", "install.sh");
+                    return [4 /*yield*/, fs_1.promises.chmod(installSh, 493)];
+                case 7:
+                    _a.sent();
+                    return [4 /*yield*/, exec_1.exec("bash", [installSh, "--prefix", "/usr"])];
+                case 8:
+                    _a.sent();
+                    _a.label = 9;
+                case 9: return [2 /*return*/];
             }
         });
     });
 }
 function initializeOpamWindows(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var isVariant, repository, disableSandboxing, wrapperbin, opamBat;
+        var isVariant, repository, disableSandboxing, CYGWIN_ROOT_WRAPPERBIN, opamCmd, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -82201,17 +82192,20 @@ function initializeOpamWindows(version) {
                         ]))];
                 case 1:
                     _a.sent();
-                    wrapperbin = "D:\\cygwin\\wrapperbin";
-                    return [4 /*yield*/, io.mkdirP(wrapperbin)];
+                    CYGWIN_ROOT_WRAPPERBIN = process.env.CYGWIN_ROOT_WRAPPERBIN;
+                    return [4 /*yield*/, io.mkdirP(CYGWIN_ROOT_WRAPPERBIN)];
                 case 2:
                     _a.sent();
-                    opamBat = wrapperbin + "\\opam.bat";
-                    return [4 /*yield*/, fs_1.promises.writeFile(opamBat, "@echo off\r\nocaml-env exec -- opam.exe %*", {
-                            mode: 493,
-                        })];
+                    opamCmd = path.join(CYGWIN_ROOT_WRAPPERBIN, "opam.cmd");
+                    data = [
+                        "@setlocal",
+                        "@echo off",
+                        "set PATH=%CYGWIN_ROOT%\\bin;%PATH%",
+                        "ocaml-env exec -- opam.exe %*",
+                    ].join("\r\n");
+                    return [4 /*yield*/, fs_1.promises.writeFile(opamCmd, data, { mode: 493 })];
                 case 3:
                     _a.sent();
-                    core.addPath(wrapperbin);
                     return [2 /*return*/];
             }
         });
@@ -82219,14 +82213,24 @@ function initializeOpamWindows(version) {
 }
 function setupOpamWindows(version) {
     return __awaiter(this, void 0, void 0, function () {
+        var CYGWIN_ROOT, CYGWIN_ROOT_WRAPPERBIN, CYGWIN_ROOT_BIN, originalPath, patchedPath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    CYGWIN_ROOT = "D:\\cygwin";
+                    CYGWIN_ROOT_WRAPPERBIN = path.join(CYGWIN_ROOT, "wrapperbin");
+                    core.exportVariable("CYGWIN_ROOT", CYGWIN_ROOT);
+                    core.exportVariable("CYGWIN_ROOT_WRAPPERBIN", CYGWIN_ROOT_WRAPPERBIN);
+                    core.addPath(CYGWIN_ROOT_WRAPPERBIN);
                     core.startGroup("Prepare Cygwin environment");
                     return [4 /*yield*/, setupCygwin()];
                 case 1:
                     _a.sent();
                     core.endGroup();
+                    CYGWIN_ROOT_BIN = path.join(CYGWIN_ROOT, "bin");
+                    originalPath = process.env.PATH.split(path.delimiter);
+                    patchedPath = __spreadArrays([CYGWIN_ROOT_BIN], originalPath);
+                    process.env.PATH = patchedPath.join(path.delimiter);
                     core.startGroup("Install opam");
                     return [4 /*yield*/, acquireOpamWindows()];
                 case 2:
@@ -82237,6 +82241,7 @@ function setupOpamWindows(version) {
                 case 3:
                     _a.sent();
                     core.endGroup();
+                    process.env.PATH = originalPath.join(path.delimiter);
                     return [2 /*return*/];
             }
         });
