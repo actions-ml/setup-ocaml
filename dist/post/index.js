@@ -57741,9 +57741,9 @@ function composeKeys() {
                     architecture = _a.sent();
                     key = platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflow + "-" + job + "-" + runId + "-" + runNumber;
                     restoreKeys = [
-                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + job + "-" + workflow + "-" + runId + "-",
-                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + job + "-" + workflow + "-",
-                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + job + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflow + "-" + job + "-" + runId + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflow + "-" + job + "-",
+                        platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-" + workflow + "-",
                         platform + "-" + architecture + "-" + constants_1.OCAML_VERSION + "-",
                     ];
                     return [2 /*return*/, { key: key, restoreKeys: restoreKeys }];
