@@ -80759,12 +80759,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 exports.__esModule = true;
 exports.saveCache = exports.restoreCache = void 0;
@@ -80841,7 +80839,7 @@ function restoreCache() {
                         core.info("Cache restored from key: " + cacheKey);
                     }
                     else {
-                        core.info("Cache not found for input keys: " + __spreadArrays([key], restoreKeys).join(", "));
+                        core.info("Cache not found for input keys: " + __spreadArray([key], restoreKeys).join(", "));
                     }
                     core.endGroup();
                     return [2 /*return*/];
@@ -80938,25 +80936,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 exports.__esModule = true;
 exports.installSystemPackages = exports.installDepext = void 0;
 var core = __nccwpck_require__(2186);
 var exec_1 = __nccwpck_require__(1514);
 var path = __nccwpck_require__(5622);
+var system_1 = __nccwpck_require__(2704);
 function installDepext() {
     return __awaiter(this, void 0, void 0, function () {
+        var depextCygwinports;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     core.startGroup("Install depext");
-                    return [4 /*yield*/, exec_1.exec("opam", ["install", "depext", "--yes"])];
+                    depextCygwinports = system_1.IS_WINDOWS ? ["depext-cygwinports"] : [];
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArray(__spreadArray(["install", "depext"], depextCygwinports), ["--yes"]))];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -80974,7 +80973,7 @@ function installSystemPackages(fpaths) {
                 case 0:
                     core.startGroup("Install system packages required by opam packages");
                     fnames = fpaths.map(function (fpath) { return path.basename(fpath, ".opam"); });
-                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays(["depext"], fnames, ["--yes"]))];
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArray(__spreadArray(["depext"], fnames), ["--yes"]))];
                 case 1:
                     _a.sent();
                     core.endGroup();
@@ -81805,12 +81804,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 exports.__esModule = true;
 exports.pin = exports.setupOpam = void 0;
@@ -81914,12 +81911,12 @@ function initializeOpamUnix(version) {
                     if (systemVersion !== "16.04") {
                         bubblewrap.push("bubblewrap");
                     }
-                    return [4 /*yield*/, exec_1.exec("sudo", __spreadArrays([
+                    return [4 /*yield*/, exec_1.exec("sudo", __spreadArray(__spreadArray([
                             "apt-get",
                             "install",
                             "darcs",
                             "musl-tools"
-                        ], bubblewrap, [
+                        ], bubblewrap), [
                             "--yes",
                         ]))];
                 case 4:
@@ -81966,7 +81963,7 @@ function initializeOpamUnix(version) {
                     _a.label = 14;
                 case 14:
                     _a.trys.push([14, 16, , 17]);
-                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArray(__spreadArray([
                             "init",
                             "default",
                             repository,
@@ -81978,7 +81975,7 @@ function initializeOpamUnix(version) {
                                 : isVariant
                                     ? "ocaml-variants." + version
                                     : "ocaml-base-compiler." + version
-                        ], disableSandboxing, [
+                        ], disableSandboxing), [
                             "--no-setup",
                             "--yes",
                         ]))];
@@ -81997,7 +81994,7 @@ function initializeOpamUnix(version) {
                     return [4 /*yield*/, io.rmRF(opamRoot)];
                 case 18:
                     _a.sent();
-                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArray(__spreadArray([
                             "init",
                             "default",
                             repository,
@@ -82005,7 +82002,7 @@ function initializeOpamUnix(version) {
                             isVariant
                                 ? "ocaml-variants." + version
                                 : "ocaml-base-compiler." + version
-                        ], disableSandboxing, [
+                        ], disableSandboxing), [
                             "--no-setup",
                             "--yes",
                         ]))];
@@ -82178,7 +82175,7 @@ function initializeOpamWindows(version) {
                     if (constants_1.OPAM_DISABLE_SANDBOXING) {
                         disableSandboxing.push("--disable-sandboxing");
                     }
-                    return [4 /*yield*/, exec_1.exec("opam", __spreadArrays([
+                    return [4 /*yield*/, exec_1.exec("opam", __spreadArray(__spreadArray([
                             "init",
                             "default",
                             repository,
@@ -82186,7 +82183,7 @@ function initializeOpamWindows(version) {
                             isVariant
                                 ? "ocaml-variants." + version
                                 : "ocaml-variants." + version + "+mingw64c"
-                        ], disableSandboxing, [
+                        ], disableSandboxing), [
                             "--no-setup",
                             "--yes",
                         ]))];
@@ -82229,7 +82226,7 @@ function setupOpamWindows(version) {
                     core.endGroup();
                     CYGWIN_ROOT_BIN = path.join(CYGWIN_ROOT, "bin");
                     originalPath = process.env.PATH.split(path.delimiter);
-                    patchedPath = __spreadArrays([CYGWIN_ROOT_BIN], originalPath);
+                    patchedPath = __spreadArray([CYGWIN_ROOT_BIN], originalPath);
                     process.env.PATH = patchedPath.join(path.delimiter);
                     core.startGroup("Install opam");
                     return [4 /*yield*/, acquireOpamWindows()];
