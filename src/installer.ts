@@ -33,7 +33,7 @@ export async function installer(): Promise<void> {
   const version = await resolveVersion(OCAML_VERSION);
   await setupOpam(version);
   await restoreCache();
-  await installDepext();
+  await installDepext(version);
   if (DUNE_CACHE) {
     await installDune();
     core.exportVariable("DUNE_CACHE", "enabled");

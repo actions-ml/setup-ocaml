@@ -80947,9 +80947,9 @@ var core = __nccwpck_require__(2186);
 var exec_1 = __nccwpck_require__(1514);
 var path = __nccwpck_require__(5622);
 var system_1 = __nccwpck_require__(2704);
-function installDepext() {
+function installDepext(ocamlVersion) {
     return __awaiter(this, void 0, void 0, function () {
-        var depextCygwinports;
+        var depextCygwinports, platform, base;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -80958,6 +80958,17 @@ function installDepext() {
                     return [4 /*yield*/, exec_1.exec("opam", __spreadArray(__spreadArray(["install", "depext"], depextCygwinports), ["--yes"]))];
                 case 1:
                     _a.sent();
+                    platform = system_1.getPlatform();
+                    if (platform === "windows") {
+                        base = "";
+                        if (ocamlVersion.includes("mingw64")) {
+                            base = "x86_64-w64-mingw32";
+                        }
+                        else if (ocamlVersion.includes("mingw32")) {
+                            base = "i686-w64-mingw32";
+                        }
+                        core.addPath(path.posix.join("/", "usr", base, "sys-root", "mingw", "bin"));
+                    }
                     core.endGroup();
                     return [2 /*return*/];
             }
@@ -81246,7 +81257,7 @@ function installer() {
                     return [4 /*yield*/, cache_1.restoreCache()];
                 case 3:
                     _a.sent();
-                    return [4 /*yield*/, depext_1.installDepext()];
+                    return [4 /*yield*/, depext_1.installDepext(version)];
                 case 4:
                     _a.sent();
                     if (!constants_1.DUNE_CACHE) return [3 /*break*/, 6];
