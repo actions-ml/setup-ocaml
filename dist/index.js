@@ -81241,7 +81241,6 @@ function installer() {
                     core.exportVariable("OPAMYES", 1);
                     platform = system_1.getPlatform();
                     if (platform === "windows") {
-                        core.exportVariable("CYGWIN", "winsymlinks:native");
                         core.exportVariable("HOME", process.env.USERPROFILE);
                     }
                     else if (platform === "macos") {
@@ -82227,12 +82226,30 @@ function setupOpamWindows(version) {
                 case 0:
                     CYGWIN_ROOT = "D:\\cygwin";
                     CYGWIN_ROOT_WRAPPERBIN = path.join(CYGWIN_ROOT, "wrapperbin");
+                    return [4 /*yield*/, exec_1.exec("fsutil", ["behavior", "query", "SymlinkEvaluation"])];
+                case 1:
+                    _a.sent();
+                    // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-behavior
+                    return [4 /*yield*/, exec_1.exec("fsutil", [
+                            "behavior",
+                            "set",
+                            "symlinkEvaluation",
+                            "R2L:1",
+                            "R2R:1",
+                        ])];
+                case 2:
+                    // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-behavior
+                    _a.sent();
+                    return [4 /*yield*/, exec_1.exec("fsutil", ["behavior", "query", "SymlinkEvaluation"])];
+                case 3:
+                    _a.sent();
+                    core.exportVariable("CYGWIN", "winsymlinks:native");
                     core.exportVariable("CYGWIN_ROOT", CYGWIN_ROOT);
                     core.exportVariable("CYGWIN_ROOT_WRAPPERBIN", CYGWIN_ROOT_WRAPPERBIN);
                     core.addPath(CYGWIN_ROOT_WRAPPERBIN);
                     core.startGroup("Prepare Cygwin environment");
                     return [4 /*yield*/, setupCygwin()];
-                case 1:
+                case 4:
                     _a.sent();
                     core.endGroup();
                     CYGWIN_ROOT_BIN = path.join(CYGWIN_ROOT, "bin");
@@ -82241,12 +82258,12 @@ function setupOpamWindows(version) {
                     process.env.PATH = patchedPath.join(path.delimiter);
                     core.startGroup("Install opam");
                     return [4 /*yield*/, acquireOpamWindows()];
-                case 2:
+                case 5:
                     _a.sent();
                     core.endGroup();
                     core.startGroup("Initialise the opam state");
                     return [4 /*yield*/, initializeOpamWindows(version)];
-                case 3:
+                case 6:
                     _a.sent();
                     core.endGroup();
                     process.env.PATH = originalPath.join(path.delimiter);

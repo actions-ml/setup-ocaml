@@ -291,6 +291,17 @@ async function initializeOpamWindows(version: string) {
 async function setupOpamWindows(version: string) {
   const CYGWIN_ROOT = "D:\\cygwin";
   const CYGWIN_ROOT_WRAPPERBIN = path.join(CYGWIN_ROOT, "wrapperbin");
+  await exec("fsutil", ["behavior", "query", "SymlinkEvaluation"]);
+  // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-behavior
+  await exec("fsutil", [
+    "behavior",
+    "set",
+    "symlinkEvaluation",
+    "R2L:1",
+    "R2R:1",
+  ]);
+  await exec("fsutil", ["behavior", "query", "SymlinkEvaluation"]);
+  core.exportVariable("CYGWIN", "winsymlinks:native");
   core.exportVariable("CYGWIN_ROOT", CYGWIN_ROOT);
   core.exportVariable("CYGWIN_ROOT_WRAPPERBIN", CYGWIN_ROOT_WRAPPERBIN);
   core.addPath(CYGWIN_ROOT_WRAPPERBIN);

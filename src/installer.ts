@@ -24,7 +24,6 @@ export async function installer(): Promise<void> {
   core.exportVariable("OPAMYES", 1);
   const platform = getPlatform();
   if (platform === "windows") {
-    core.exportVariable("CYGWIN", "winsymlinks:native");
     core.exportVariable("HOME", process.env.USERPROFILE);
   } else if (platform === "macos") {
     core.exportVariable("HOMEBREW_NO_AUTO_UPDATE", 1);
