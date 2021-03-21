@@ -82224,6 +82224,7 @@ function setupOpamWindows(version) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    core.startGroup("Prepare Cygwin environment");
                     CYGWIN_ROOT = "D:\\cygwin";
                     CYGWIN_ROOT_WRAPPERBIN = path.join(CYGWIN_ROOT, "wrapperbin");
                     return [4 /*yield*/, exec_1.exec("fsutil", ["behavior", "query", "SymlinkEvaluation"])];
@@ -82247,7 +82248,6 @@ function setupOpamWindows(version) {
                     core.exportVariable("CYGWIN_ROOT", CYGWIN_ROOT);
                     core.exportVariable("CYGWIN_ROOT_WRAPPERBIN", CYGWIN_ROOT_WRAPPERBIN);
                     core.addPath(CYGWIN_ROOT_WRAPPERBIN);
-                    core.startGroup("Prepare Cygwin environment");
                     return [4 /*yield*/, setupCygwin()];
                 case 4:
                     _a.sent();

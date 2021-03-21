@@ -289,6 +289,7 @@ async function initializeOpamWindows(version: string) {
 }
 
 async function setupOpamWindows(version: string) {
+  core.startGroup("Prepare Cygwin environment");
   const CYGWIN_ROOT = "D:\\cygwin";
   const CYGWIN_ROOT_WRAPPERBIN = path.join(CYGWIN_ROOT, "wrapperbin");
   await exec("fsutil", ["behavior", "query", "SymlinkEvaluation"]);
@@ -305,7 +306,6 @@ async function setupOpamWindows(version: string) {
   core.exportVariable("CYGWIN_ROOT", CYGWIN_ROOT);
   core.exportVariable("CYGWIN_ROOT_WRAPPERBIN", CYGWIN_ROOT_WRAPPERBIN);
   core.addPath(CYGWIN_ROOT_WRAPPERBIN);
-  core.startGroup("Prepare Cygwin environment");
   await setupCygwin();
   core.endGroup();
   const CYGWIN_ROOT_BIN = path.join(CYGWIN_ROOT, "bin");
