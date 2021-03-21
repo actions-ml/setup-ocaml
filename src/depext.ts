@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import { exec } from "@actions/exec";
 import * as path from "path";
 
+import { OPAM_DEPEXT_FLAGS } from "./constants";
 import { getPlatform, IS_WINDOWS } from "./internal/system";
 
 export async function installDepext(ocamlVersion: string): Promise<void> {
@@ -24,6 +25,6 @@ export async function installDepext(ocamlVersion: string): Promise<void> {
 export async function installSystemPackages(fpaths: string[]): Promise<void> {
   core.startGroup("Install system packages required by opam packages");
   const fnames = fpaths.map((fpath) => path.basename(fpath, ".opam"));
-  await exec("opam", ["depext", ...fnames, "--yes"]);
+  await exec("opam", ["depext", ...fnames, "--yes", ...OPAM_DEPEXT_FLAGS]);
   core.endGroup();
 }

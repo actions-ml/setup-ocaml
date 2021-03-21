@@ -9,6 +9,11 @@ export const OCAML_VERSION = core.getInput("ocaml-version");
 export const OPAM_DEPEXT =
   core.getInput("opam-depext").toUpperCase() === "TRUE";
 
+export const OPAM_DEPEXT_FLAGS = core
+  .getInput("opam-depext-flags")
+  .split(",")
+  .map((f) => f.trim());
+
 export const OPAM_DISABLE_SANDBOXING =
   core.getInput("opam-disable-sandboxing").toUpperCase() === "TRUE";
 

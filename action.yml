@@ -16,6 +16,8 @@ inputs:
       Specify whether to query and install external dependencies of opam
       packages automatically
     default: true
+  opam-depext-flags:
+    description: Flags to pass to opam depext
   opam-disable-sandboxing:
     description:
       Specify whether to use a default configuration with sandboxing disabled
