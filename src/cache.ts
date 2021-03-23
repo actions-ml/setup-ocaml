@@ -28,14 +28,19 @@ async function composeKeys() {
 async function composePaths() {
   const homeDir = os.homedir();
   const opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
-  const xdgCacheHome = process.env.XDG_CACHE_HOME;
   const paths = [opamDownloadCacheDir];
   if (DUNE_CACHE) {
-    const duneCacheDir = IS_WINDOWS
-      ? path.join(homeDir, "Local Settings", "Cache", "dune")
-      : xdgCacheHome
+    const windowsCacheDir = path.join(
+      homeDir,
+      "Local Settings",
+      "Cache",
+      "dune"
+    );
+    const xdgCacheHome = process.env.XDG_CACHE_HOME;
+    const unixCacheDir = xdgCacheHome
       ? path.join(xdgCacheHome, "dune")
       : path.join(homeDir, ".cache", "dune");
+    const duneCacheDir = IS_WINDOWS ? windowsCacheDir : unixCacheDir;
     paths.push(duneCacheDir);
   }
   return paths;

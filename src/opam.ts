@@ -120,6 +120,12 @@ async function initializeOpamUnix(version: string) {
       core.error(error.message);
     }
   }
+  const ocamlSystem = isVariant
+    ? `ocaml-system.${variantVersion}`
+    : `ocaml-system.${version}`;
+  const ocamlNonSystem = isVariant
+    ? `ocaml-variants.${version}`
+    : `ocaml-base-compiler.${version}`;
   let shouldRetry = false;
   try {
     await exec("opam", [
@@ -127,13 +133,7 @@ async function initializeOpamUnix(version: string) {
       "default",
       repository,
       "--compiler",
-      isCacheExist
-        ? isVariant
-          ? `ocaml-system.${variantVersion}`
-          : `ocaml-system.${version}`
-        : isVariant
-        ? `ocaml-variants.${version}`
-        : `ocaml-base-compiler.${version}`,
+      isCacheExist ? ocamlSystem : ocamlNonSystem,
       ...disableSandboxing,
       "--no-setup",
       "--yes",
@@ -151,9 +151,7 @@ async function initializeOpamUnix(version: string) {
       "default",
       repository,
       "--compiler",
-      isVariant
-        ? `ocaml-variants.${version}`
-        : `ocaml-base-compiler.${version}`,
+      ocamlNonSystem,
       ...disableSandboxing,
       "--no-setup",
       "--yes",

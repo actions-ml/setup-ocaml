@@ -80801,18 +80801,18 @@ function composeKeys() {
 }
 function composePaths() {
     return __awaiter(this, void 0, void 0, function () {
-        var homeDir, opamDownloadCacheDir, xdgCacheHome, paths, duneCacheDir;
+        var homeDir, opamDownloadCacheDir, paths, windowsCacheDir, xdgCacheHome, unixCacheDir, duneCacheDir;
         return __generator(this, function (_a) {
             homeDir = os.homedir();
             opamDownloadCacheDir = path.join(homeDir, ".opam", "download-cache");
-            xdgCacheHome = process.env.XDG_CACHE_HOME;
             paths = [opamDownloadCacheDir];
             if (constants_1.DUNE_CACHE) {
-                duneCacheDir = system_1.IS_WINDOWS
-                    ? path.join(homeDir, "Local Settings", "Cache", "dune")
-                    : xdgCacheHome
-                        ? path.join(xdgCacheHome, "dune")
-                        : path.join(homeDir, ".cache", "dune");
+                windowsCacheDir = path.join(homeDir, "Local Settings", "Cache", "dune");
+                xdgCacheHome = process.env.XDG_CACHE_HOME;
+                unixCacheDir = xdgCacheHome
+                    ? path.join(xdgCacheHome, "dune")
+                    : path.join(homeDir, ".cache", "dune");
+                duneCacheDir = system_1.IS_WINDOWS ? windowsCacheDir : unixCacheDir;
                 paths.push(duneCacheDir);
             }
             return [2 /*return*/, paths];
@@ -81900,7 +81900,7 @@ function acquireOpamUnix() {
 }
 function initializeOpamUnix(version) {
     return __awaiter(this, void 0, void 0, function () {
-        var platform, isGitHubRunner, systemVersion, bubblewrap, disableSandboxing, repository, baseUrl, imageName, url, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, shouldRetry, error_2, homeDir, opamRoot;
+        var platform, isGitHubRunner, systemVersion, bubblewrap, disableSandboxing, repository, baseUrl, imageName, url, isCacheFileExist, isVariant, variantVersion, isCacheExist, error_1, ocamlSystem, ocamlNonSystem, shouldRetry, error_2, homeDir, opamRoot;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -81974,6 +81974,12 @@ function initializeOpamUnix(version) {
                     core.error(error_1.message);
                     return [3 /*break*/, 13];
                 case 13:
+                    ocamlSystem = isVariant
+                        ? "ocaml-system." + variantVersion
+                        : "ocaml-system." + version;
+                    ocamlNonSystem = isVariant
+                        ? "ocaml-variants." + version
+                        : "ocaml-base-compiler." + version;
                     shouldRetry = false;
                     _a.label = 14;
                 case 14:
@@ -81983,13 +81989,7 @@ function initializeOpamUnix(version) {
                             "default",
                             repository,
                             "--compiler",
-                            isCacheExist
-                                ? isVariant
-                                    ? "ocaml-system." + variantVersion
-                                    : "ocaml-system." + version
-                                : isVariant
-                                    ? "ocaml-variants." + version
-                                    : "ocaml-base-compiler." + version
+                            isCacheExist ? ocamlSystem : ocamlNonSystem
                         ], disableSandboxing), [
                             "--no-setup",
                             "--yes",
@@ -82014,9 +82014,7 @@ function initializeOpamUnix(version) {
                             "default",
                             repository,
                             "--compiler",
-                            isVariant
-                                ? "ocaml-variants." + version
-                                : "ocaml-base-compiler." + version
+                            ocamlNonSystem
                         ], disableSandboxing), [
                             "--no-setup",
                             "--yes",
